@@ -1,0 +1,414 @@
+{
+  "address": "CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj",
+  "metadata": {
+    "name": "chumchon",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Chumchon - A Solana-powered social application"
+  },
+  "instructions": [
+    {
+      "name": "create_user_profile",
+      "discriminator": [
+        9,
+        214,
+        142,
+        184,
+        153,
+        65,
+        50,
+        174
+      ],
+      "accounts": [
+        {
+          "name": "fee_payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        },
+        {
+          "name": "bio",
+          "type": "string"
+        },
+        {
+          "name": "show_balance",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "update_user_profile",
+      "discriminator": [
+        79,
+        75,
+        114,
+        130,
+        68,
+        123,
+        180,
+        11
+      ],
+      "accounts": [
+        {
+          "name": "fee_payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        },
+        {
+          "name": "bio",
+          "type": "string"
+        },
+        {
+          "name": "show_balance",
+          "type": "bool"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "UserProfile",
+      "discriminator": [
+        32,
+        37,
+        119,
+        205,
+        179,
+        180,
+        13,
+        194
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InsufficientTokenBalance",
+      "msg": "User does not have enough tokens to join this group"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientSolBalance",
+      "msg": "User does not have enough SOL to join this whale group"
+    },
+    {
+      "code": 6002,
+      "name": "NotGroupMember",
+      "msg": "User is not a member of this group"
+    },
+    {
+      "code": 6003,
+      "name": "NotGroupAdmin",
+      "msg": "User is not an admin of this group"
+    },
+    {
+      "code": 6004,
+      "name": "NotGroupCreator",
+      "msg": "Only the creator can perform this action"
+    },
+    {
+      "code": 6005,
+      "name": "ChannelPostingRestricted",
+      "msg": "Only the creator can post in a channel"
+    },
+    {
+      "code": 6006,
+      "name": "InviteExpired",
+      "msg": "This invite has expired"
+    },
+    {
+      "code": 6007,
+      "name": "InviteUsed",
+      "msg": "This invite has reached its maximum number of uses"
+    },
+    {
+      "code": 6008,
+      "name": "ChallengeEnded",
+      "msg": "This meme challenge has already ended"
+    },
+    {
+      "code": 6009,
+      "name": "ChallengeNotStarted",
+      "msg": "This meme challenge has not started yet"
+    },
+    {
+      "code": 6010,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6011,
+      "name": "NameTooLong",
+      "msg": "Username is too long."
+    },
+    {
+      "code": 6012,
+      "name": "BioTooLong",
+      "msg": "Bio is too long."
+    },
+    {
+      "code": 6013,
+      "name": "InvalidMint",
+      "msg": "Invalid mint for NFT profile picture."
+    },
+    {
+      "code": 6014,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount."
+    },
+    {
+      "code": 6015,
+      "name": "InvalidRecipient",
+      "msg": "Invalid recipient for tip."
+    },
+    {
+      "code": 6016,
+      "name": "ContentTooLong",
+      "msg": "Content is too long."
+    },
+    {
+      "code": 6017,
+      "name": "UrlTooLong",
+      "msg": "URL is too long."
+    },
+    {
+      "code": 6018,
+      "name": "TitleTooLong",
+      "msg": "Title is too long."
+    },
+    {
+      "code": 6019,
+      "name": "DescriptionTooLong",
+      "msg": "Description is too long."
+    },
+    {
+      "code": 6020,
+      "name": "PromptTooLong",
+      "msg": "Prompt is too long."
+    },
+    {
+      "code": 6021,
+      "name": "CodeTooLong",
+      "msg": "Code is too long."
+    },
+    {
+      "code": 6022,
+      "name": "InvalidMaxUses",
+      "msg": "Invalid max uses for invite."
+    },
+    {
+      "code": 6023,
+      "name": "InvalidExpiry",
+      "msg": "Expiry date is in the past."
+    },
+    {
+      "code": 6024,
+      "name": "InvalidInvite",
+      "msg": "Invalid invite."
+    },
+    {
+      "code": 6025,
+      "name": "ChallengeInactive",
+      "msg": "Challenge is not active."
+    },
+    {
+      "code": 6026,
+      "name": "AlreadyVoted",
+      "msg": "You have already voted."
+    },
+    {
+      "code": 6027,
+      "name": "CannotVoteOwnSubmission",
+      "msg": "You cannot vote for your own submission."
+    },
+    {
+      "code": 6028,
+      "name": "ChallengeNotEnded",
+      "msg": "Challenge has not ended yet."
+    },
+    {
+      "code": 6029,
+      "name": "ChallengeAlreadyCompleted",
+      "msg": "Challenge has already been completed."
+    },
+    {
+      "code": 6030,
+      "name": "NoSubmissions",
+      "msg": "No submissions to determine a winner."
+    },
+    {
+      "code": 6031,
+      "name": "TutorialAlreadyCompleted",
+      "msg": "Tutorial has already been completed."
+    },
+    {
+      "code": 6032,
+      "name": "InvalidTutorialId",
+      "msg": "Invalid tutorial ID."
+    },
+    {
+      "code": 6033,
+      "name": "EscrowAlreadyAccepted",
+      "msg": "The escrow has already been accepted."
+    },
+    {
+      "code": 6034,
+      "name": "EscrowExpired",
+      "msg": "The escrow has expired."
+    },
+    {
+      "code": 6035,
+      "name": "EscrowNotAccepted",
+      "msg": "The escrow has not been accepted by the counterparty yet."
+    },
+    {
+      "code": 6036,
+      "name": "NotOwner",
+      "msg": "You are not the owner of this account."
+    },
+    {
+      "code": 6037,
+      "name": "NoNFT",
+      "msg": "You do not hold the required NFT."
+    },
+    {
+      "code": 6038,
+      "name": "InvalidToken",
+      "msg": "The token is not valid for this group."
+    },
+    {
+      "code": 6039,
+      "name": "InvalidNFT",
+      "msg": "The NFT is not valid for this group."
+    }
+  ],
+  "types": [
+    {
+      "name": "UserProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "username",
+            "type": "string"
+          },
+          {
+            "name": "bio",
+            "type": "string"
+          },
+          {
+            "name": "profile_picture_url",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "nft_profile_picture",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "show_balance",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "last_active",
+            "type": "i64"
+          },
+          {
+            "name": "completed_tutorials",
+            "type": "bytes"
+          },
+          {
+            "name": "tutorial_rewards",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

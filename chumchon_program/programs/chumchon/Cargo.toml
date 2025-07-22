@@ -1,0 +1,29 @@
+[package]
+name = "chumchon"
+version = "0.1.0"
+description = "Chumchon - A Solana-powered social application"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "chumchon"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+anchor-debug = []
+custom-heap = []
+custom-panic = []
+
+[dependencies]
+anchor-lang = "=0.31.1"
+anchor-spl = "=0.31.1"
+bumpalo = "=3.14.0"
+
+[dev-dependencies]
+solana-sdk = "=2.2.1"
+solana-program-test = "=2.2.0"

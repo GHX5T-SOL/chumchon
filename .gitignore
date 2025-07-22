@@ -1,0 +1,68 @@
+# Node modules
+node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# macOS
+.DS_Store
+
+# Android
+android/app/build/
+android/build/
+*.keystore
+
+# iOS
+ios/build/
+ios/Pods/
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata
+
+# Environment files
+.env
+.env.*
+
+# VSCode
+.vscode/
+
+# Metro/Watchman/Cache
+$TMPDIR/metro-cache
+$TMPDIR/haste-map-*
+
+# Solana Anchor program
+chumchon_program/target/
+chumchon_program/.anchor/
+chumchon_program/node_modules/
+chumchon_program/deploy-keypair.json
+
+# Rust
+**/target/
+Cargo.lock
+
+# Misc
+*.swp
+*.swo
+
+# Ignore build outputs
+build/
+dist/
+
+# Ignore coverage
+coverage/
+
+# Ignore backup files
+*~
+
+# Ignore test artifacts
+*.test.ts.snap
+
+# Ignore Expo web build
+web-build/
