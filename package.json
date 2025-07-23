@@ -22,7 +22,7 @@
     "react-native",
     "solana-web3js"
   ],
-  "main": "./index.js",
+  "main": "App.tsx",
   "version": "1.0.0",
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.1",
