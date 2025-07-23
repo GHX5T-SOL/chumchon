@@ -1,4 +1,4 @@
-package com.chumchon
+package com.anonymous.chumchon
 
 import android.app.Application
 import android.content.res.Configuration
