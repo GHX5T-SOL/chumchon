@@ -16,7 +16,7 @@ import { useCallback, useMemo } from 'react'
 import { useCluster } from '../cluster/cluster-provider'
 import { WalletIcon } from '@wallet-standard/core'
 import { ellipsify } from '../../utils/ellipsify'
-import { AppConfig } from '../../src/constants/app-config'
+import { AppConfig } from '../../constants/app-config'
 
 const identity: AppIdentity = { name: AppConfig.name, uri: AppConfig.uri }
 
