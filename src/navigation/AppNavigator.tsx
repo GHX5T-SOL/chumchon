@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '../contexts/AuthProvider';
 import { theme } from '../theme';
 import { Ionicons } from '@expo/vector-icons';
+import { WalletConnectButton } from '../../components/solana/WalletConnectButton';
 
 // Auth screens
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
@@ -93,6 +94,7 @@ const AuthNavigator = () => {
           fontWeight: 'bold',
         },
         animation: 'slide_from_right',
+        headerRight: () => <WalletConnectButton />, // Add button to all auth screens
       }}
     >
       <AuthStack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
@@ -122,6 +124,7 @@ const MainTabsNavigator = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerRight: () => <WalletConnectButton />, // Add button to all main tab screens
       }}
     >
       <MainTabs.Screen
@@ -195,7 +198,7 @@ const MainNavigator = () => {
           fontWeight: 'bold',
         },
         animation: 'slide_from_right',
-        headerShown: false,
+        headerRight: () => <WalletConnectButton />, // Add button to all main stack screens
       }}
     >
       <MainStack.Screen name="MainTabs" component={MainTabsNavigator} />

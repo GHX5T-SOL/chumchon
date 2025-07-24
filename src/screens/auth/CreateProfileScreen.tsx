@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import { useSolana } from '../../contexts/SolanaProvider';
 import { theme, commonStyles } from '../../theme';
 import { shortenAddress } from '../../services/programService';
+import { WalletConnectButton } from '../../../components/solana/WalletConnectButton';
 
 const CreateProfileScreen = () => {
   const { createProfile, isLoading } = useAuth();
@@ -61,6 +62,11 @@ const CreateProfileScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      {/* Top bar with persistent wallet connect button */}
+      <View style={styles.topBar}>
+        <View style={{ flex: 1 }} />
+        <WalletConnectButton />
+      </View>
       <View style={styles.header}>
         <Text style={styles.title}>Create Your Profile</Text>
         <Text style={styles.subtitle}>
@@ -145,7 +151,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: theme.colors.muted,
+    color: theme.colors.accent,
     lineHeight: 24,
   },
   walletInfo: {
@@ -222,6 +228,15 @@ const styles = StyleSheet.create({
     color: theme.colors.info,
     fontSize: 14,
     textAlign: 'center',
+  },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '100%',
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    marginBottom: 8,
   },
 });
 
