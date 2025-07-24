@@ -1,5 +1,5 @@
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
-import { useConnection } from '@/components/solana/solana-provider'
+import { useConnection } from '../solana/solana-provider'
 import { useMutation } from '@tanstack/react-query'
 import { useGetBalanceInvalidate } from './use-get-balance'
 

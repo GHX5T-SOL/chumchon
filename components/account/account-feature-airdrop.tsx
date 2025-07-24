@@ -1,11 +1,11 @@
-import { AppView } from '@/components/app-view'
-import { AppText } from '@/components/app-text'
+import { AppView } from '../app-view'
+import { AppText } from '../app-text'
 import { PublicKey } from '@solana/web3.js'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useWalletUi } from '../solana/use-wallet-ui'
 import { Button } from '@react-navigation/elements'
 import React from 'react'
 import { ActivityIndicator } from 'react-native'
-import { useRequestAirdrop } from '@/components/account/use-request-airdrop'
+import { useRequestAirdrop } from './use-request-airdrop'
 
 export function AccountFeatureAirdrop({ back }: { back: () => void }) {
   const { account } = useWalletUi()

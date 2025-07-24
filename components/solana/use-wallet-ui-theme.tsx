@@ -1,4 +1,4 @@
-import { useThemeColor } from '@/hooks/use-theme-color'
+import { useThemeColor } from '../../hooks/use-theme-color'
 
 export function useWalletUiTheme() {
   const backgroundColor = useThemeColor({}, 'background')

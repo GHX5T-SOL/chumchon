@@ -1,7 +1,7 @@
 import { createContext, type PropsWithChildren, use, useMemo } from 'react'
-import { useMobileWallet } from '@/components/solana/use-mobile-wallet'
-import { AppConfig } from '@/constants/app-config'
-import { Account, useAuthorization } from '@/components/solana/use-authorization'
+import { useMobileWallet } from '../solana/use-mobile-wallet'
+import { AppConfig } from '../../constants/app-config'
+import { Account, useAuthorization } from '../solana/use-authorization'
 import { useMutation } from '@tanstack/react-query'
 
 export interface AuthState {
