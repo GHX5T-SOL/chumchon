@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { useWalletUi } from './use-wallet-ui';
-import { theme } from '../../theme';
+import { theme } from '../../src/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ellipsify } from '../../utils/ellipsify';
 
