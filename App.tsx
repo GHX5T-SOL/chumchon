@@ -1,22 +1,14 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { AuthProvider } from "./src/contexts/AuthProvider";
-import { SolanaProvider } from "./src/contexts/SolanaProvider";
 import AppNavigator from "./src/navigation/AppNavigator";
-// import theme from "./src/theme"; // Uncomment if you use a ThemeProvider
-// import { ThemeProvider } from "styled-components/native";
+import { AppProviders } from "./components/app-providers";
 
 export default function App() {
   return (
     <NavigationContainer>
-      <AuthProvider>
-        <SolanaProvider>
-          {/* Uncomment below if you use a ThemeProvider */}
-          {/* <ThemeProvider theme={theme}> */}
-            <AppNavigator />
-          {/* </ThemeProvider> */}
-        </SolanaProvider>
-      </AuthProvider>
+      <AppProviders>
+        <AppNavigator />
+      </AppProviders>
     </NavigationContainer>
   );
 }
