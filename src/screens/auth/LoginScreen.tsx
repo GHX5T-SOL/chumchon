@@ -37,32 +37,32 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <Icon name="wallet" size={80} color={theme.colors.accent} style={styles.icon} />
-        
-        <Text style={styles.title}>Connect Your Wallet</Text>
-        <Text style={styles.description}>
-          Connect your Solana wallet to access Chumchon's decentralized social features.
-        </Text>
-
-        {error && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
-
+      {/* Top bar with Connect Wallet button on the right */}
+      <View style={styles.topBar}>
+        <View style={{ flex: 1 }} />
         <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
+          style={styles.connectButton}
           onPress={handleLogin}
           disabled={connecting || isLoading}
         >
           {(connecting || isLoading) ? (
             <ActivityIndicator color={theme.colors.text} />
           ) : (
-            <Text style={styles.buttonText}>Connect Wallet</Text>
+            <Text style={styles.connectButtonText}>Connect Wallet</Text>
           )}
         </TouchableOpacity>
-
+      </View>
+      <View style={styles.content}>
+        <Icon name="wallet" size={80} color={theme.colors.accent} style={styles.icon} />
+        <Text style={styles.title}>Connect Your Wallet</Text>
+        <Text style={styles.description}>
+          Connect your Solana wallet to access Chumchon's decentralized social features.
+        </Text>
+        {error && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
         <View style={styles.walletOptions}>
           <Text style={styles.walletOptionsTitle}>Supported Wallets:</Text>
           <View style={styles.walletList}>
@@ -73,7 +73,6 @@ const LoginScreen = () => {
           </View>
         </View>
       </View>
-
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           By connecting your wallet, you agree to our Terms of Service and Privacy Policy.
@@ -180,6 +179,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: theme.colors.muted,
     textAlign: 'center',
+  },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '100%',
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  connectButton: {
+    backgroundColor: theme.colors.buttonPrimary,
+    borderRadius: theme.roundness,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    ...commonStyles.shadow,
+  },
+  connectButtonText: {
+    color: theme.colors.text,
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

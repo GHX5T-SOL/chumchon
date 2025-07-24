@@ -22,31 +22,18 @@ const WelcomeScreen = () => {
           style={styles.logo}
           resizeMode="contain"
         />
-        <Text style={styles.title}>CHUMCHON</Text>
-        <Text style={styles.subtitle}>Decentralized Social on Solana</Text>
+        {/* Removed the redundant title */}
+        <Text style={styles.subtitle}>Decentralized Social Network Built on Solana</Text>
       </View>
 
       <View style={styles.featuresContainer}>
-        <FeatureItem
-          icon="account-group"
-          title="Token-Gated Communities"
-          description="Join exclusive groups with your NFTs and tokens"
-        />
-        <FeatureItem
-          icon="message-text"
-          title="On-Chain Messaging"
-          description="Chat securely with cryptographic verification"
-        />
-        <FeatureItem
-          icon="swap-horizontal"
-          title="Secure Escrow"
-          description="Trade tokens safely with built-in escrow"
-        />
-        <FeatureItem
-          icon="image-multiple"
-          title="Meme Challenges"
-          description="Create and vote on AI-powered meme contests"
-        />
+        <Text style={styles.featureListItem}>🧑🎨  User Profiles: Create and customize your on-chain profile with NFT profile pictures</Text>
+        <Text style={styles.featureListItem}>🔒  Token-Gated Groups: Create and join exclusive communities based on token or NFT ownership</Text>
+        <Text style={styles.featureListItem}>💬  Messaging System: Send messages in groups and tip content creators with SOL or SPL Tokens</Text>
+        <Text style={styles.featureListItem}>🤝  Escrow System: Securely trade tokens with other users through on-chain escrow in "Whale Groups"</Text>
+        <Text style={styles.featureListItem}>🔗  Invite System: Generate and share invite links to bring friends into groups</Text>
+        <Text style={styles.featureListItem}>🖼️  Meme Challenges: Create AI-powered meme contests with SOL or token rewards</Text>
+        <Text style={styles.featureListItem}>🎓  Educational Rewards: Complete tutorials to earn SOL or token rewards</Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -106,6 +93,7 @@ const styles = StyleSheet.create({
   },
   featuresContainer: {
     marginVertical: 32,
+    width: '90%',
   },
   featureItem: {
     flexDirection: 'row',
@@ -145,6 +133,14 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.lg,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  featureListItem: {
+    fontSize: 16,
+    color: theme.colors.accent,
+    marginBottom: 14,
+    lineHeight: 22,
+    fontWeight: '500',
+    letterSpacing: 0.1,
   },
 });
 

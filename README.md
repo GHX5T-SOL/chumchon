@@ -10,11 +10,11 @@ Chumchon is a decentralized social app built for Solana Mobile, featuring token-
 
 - **User Profiles**: Create and customize your on-chain profile with NFT profile pictures
 - **Token-Gated Groups**: Create and join exclusive communities based on token or NFT ownership
-- **Messaging System**: Send messages in groups and tip content creators with SOL
-- **Escrow System**: Securely trade tokens with other users through on-chain escrow
+- **Messaging System**: Send messages in groups and tip content creators with SOL or SPL Tokens
+- **Escrow System**: Securely trade tokens with other users through on-chain escrow in "Whale Groups"
 - **Invite System**: Generate and share invite links to bring friends into groups
-- **Meme Challenges**: Create AI-powered meme contests with SOL rewards
-- **Educational Rewards**: Complete tutorials to earn SOL rewards
+- **Meme Challenges**: Create AI-powered meme contests with SOL or token rewards
+- **Educational Rewards**: Complete tutorials to earn SOL or token rewards
 
 ---
 
