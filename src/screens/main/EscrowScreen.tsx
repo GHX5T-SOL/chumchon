@@ -82,7 +82,7 @@ const TOKEN_NAMES: Record<string, string> = {
 
 const EscrowScreen = () => {
   const navigation = useNavigation<EscrowScreenNavigationProp>();
-  const { publicKey } = useSolana();
+  const { publicKey, connection } = useSolana();
   const [escrows, setEscrows] = useState<Escrow[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active');
@@ -91,13 +91,10 @@ const EscrowScreen = () => {
   const loadEscrows = async () => {
     setRefreshing(true);
     try {
-      if (publicKey) {
-        // In a real app, you would fetch escrows from the blockchain
-        // const userEscrows = await getUserEscrows(publicKey);
-        // setEscrows(userEscrows);
-        
-        // For now, use mock data
-        setEscrows(MOCK_ESCROWS);
+      if (publicKey && connection) {
+        // Fetch escrows from the blockchain
+        const userEscrows = await getUserEscrows(connection, publicKey);
+        setEscrows(userEscrows);
       }
     } catch (error) {
       console.error('Failed to load escrows:', error);
@@ -190,7 +187,7 @@ const EscrowScreen = () => {
     return (
       <TouchableOpacity 
         style={styles.escrowItem}
-        onPress={() => navigation.navigate('EscrowDetail', { escrowId: item.address.toBase58() })}
+        onPress={() => navigation.navigate('EscrowDetail', { escrowAddress: item.address.toBase58() })}
       >
         <View style={styles.escrowHeader}>
           <View style={[styles.statusIndicator, { backgroundColor: getStatusColor(item.status) }]} />
@@ -240,7 +237,7 @@ const EscrowScreen = () => {
           {item.status === EscrowStatus.Accepted && (
             <TouchableOpacity 
               style={styles.completeButton}
-              onPress={() => navigation.navigate('EscrowDetail', { escrowId: item.address.toBase58() })}
+              onPress={() => navigation.navigate('EscrowDetail', { escrowAddress: item.address.toBase58() })}
             >
               <Text style={styles.completeButtonText}>Complete</Text>
             </TouchableOpacity>

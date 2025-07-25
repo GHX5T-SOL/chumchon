@@ -16,7 +16,7 @@ const ACHIEVEMENTS = [
 ];
 
 const AchievementsScreen = () => {
-  const { publicKey } = useSolana();
+  const { publicKey, connection } = useSolana();
   const [achievements, setAchievements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,9 +25,9 @@ const AchievementsScreen = () => {
     const fetchAchievements = async () => {
       setLoading(true);
       let profile: any = {};
-      if (publicKey) {
+      if (publicKey && connection) {
         try {
-          profile = await getUserProfile(publicKey);
+          profile = await getUserProfile(connection, publicKey);
         } catch {}
       }
       const computed = ACHIEVEMENTS.map(a => ({ ...a, unlocked: a.check(profile) }));
@@ -36,7 +36,7 @@ const AchievementsScreen = () => {
     };
     fetchAchievements();
     return () => { isMounted = false; };
-  }, [publicKey]);
+  }, [publicKey, connection]);
 
   const renderItem = ({ item }: { item: typeof ACHIEVEMENTS[0] }) => (
     <View style={[styles.badge, item.unlocked ? cyberpunkStyles.neonBorder : styles.lockedBadge]}>

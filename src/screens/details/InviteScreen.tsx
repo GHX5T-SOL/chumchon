@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { cyberpunkStyles, theme } from '@/theme';
-import { redeemInvite } from '@/services/groupService';
+import { useInvite } from '@/services/inviteService';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { PublicKey } from '@solana/web3.js';
 
 const InviteScreen = () => {
-  const { publicKey } = useSolana();
+  const { publicKey, connection, signAndSendTransaction } = useSolana();
   const [code, setCode] = useState('');
   const [group, setGroup] = useState('');
-  const [creator, setCreator] = useState('');
-  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRedeem = async () => {
-    if (!publicKey) return Alert.alert('Wallet not connected');
-    if (!code || !group || !creator || !name) return Alert.alert('All fields required');
+    if (!publicKey || !connection || !signAndSendTransaction) return Alert.alert('Wallet not connected');
+    if (!code || !group) return Alert.alert('Invite code and group address required');
     setLoading(true);
     try {
-      await redeemInvite(
-        publicKey,
+      await useInvite(
+        connection,
+        signAndSendTransaction,
         new PublicKey(group),
-        new PublicKey(creator),
-        name,
+        publicKey,
         code
       );
       setLoading(false);
@@ -49,20 +47,6 @@ const InviteScreen = () => {
         placeholderTextColor={theme.colors.textSecondary}
         value={group}
         onChangeText={setGroup}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Group Creator Address"
-        placeholderTextColor={theme.colors.textSecondary}
-        value={creator}
-        onChangeText={setCreator}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Group Name"
-        placeholderTextColor={theme.colors.textSecondary}
-        value={name}
-        onChangeText={setName}
       />
       <TouchableOpacity
         style={[styles.button, cyberpunkStyles.neonBorder, loading && styles.disabledButton]}

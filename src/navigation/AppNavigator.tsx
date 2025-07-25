@@ -1,6 +1,6 @@
 // src/navigation/AppNavigator.tsx
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -65,6 +65,9 @@ export type MainStackParamList = {
   Tip: { groupAddress?: string };
   NotFound: undefined;
   Onboarding: undefined;
+  CreateGroup: undefined;
+  CreateEscrow: undefined;
+  CreateMeme: undefined;
 };
 
 export type MainTabsParamList = {
@@ -185,6 +188,13 @@ const MainTabsNavigator = () => {
   );
 };
 
+// Placeholder screens for missing implementations
+const PlaceholderScreen = ({ route, navigation }: any) => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
+    <Text style={{ color: theme.colors.text, fontSize: 18 }}>This screen is under construction.</Text>
+  </View>
+);
+
 // Main navigator
 const MainNavigator = () => {
   return (
@@ -215,6 +225,9 @@ const MainNavigator = () => {
       <MainStack.Screen name="Tip" component={TipScreen} />
       <MainStack.Screen name="NotFound" component={NotFoundScreen} />
       <MainStack.Screen name="Onboarding" component={OnboardingScreen} />
+      <MainStack.Screen name="CreateGroup" component={PlaceholderScreen} />
+      <MainStack.Screen name="CreateEscrow" component={PlaceholderScreen} />
+      <MainStack.Screen name="CreateMeme" component={PlaceholderScreen} />
     </MainStack.Navigator>
   );
 };

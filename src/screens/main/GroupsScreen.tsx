@@ -75,7 +75,7 @@ const MOCK_GROUPS: Group[] = [
 
 const GroupsScreen = () => {
   const navigation = useNavigation<GroupsScreenNavigationProp>();
-  const { publicKey } = useSolana();
+  const { publicKey, connection } = useSolana();
   const [groups, setGroups] = useState<Group[]>([]);
   const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -86,14 +86,11 @@ const GroupsScreen = () => {
   const loadGroups = async () => {
     setRefreshing(true);
     try {
-      if (publicKey) {
-        // In a real app, you would fetch groups from the blockchain
-        // const userGroups = await getUserGroups(publicKey);
-        // setGroups(userGroups);
-        
-        // For now, use mock data
-        setGroups(MOCK_GROUPS);
-        setFilteredGroups(MOCK_GROUPS);
+      if (publicKey && connection) {
+        // Fetch groups from the blockchain
+        const userGroups = await getUserGroups(connection, publicKey);
+        setGroups(userGroups);
+        setFilteredGroups(userGroups);
       }
     } catch (error) {
       console.error('Failed to load groups:', error);
@@ -129,7 +126,14 @@ const GroupsScreen = () => {
   const renderGroupItem = ({ item }: { item: Group }) => (
     <TouchableOpacity 
       style={styles.groupItem}
-      onPress={() => navigation.navigate('GroupChat', { groupId: item.address.toBase58() })}
+      onPress={() => navigation.navigate('GroupChat', {
+        groupAddress: item.address.toBase58(),
+        groupName: item.name,
+        groupDescription: item.description,
+        memberCount: item.memberCount,
+        isChannel: item.isChannel,
+        creator: item.creator,
+      })}
     >
       <View style={styles.groupIconContainer}>
         {item.isChannel ? (
@@ -295,7 +299,7 @@ const GroupsScreen = () => {
         <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => {/* TODO: Implement join group logic */}}>
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Join Group (with Invite)</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Invite')}>
+        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Invite', { groupAddress: item.address.toBase58() })}>
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>View Group Invites</Text>
         </TouchableOpacity>
       </View>

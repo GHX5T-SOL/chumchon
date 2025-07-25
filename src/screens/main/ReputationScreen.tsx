@@ -15,14 +15,14 @@ const REPUTATION_MILESTONES = [
 ];
 
 const ReputationScreen = () => {
-  const { publicKey } = useSolana();
+  const { publicKey, connection } = useSolana();
   const [reputation, setReputation] = useState<number | null>(null);
   useEffect(() => {
     let isMounted = true;
     const fetchReputation = async () => {
-      if (!publicKey) return setReputation(0);
+      if (!publicKey || !connection) return setReputation(0);
       try {
-        const profile = await getUserProfile(publicKey);
+        const profile = await getUserProfile(connection, publicKey);
         if (isMounted) setReputation(profile?.reputationScore ?? 0);
       } catch {
         if (isMounted) setReputation(0);
@@ -30,7 +30,7 @@ const ReputationScreen = () => {
     };
     fetchReputation();
     return () => { isMounted = false; };
-  }, [publicKey]);
+  }, [publicKey, connection]);
 
   const currentMilestone = REPUTATION_MILESTONES.reduce((acc, m) => (reputation !== null && reputation >= m.score ? m : acc), REPUTATION_MILESTONES[0]);
   const nextMilestone = REPUTATION_MILESTONES.find(m => reputation !== null && reputation < m.score);

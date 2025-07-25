@@ -1,39 +1,40 @@
 // src/services/profileService.ts
-import { PublicKey, Transaction } from '@solana/web3.js';
-import { useSolana } from '@/contexts/SolanaProvider';
-import { UserProfile } from '@/contexts/AuthProvider';
-import { getProgramId } from '@/services/programService';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
+import { initializeClient, createUserProfile as createUserProfileInstruction, getUserProfile as fetchUserProfile } from '../../chumchon_program/app/program_client/rpc';
 
-// Import the program client
-import { createUserProfile as createUserProfileInstruction, getUserProfile as fetchUserProfile } from '../../chumchon_program/app/program_client/rpc';
-import { findUserProfilePda } from '../../chumchon_program/app/program_client/pda';
+// Program ID from Anchor.toml
+const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');
 
-// Initialize the Anchor program client for profile instructions
-// REMOVE top-level AnchorProvider.env() and programClient.initializeClient
-// console.log('[profileService] Anchor program client initialized', { programId: programId.toString() });
+// Get program ID for the current environment
+const getProgramId = (): PublicKey => {
+  return PROGRAM_ID;
+};
 
-function makeAnchorWallet(publicKey, signAndSendTransaction) {
+// Create a wallet adapter for Mobile Wallet Adapter
+function makeAnchorWallet(publicKey: PublicKey, signAndSendTransaction: (tx: Transaction) => Promise<string>) {
   return {
     publicKey,
-    signTransaction: async (tx) => tx, // MWA signs and sends, so just return tx
-    signAllTransactions: async (txs) => txs,
+    signTransaction: async (tx: Transaction) => tx,
+    signAllTransactions: async (txs: Transaction[]) => txs,
   };
 }
 
 // Create a new user profile
 export const createUserProfile = async (
-  connection,
-  signAndSendTransaction,
-  owner,
-  username,
-  bio
+  connection: Connection,
+  signAndSendTransaction: (tx: Transaction) => Promise<string>,
+  owner: PublicKey,
+  username: string,
+  bio: string
 ) => {
   const programId = getProgramId();
   const wallet = makeAnchorWallet(owner, signAndSendTransaction);
-  const provider = new anchor.AnchorProvider(connection, wallet, { preflightCommitment: 'confirmed' });
-  // Initialize the program client with the correct provider
-  // programClient.initializeClient(programId, provider); // This line is removed as per the new_code
+  const provider = new anchor.AnchorProvider(connection, wallet as any, { preflightCommitment: 'confirmed' });
+  
+  // Always initialize the Anchor program client before building the instruction
+  initializeClient(programId, provider);
+  
   console.log('[profileService] createUserProfile called', {
     connection: !!connection,
     signAndSendTransaction: !!signAndSendTransaction,
@@ -42,28 +43,35 @@ export const createUserProfile = async (
     bio,
     programId: programId?.toString(),
   });
+  
   try {
     if (!connection) throw new Error('No Solana connection');
     if (!signAndSendTransaction) throw new Error('No signAndSendTransaction');
     if (!owner) throw new Error('No owner');
+    
     // Create the transaction
     const transaction = new Transaction();
     console.log('[profileService] Transaction created');
-    // Add the create user profile instruction
+    
+    // Add the create user profile instruction, explicitly passing show_balance: false
     const ix = await createUserProfileInstruction({
+      feePayer: owner,
       owner,
       username,
       bio,
+      showBalance: false,
     }, {
       programId,
       connection,
     });
-    console.log('[profileService] Instruction created', ix);
+    
     transaction.add(ix);
     console.log('[profileService] Instruction added to transaction', transaction);
+    
     // Sign and send the transaction
     const signature = await signAndSendTransaction(transaction);
     console.log('[profileService] Profile created with signature:', signature);
+    
     // Return the new profile
     const now = Date.now();
     return {
@@ -77,54 +85,63 @@ export const createUserProfile = async (
       completedTutorials: [],
     };
   } catch (error) {
-    console.error('[profileService] Failed to create profile:', error, error?.stack);
+    console.error('[profileService] Failed to create profile:', error);
     throw error;
   }
 };
 
-// Get a user profile
-export const getUserProfile = async (owner: PublicKey): Promise<UserProfile | null> => {
-  const { connection } = useSolana();
+// Get user profile
+export const getUserProfile = async (
+  connection: Connection,
+  owner: PublicKey
+) => {
   const programId = getProgramId();
-  // Dynamically create provider for Anchor compatibility
-  const wallet = makeAnchorWallet(owner, () => { throw new Error('signAndSendTransaction not available'); });
-  const provider = new anchor.AnchorProvider(connection, wallet, { preflightCommitment: 'confirmed' });
-  // programClient.initializeClient(programId, provider); // This line is removed as per the new_code
+  const wallet = makeAnchorWallet(owner, () => Promise.resolve(''));
+  const provider = new anchor.AnchorProvider(connection, wallet as any, { preflightCommitment: 'confirmed' });
+  
+  // Always initialize the Anchor program client before building the instruction
+  initializeClient(programId, provider);
+  
+  console.log('[profileService] getUserProfile called', {
+    connection: !!connection,
+    owner: owner?.toString(),
+    programId: programId?.toString(),
+  });
   
   try {
-    // Find the PDA for the user profile
-    const [profilePda] = findUserProfilePda(owner, programId);
+    if (!connection) throw new Error('No Solana connection');
+    if (!owner) throw new Error('No owner');
     
-    // Fetch the profile data
-    const profileData = await fetchUserProfile(
-      profilePda,
-      { programId, connection }
-    );
+    const profile = await fetchUserProfile({
+      owner,
+    }, {
+      programId,
+      connection,
+    });
     
-    if (!profileData) {
-      return null;
-    }
+    console.log('[profileService] Profile fetched:', profile);
     
-    // Convert to our UserProfile type
+    // Transform the profile data to match the expected format
     return {
-      owner: new PublicKey(profileData.owner),
-      username: profileData.username,
-      bio: profileData.bio,
-      profileNft: profileData.profileNft ? new PublicKey(profileData.profileNft) : undefined,
-      showBalance: profileData.showBalance,
-      reputationScore: profileData.reputationScore,
-      joinDate: profileData.joinDate,
-      lastActive: profileData.lastActive,
-      completedTutorials: Array.from(profileData.completedTutorials),
+      owner: profile.owner,
+      username: profile.username,
+      bio: profile.bio,
+      showBalance: profile.showBalance,
+      reputationScore: profile.reputationScore?.toNumber() || 0,
+      joinDate: profile.joinDate?.toNumber() || Date.now(),
+      lastActive: profile.lastActive?.toNumber() || Date.now(),
+      completedTutorials: profile.completedTutorials || [],
     };
   } catch (error) {
-    console.error('Failed to get profile:', error);
-    return null;
+    console.error('[profileService] Failed to get profile:', error);
+    throw error;
   }
 };
 
 // Update a user profile
 export const updateUserProfile = async (
+  connection: Connection,
+  signAndSendTransaction: (tx: Transaction) => Promise<string>,
   owner: PublicKey,
   updates: {
     username?: string;
@@ -132,11 +149,12 @@ export const updateUserProfile = async (
     showBalance?: boolean;
   }
 ): Promise<void> => {
-  const { connection, signAndSendTransaction } = useSolana();
   const programId = getProgramId();
   const wallet = makeAnchorWallet(owner, signAndSendTransaction);
-  const provider = new anchor.AnchorProvider(connection, wallet, { preflightCommitment: 'confirmed' });
-  // programClient.initializeClient(programId, provider); // This line is removed as per the new_code
+  const provider = new anchor.AnchorProvider(connection, wallet as any, { preflightCommitment: 'confirmed' });
+  
+  // Initialize the Anchor program client
+  initializeClient(programId, provider);
   
   try {
     // Create the transaction
@@ -165,15 +183,18 @@ export const updateUserProfile = async (
 
 // Set profile NFT
 export const setProfileNft = async (
+  connection: Connection,
+  signAndSendTransaction: (tx: Transaction) => Promise<string>,
   owner: PublicKey,
   nftMint: PublicKey,
   nftTokenAccount: PublicKey
 ): Promise<void> => {
-  const { connection, signAndSendTransaction } = useSolana();
   const programId = getProgramId();
   const wallet = makeAnchorWallet(owner, signAndSendTransaction);
-  const provider = new anchor.AnchorProvider(connection, wallet, { preflightCommitment: 'confirmed' });
-  // programClient.initializeClient(programId, provider); // This line is removed as per the new_code
+  const provider = new anchor.AnchorProvider(connection, wallet as any, { preflightCommitment: 'confirmed' });
+  
+  // Initialize the Anchor program client
+  initializeClient(programId, provider);
   
   try {
     // Create the transaction

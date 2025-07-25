@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { PublicKey } from '@solana/web3.js';
+import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/contexts/AuthProvider';
 import { tipMessage } from '@/services/messageService';
-import { formatDistanceToNow } from 'date-fns';
+import { useSolana } from '@/contexts/SolanaProvider';
 import { theme } from '@/theme';
 
 interface MessageItemProps {
@@ -31,22 +32,18 @@ const MessageItem: React.FC<MessageItemProps> = ({
   senderProfilePic,
 }) => {
   const { user } = useAuth();
-  const [isTipping, setIsTipping] = useState(false);
+  const { connection, signAndSendTransaction } = useSolana();
   const [localTipAmount, setLocalTipAmount] = useState(tipAmount);
-  
-  const isCurrentUser = user?.publicKey.toString() === sender.toString();
-  
+  const [isTipping, setIsTipping] = useState(false);
+
+  const isCurrentUser = user?.publicKey.equals(sender);
+
   const handleTip = async () => {
-    if (!user) {
-      Alert.alert('Error', 'You must be logged in to tip messages');
+    if (!user || !connection || !signAndSendTransaction) {
+      Alert.alert('Error', 'Wallet not connected');
       return;
     }
-    
-    if (isCurrentUser) {
-      Alert.alert('Error', 'You cannot tip your own messages');
-      return;
-    }
-    
+
     try {
       setIsTipping(true);
       
@@ -54,6 +51,8 @@ const MessageItem: React.FC<MessageItemProps> = ({
       const tipAmount = 10000000;
       
       await tipMessage(
+        connection,
+        signAndSendTransaction,
         address,
         user.publicKey,
         sender,

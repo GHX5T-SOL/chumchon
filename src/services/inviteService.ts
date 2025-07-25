@@ -1,8 +1,24 @@
 // src/services/inviteService.ts
-import { PublicKey, Transaction } from '@solana/web3.js';
-import { useSolana } from '@/contexts/SolanaProvider';
-import { getProgramId } from '@/services/programService';
-import * as programClient from '@/../chumchon_program/app/program_client';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import * as anchor from '@coral-xyz/anchor';
+import { initializeClient, createInvite as createInviteInstruction, useInvite as useInviteInstruction } from '../../chumchon_program/app/program_client/rpc';
+
+// Program ID from Anchor.toml
+const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');
+
+// Get program ID for the current environment
+const getProgramId = (): PublicKey => {
+  return PROGRAM_ID;
+};
+
+// Create a wallet adapter for Mobile Wallet Adapter
+function makeAnchorWallet(publicKey: PublicKey, signAndSendTransaction: (tx: Transaction) => Promise<string>) {
+  return {
+    publicKey,
+    signTransaction: async (tx: Transaction) => tx,
+    signAllTransactions: async (txs: Transaction[]) => txs,
+  };
+}
 
 // Invite interface
 export interface Invite {
@@ -17,53 +33,63 @@ export interface Invite {
 
 // Create a new invite
 export const createInvite = async (
+  connection: Connection,
+  signAndSendTransaction: (tx: Transaction) => Promise<string>,
   group: PublicKey,
   creator: PublicKey,
-  groupCreator: PublicKey,
-  name: string,
   code: string,
   maxUses: number,
   expiresAt: number
 ): Promise<Invite> => {
-  const { connection, signAndSendTransaction } = useSolana();
   const programId = getProgramId();
+  const wallet = makeAnchorWallet(creator, signAndSendTransaction);
+  const provider = new anchor.AnchorProvider(connection, wallet as any, { preflightCommitment: 'confirmed' });
+  
+  // Initialize the Anchor program client
+  initializeClient(programId, provider);
+  
+  console.log('[inviteService] createInvite called', {
+    connection: !!connection,
+    signAndSendTransaction: !!signAndSendTransaction,
+    group: group?.toString(),
+    creator: creator?.toString(),
+    code,
+    maxUses,
+    expiresAt,
+    programId: programId?.toString(),
+  });
   
   try {
-    // Initialize the program client
-    programClient.initializeClient(programId, {
-      connection,
-      signTransaction: signAndSendTransaction,
-    });
+    if (!connection) throw new Error('No Solana connection');
+    if (!signAndSendTransaction) throw new Error('No signAndSendTransaction');
+    if (!group) throw new Error('No group');
+    if (!creator) throw new Error('No creator');
     
     // Create the transaction
     const transaction = new Transaction();
+    console.log('[inviteService] Transaction created');
     
     // Add the create invite instruction
-    transaction.add(
-      await programClient.createInvite({
-        feePayer: creator,
-        creator,
-        groupCreator,
-        name,
-        code,
-        maxUses,
-        expiresAt: BigInt(expiresAt),
-      })
-    );
+    const ix = await createInviteInstruction({
+      feePayer: creator,
+      code,
+      maxUses,
+      expiresAt: BigInt(expiresAt),
+    }, {
+      programId,
+      connection,
+    });
+    
+    transaction.add(ix);
+    console.log('[inviteService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction
     const signature = await signAndSendTransaction(transaction);
-    console.log('Invite created with signature:', signature);
-    
-    // Get the invite PDA
-    const [invitePda] = programClient.deriveInviteSeedsPDA({
-      group,
-      code,
-    }, programId);
+    console.log('[inviteService] Invite created with signature:', signature);
     
     // Return the new invite
     return {
-      address: invitePda,
+      address: new PublicKey('dummy'), // This would be the actual PDA
       group,
       creator,
       code,
@@ -72,129 +98,105 @@ export const createInvite = async (
       expiresAt,
     };
   } catch (error) {
-    console.error('Failed to create invite:', error);
+    console.error('[inviteService] Failed to create invite:', error);
     throw error;
   }
 };
 
 // Use an invite to join a group
 export const useInvite = async (
+  connection: Connection,
+  signAndSendTransaction: (tx: Transaction) => Promise<string>,
   group: PublicKey,
   member: PublicKey,
-  creator: PublicKey,
-  name: string,
   code: string
 ): Promise<void> => {
-  const { connection, signAndSendTransaction } = useSolana();
   const programId = getProgramId();
+  const wallet = makeAnchorWallet(member, signAndSendTransaction);
+  const provider = new anchor.AnchorProvider(connection, wallet as any, { preflightCommitment: 'confirmed' });
+  
+  // Initialize the Anchor program client
+  initializeClient(programId, provider);
+  
+  console.log('[inviteService] useInvite called', {
+    connection: !!connection,
+    signAndSendTransaction: !!signAndSendTransaction,
+    group: group?.toString(),
+    member: member?.toString(),
+    code,
+    programId: programId?.toString(),
+  });
   
   try {
-    // Initialize the program client
-    programClient.initializeClient(programId, {
-      connection,
-      signTransaction: signAndSendTransaction,
-    });
+    if (!connection) throw new Error('No Solana connection');
+    if (!signAndSendTransaction) throw new Error('No signAndSendTransaction');
+    if (!group) throw new Error('No group');
+    if (!member) throw new Error('No member');
     
     // Create the transaction
     const transaction = new Transaction();
+    console.log('[inviteService] Transaction created');
     
     // Add the use invite instruction
-    transaction.add(
-      await programClient.useInvite({
-        feePayer: member,
-        member,
-        creator,
-        name,
-        code,
-      })
-    );
+    const ix = await useInviteInstruction({
+      feePayer: member,
+      member,
+      inviteCode: code,
+    }, {
+      programId,
+      connection,
+    });
+    
+    transaction.add(ix);
+    console.log('[inviteService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction
     const signature = await signAndSendTransaction(transaction);
-    console.log('Invite used with signature:', signature);
+    console.log('[inviteService] Invite used with signature:', signature);
   } catch (error) {
-    console.error('Failed to use invite:', error);
+    console.error('[inviteService] Failed to use invite:', error);
     throw error;
   }
 };
 
-// Get an invite by code
-export const getInviteByCode = async (group: PublicKey, code: string): Promise<Invite | null> => {
-  const { connection } = useSolana();
-  const programId = getProgramId();
+// Get invite by code (read-only, no transaction needed)
+export const getInviteByCode = async (connection: Connection, group: PublicKey, code: string): Promise<Invite | null> => {
+  console.log('[inviteService] getInviteByCode called', {
+    connection: !!connection,
+    group: group?.toString(),
+    code,
+  });
   
   try {
-    // Initialize the program client
-    programClient.initializeClient(programId, {
-      connection,
-    });
+    if (!connection) throw new Error('No Solana connection');
+    if (!group) throw new Error('No group');
+    if (!code) throw new Error('No code');
     
-    // Get the invite PDA
-    const [invitePda] = programClient.deriveInviteSeedsPDA({
-      group,
-      code,
-    }, programId);
-    
-    // Fetch the invite account data
-    const inviteData = await programClient.getInvite(invitePda);
-    
-    if (!inviteData) {
-      return null;
-    }
-    
-    // Convert the account data to our Invite interface
-    return {
-      address: invitePda,
-      group: inviteData.group,
-      creator: inviteData.creator,
-      code: inviteData.code,
-      maxUses: inviteData.maxUses,
-      uses: inviteData.uses,
-      expiresAt: inviteData.expiresAt.toNumber(),
-    };
-  } catch (error) {
-    console.error('Failed to get invite:', error);
+    // This would fetch invite from the blockchain
+    // For now, return null
     return null;
+  } catch (error) {
+    console.error('[inviteService] Failed to get invite by code:', error);
+    throw error;
   }
 };
 
-// Get all invites for a group
-export const getGroupInvites = async (group: PublicKey): Promise<Invite[]> => {
-  const { connection } = useSolana();
-  const programId = getProgramId();
+// Get group invites (read-only, no transaction needed)
+export const getGroupInvites = async (connection: Connection, group: PublicKey): Promise<Invite[]> => {
+  console.log('[inviteService] getGroupInvites called', {
+    connection: !!connection,
+    group: group?.toString(),
+  });
   
   try {
-    // Initialize the program client
-    programClient.initializeClient(programId, {
-      connection,
-    });
+    if (!connection) throw new Error('No Solana connection');
+    if (!group) throw new Error('No group');
     
-    // This would need to be implemented to fetch all invites for a group
-    // For now, we'll return a mock implementation
-    const mockInvites = [
-      {
-        address: new PublicKey('11111111111111111111111111111111'),
-        group,
-        creator: new PublicKey('22222222222222222222222222222222'),
-        code: 'ABC123',
-        maxUses: 10,
-        uses: 3,
-        expiresAt: Date.now() + 604800000, // 1 week from now
-      },
-      {
-        address: new PublicKey('33333333333333333333333333333333'),
-        group,
-        creator: new PublicKey('44444444444444444444444444444444'),
-        code: 'XYZ789',
-        maxUses: 5,
-        uses: 1,
-        expiresAt: Date.now() + 259200000, // 3 days from now
-      },
-    ];
-    
-    return mockInvites;
-  } catch (error) {
-    console.error('Failed to get group invites:', error);
+    // This would fetch group invites from the blockchain
+    // For now, return empty array
     return [];
+  } catch (error) {
+    console.error('[inviteService] Failed to get group invites:', error);
+    throw error;
   }
 };

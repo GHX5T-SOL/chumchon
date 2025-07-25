@@ -22,6 +22,7 @@ import GroupHeader from '@/components/GroupHeader';
 import MessageItem from '@/components/MessageItem';
 import MessageInput from '@/components/MessageInput';
 import { format } from 'date-fns';
+import { useSolana } from '@/contexts/SolanaProvider';
 
 type GroupChatScreenRouteProp = RouteProp<MainStackParamList, 'GroupChat'>;
 type GroupChatScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
@@ -47,6 +48,7 @@ const GroupChatScreen = () => {
   } = route.params;
   
   const { user } = useAuth();
+  const { connection } = useSolana();
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,8 +60,8 @@ const GroupChatScreen = () => {
     const loadMessages = async () => {
       setLoading(true);
       try {
-        // In a real app, you would fetch messages from the blockchain
-        const groupMessages = await getGroupMessages(new PublicKey(groupAddress));
+        if (!connection) throw new Error('No Solana connection');
+        const groupMessages = await getGroupMessages(connection, new PublicKey(groupAddress));
         setMessages(groupMessages);
       } catch (error) {
         console.error('Failed to load messages:', error);
@@ -74,7 +76,7 @@ const GroupChatScreen = () => {
     // Set up polling for new messages
     const interval = setInterval(loadMessages, 10000);
     return () => clearInterval(interval);
-  }, [groupAddress]);
+  }, [groupAddress, connection]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -86,8 +88,8 @@ const GroupChatScreen = () => {
   // Handle message sent
   const handleMessageSent = async () => {
     try {
-      // Refresh messages
-      const groupMessages = await getGroupMessages(new PublicKey(groupAddress));
+      if (!connection) throw new Error('No Solana connection');
+      const groupMessages = await getGroupMessages(connection, new PublicKey(groupAddress));
       setMessages(groupMessages);
       
       // Scroll to bottom

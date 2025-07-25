@@ -18,6 +18,7 @@ import { theme } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
 import { Escrow, getEscrow, acceptEscrow, completeEscrow } from '@/services/escrowService';
 import { shortenAddress } from '@/services/programService';
+import { useSolana } from '@/contexts/SolanaProvider';
 
 type EscrowDetailScreenRouteProp = RouteProp<MainStackParamList, 'EscrowDetail'>;
 type EscrowDetailScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
@@ -39,6 +40,7 @@ const EscrowDetailScreen = () => {
   const navigation = useNavigation<EscrowDetailScreenNavigationProp>();
   const { escrowAddress } = route.params;
   const { user } = useAuth();
+  const { connection, signAndSendTransaction } = useSolana();
   
   const [escrow, setEscrow] = useState<Escrow | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,8 +51,9 @@ const EscrowDetailScreen = () => {
     const loadEscrow = async () => {
       setLoading(true);
       try {
+        if (!connection) throw new Error('No Solana connection');
         // In a real app, you would fetch the escrow from the blockchain
-        const escrowData = await getEscrow(new PublicKey(escrowAddress));
+        const escrowData = await getEscrow(connection, new PublicKey(escrowAddress));
         setEscrow(escrowData);
       } catch (error) {
         console.error('Failed to load escrow:', error);
@@ -61,7 +64,7 @@ const EscrowDetailScreen = () => {
     };
     
     loadEscrow();
-  }, [escrowAddress]);
+  }, [escrowAddress, connection]);
 
   // Get token name
   const getTokenName = (tokenAddress: string): string => {
@@ -127,16 +130,11 @@ const EscrowDetailScreen = () => {
 
   // Handle accept escrow
   const handleAcceptEscrow = async () => {
-    if (!escrow || !user) return;
+    if (!escrow || !user || !connection || !signAndSendTransaction) return;
     
     setProcessing(true);
     try {
-      await acceptEscrow(
-        escrow.address,
-        escrow.initiator,
-        user.publicKey,
-        escrow.createdAt
-      );
+      await acceptEscrow(connection, signAndSendTransaction, escrow.address, escrow.initiator, user.publicKey, escrow.createdAt);
       
       // Update local state
       setEscrow({
@@ -155,16 +153,11 @@ const EscrowDetailScreen = () => {
 
   // Handle complete escrow
   const handleCompleteEscrow = async () => {
-    if (!escrow || !user) return;
+    if (!escrow || !user || !connection || !signAndSendTransaction) return;
     
     setProcessing(true);
     try {
-      await completeEscrow(
-        escrow.address,
-        escrow.initiator,
-        escrow.counterparty,
-        escrow.createdAt
-      );
+      await completeEscrow(connection, signAndSendTransaction, escrow.address, escrow.initiator, escrow.counterparty, escrow.createdAt);
       
       // Update local state
       setEscrow({

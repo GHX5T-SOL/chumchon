@@ -15,8 +15,9 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { MainStackParamList } from '@/navigation/AppNavigator';
-import { theme } from '@/theme';
+import { theme, commonStyles } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
 import { 
   Tutorial, 
   TutorialStep, 
@@ -33,8 +34,9 @@ const { width } = Dimensions.get('window');
 const TutorialScreen = () => {
   const route = useRoute<TutorialScreenRouteProp>();
   const navigation = useNavigation<TutorialScreenNavigationProp>();
-  const { tutorialId } = route.params;
   const { user } = useAuth();
+  const { connection, signAndSendTransaction } = useSolana();
+  const { tutorialId } = route.params;
   
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,8 +58,8 @@ const TutorialScreen = () => {
           setTutorial(tutorialData);
           
           // Check if user has completed this tutorial
-          if (user) {
-            const isCompleted = await hasTutorialCompleted(user.publicKey, tutorialId);
+          if (user && connection) {
+            const isCompleted = await hasTutorialCompleted(connection, user.publicKey, tutorialId);
             setCompleted(isCompleted);
           }
         }
@@ -70,7 +72,7 @@ const TutorialScreen = () => {
     };
     
     loadTutorial();
-  }, [tutorialId, user]);
+  }, [tutorialId, user, connection]);
 
   // Handle next step
   const handleNextStep = () => {
@@ -95,14 +97,15 @@ const TutorialScreen = () => {
 
   // Handle complete tutorial
   const handleCompleteTutorial = async () => {
-    if (!tutorial || !user || completed || processing) return;
+    if (!tutorial || !user || !connection || !signAndSendTransaction || completed || processing) return;
     
     setProcessing(true);
     try {
       await completeTutorial(
+        connection,
+        signAndSendTransaction,
         user.publicKey,
-        tutorialId,
-        tutorial.rewardAmount
+        tutorialId
       );
       
       setCompleted(true);

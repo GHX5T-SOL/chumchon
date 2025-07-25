@@ -4,6 +4,7 @@ import { View, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Keybo
 import { PublicKey } from '@solana/web3.js';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
 import { sendMessage } from '@/services/messageService';
 import { theme } from '@/theme';
 
@@ -21,11 +22,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
   onMessageSent,
 }) => {
   const { user } = useAuth();
+  const { connection, signAndSendTransaction } = useSolana();
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   
   const handleSend = async () => {
-    if (!user || !message.trim()) {
+    if (!user || !message.trim() || !connection || !signAndSendTransaction) {
       return;
     }
     
@@ -33,16 +35,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
       setIsSending(true);
       Keyboard.dismiss();
       
-      // Generate a unique message ID (timestamp-based for simplicity)
-      const messageId = Date.now();
-      
       await sendMessage(
+        connection,
+        signAndSendTransaction,
         group,
         user.publicKey,
-        creator,
-        name,
-        message.trim(),
-        messageId
+        message.trim()
       );
       
       // Clear the input

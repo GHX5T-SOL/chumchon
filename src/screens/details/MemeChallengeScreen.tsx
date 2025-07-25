@@ -6,30 +6,34 @@ import {
   StyleSheet, 
   ScrollView, 
   TouchableOpacity, 
+  Image, 
+  TextInput, 
+  Modal, 
+  Alert, 
   ActivityIndicator,
-  Alert,
-  Image,
-  TextInput,
-  Modal
+  Dimensions 
 } from 'react-native';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
 import { Ionicons } from '@expo/vector-icons';
 import { MainStackParamList } from '@/navigation/AppNavigator';
-import { theme, cyberpunkStyles } from '@/theme';
+import { theme, commonStyles } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
 import { 
   MemeChallenge, 
   MemeSubmission, 
-  getMemeChallenges, 
-  getMemeSubmissions, 
+  getMemeChallenges,
+  getMemeSubmissions,
   submitMeme, 
   voteForMeme, 
   endMemeChallenge 
 } from '@/services/memeService';
 import { shortenAddress } from '@/services/programService';
 import MemeSubmissionItem from '@/components/MemeSubmissionItem';
+
+const { width } = Dimensions.get('window');
 
 type MemeChallengeScreenRouteProp = RouteProp<MainStackParamList, 'MemeChallenge'>;
 type MemeChallengeScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
@@ -45,67 +49,59 @@ const MOCK_USER_PROFILES: Record<string, { username: string }> = {
 const MemeChallengeScreen = () => {
   const route = useRoute<MemeChallengeScreenRouteProp>();
   const navigation = useNavigation<MemeChallengeScreenNavigationProp>();
-  const { challengeAddress } = route.params;
   const { user } = useAuth();
+  const { connection, signAndSendTransaction } = useSolana();
+  const { challengeId } = route.params;
   
   const [challenge, setChallenge] = useState<MemeChallenge | null>(null);
   const [submissions, setSubmissions] = useState<MemeSubmission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [submissionsLoading, setSubmissionsLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
+  const [votedSubmissions, setVotedSubmissions] = useState<string[]>([]);
   const [submitModalVisible, setSubmitModalVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
-  const [votedSubmissions, setVotedSubmissions] = useState<string[]>([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Load challenge and submissions
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true);
       try {
-        // In a real app, you would fetch from the blockchain
-        const challenges = await getMemeChallenges();
-        const challenge = challenges.find(c => c.address.toString() === challengeAddress);
+        if (!connection) return;
         
-        if (challenge) {
-          setChallenge(challenge);
-          
-          // Load submissions
-          setSubmissionsLoading(true);
-          const subs = await getMemeSubmissions(challenge.address);
-          setSubmissions(subs);
-          setSubmissionsLoading(false);
+        // Load challenge and submissions
+        const challenges = await getMemeChallenges(connection);
+        const foundChallenge = challenges.find(c => c.address.toString() === challengeId);
+        setChallenge(foundChallenge || null);
+        
+        if (foundChallenge) {
+          const challengeSubmissions = await getMemeSubmissions(connection, foundChallenge.address);
+          setSubmissions(challengeSubmissions);
         }
       } catch (error) {
-        console.error('Failed to load challenge:', error);
-        Alert.alert('Error', 'Failed to load challenge details. Please try again.');
+        console.error('Failed to load meme challenge data:', error);
       } finally {
         setLoading(false);
       }
     };
-    
-    loadData();
-  }, [challengeAddress]);
 
-  // Check if user has already submitted
+    loadData();
+  }, [challengeId, connection]);
+
   const hasUserSubmitted = (): boolean => {
-    if (!user) return false;
+    if (!user || !submissions.length) return false;
     return submissions.some(sub => sub.submitter.toString() === user.publicKey.toString());
   };
 
-  // Check if user is creator
   const isCreator = (): boolean => {
-    if (!challenge || !user) return false;
+    if (!user || !challenge) return false;
     return challenge.creator.toString() === user.publicKey.toString();
   };
 
-  // Check if challenge is active
   const isActive = (): boolean => {
     if (!challenge) return false;
-    const now = Date.now();
-    return now >= challenge.startTime && now <= challenge.endTime;
+    return Date.now() >= challenge.startTime && Date.now() <= challenge.endTime;
   };
 
-  // Check if challenge is completed
   const isCompleted = (): boolean => {
     if (!challenge) return false;
     return Date.now() > challenge.endTime;
@@ -113,19 +109,21 @@ const MemeChallengeScreen = () => {
 
   // Handle submit meme
   const handleSubmitMeme = async () => {
-    if (!challenge || !user || !imageUrl.trim()) {
-      Alert.alert('Error', 'Please enter a valid image URL');
+    if (!challenge || !user || !connection || !signAndSendTransaction || !imageUrl.trim() || !title.trim() || !description.trim()) {
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
     
     setProcessing(true);
     try {
       await submitMeme(
+        connection,
+        signAndSendTransaction,
         challenge.address,
         user.publicKey,
-        challenge.creator,
-        challenge.startTime,
-        imageUrl.trim()
+        imageUrl.trim(),
+        title.trim(),
+        description.trim()
       );
       
       // Update submissions
@@ -141,6 +139,8 @@ const MemeChallengeScreen = () => {
       setSubmissions([...submissions, newSubmission]);
       setSubmitModalVisible(false);
       setImageUrl('');
+      setTitle('');
+      setDescription('');
       
       Alert.alert('Success', 'Your meme has been submitted!');
     } catch (error) {
@@ -153,7 +153,7 @@ const MemeChallengeScreen = () => {
 
   // Handle vote for meme
   const handleVoteForMeme = async (submission: MemeSubmission) => {
-    if (!user) {
+    if (!user || !connection || !signAndSendTransaction) {
       Alert.alert('Error', 'You must be logged in to vote');
       return;
     }
@@ -166,6 +166,8 @@ const MemeChallengeScreen = () => {
     setProcessing(true);
     try {
       await voteForMeme(
+        connection,
+        signAndSendTransaction,
         submission.challenge,
         submission.submitter,
         user.publicKey
@@ -196,7 +198,7 @@ const MemeChallengeScreen = () => {
 
   // Handle end challenge
   const handleEndChallenge = async () => {
-    if (!challenge || !user || !isCreator()) return;
+    if (!challenge || !user || !connection || !signAndSendTransaction || !isCreator()) return;
     
     // Find the submission with the most votes
     const sortedSubmissions = [...submissions].sort((a, b) => b.votes - a.votes);
@@ -207,39 +209,24 @@ const MemeChallengeScreen = () => {
       return;
     }
     
-    Alert.alert(
-      'End Challenge',
-      `Are you sure you want to end this challenge? The winner will receive ${challenge.rewardAmount / 1000000000} SOL.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'End Challenge',
-          onPress: async () => {
-            setProcessing(true);
-            try {
-              await endMemeChallenge(
-                challenge.creator,
-                winner.submitter,
-                challenge.startTime
-              );
-              
-              // Update local state
-              setChallenge({
-                ...challenge,
-                winner: winner.submitter,
-              });
-              
-              Alert.alert('Success', 'Challenge ended successfully!');
-            } catch (error) {
-              console.error('Failed to end challenge:', error);
-              Alert.alert('Error', 'Failed to end challenge. Please try again.');
-            } finally {
-              setProcessing(false);
-            }
-          }
-        }
-      ]
-    );
+    setProcessing(true);
+    try {
+      await endMemeChallenge(
+        connection,
+        signAndSendTransaction,
+        challenge.creator,
+        winner.submitter,
+        challenge.startTime
+      );
+      
+      Alert.alert('Success', 'Challenge ended successfully!');
+      navigation.goBack();
+    } catch (error) {
+      console.error('Failed to end challenge:', error);
+      Alert.alert('Error', 'Failed to end challenge. Please try again.');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   // Render submit modal
@@ -272,14 +259,38 @@ const MemeChallengeScreen = () => {
             autoCapitalize="none"
             autoCorrect={false}
           />
+
+          <Text style={styles.modalLabel}>Title</Text>
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Enter meme title"
+            placeholderTextColor={theme.colors.textSecondary}
+            value={title}
+            onChangeText={setTitle}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+
+          <Text style={styles.modalLabel}>Description</Text>
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Enter meme description"
+            placeholderTextColor={theme.colors.textSecondary}
+            value={description}
+            onChangeText={setDescription}
+            autoCapitalize="none"
+            autoCorrect={false}
+            multiline
+            numberOfLines={4}
+          />
           
           <TouchableOpacity
             style={[
               styles.modalButton,
-              (!imageUrl.trim() || processing) && styles.disabledButton
+              (!imageUrl.trim() || !title.trim() || !description.trim() || processing) && styles.disabledButton
             ]}
             onPress={handleSubmitMeme}
-            disabled={!imageUrl.trim() || processing}
+            disabled={!imageUrl.trim() || !title.trim() || !description.trim() || processing}
           >
             {processing ? (
               <ActivityIndicator size="small" color={theme.colors.white} />
@@ -380,12 +391,7 @@ const MemeChallengeScreen = () => {
             <Text style={styles.submissionsCount}>{submissions.length} entries</Text>
           </View>
           
-          {submissionsLoading ? (
-            <View style={styles.submissionsLoading}>
-              <ActivityIndicator size="small" color={theme.colors.accent} />
-              <Text style={styles.loadingText}>Loading submissions...</Text>
-            </View>
-          ) : submissions.length === 0 ? (
+          {submissions.length === 0 ? (
             <View style={styles.noSubmissions}>
               <Ionicons name="images-outline" size={48} color={theme.colors.textSecondary} />
               <Text style={styles.noSubmissionsText}>No submissions yet</Text>
@@ -448,8 +454,8 @@ const MemeChallengeScreen = () => {
       </View>
       
       {renderSubmitModal()}
-      <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: challengeAddress })}>
-        <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Tip Meme Creator</Text>
+      <TouchableOpacity style={[styles.button, commonStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: challengeId })}>
+        <Text style={[styles.buttonText, commonStyles.neonGlow]}>Tip Meme Creator</Text>
       </TouchableOpacity>
     </View>
   );

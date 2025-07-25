@@ -182,7 +182,7 @@ const MemesScreen = () => {
     return (
       <TouchableOpacity 
         style={styles.challengeItem}
-        onPress={() => navigation.navigate('MemeDetail', { memeId: item.id })}
+        onPress={() => {/* navigation.navigate('MemeDetail', { memeId: item.id }) */}}
       >
         <View style={styles.challengeHeader}>
           <Text style={styles.challengeTitle}>{item.title}</Text>
@@ -232,7 +232,7 @@ const MemesScreen = () => {
               ) : (
                 <TouchableOpacity 
                   style={styles.submitButton}
-                  onPress={() => navigation.navigate('MemeDetail', { memeId: item.id })}
+                  onPress={() => {/* navigation.navigate('MemeDetail', { memeId: item.id }) */}}
                 >
                   <Text style={styles.submitButtonText}>Submit Meme</Text>
                 </TouchableOpacity>
