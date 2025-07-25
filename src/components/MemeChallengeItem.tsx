@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { PublicKey } from '@solana/web3.js';
 import { formatDistanceToNow } from 'date-fns';
-import { theme } from '../theme';
+import { theme } from '@/theme';
 
 interface MemeChallengeItemProps {
   address: PublicKey;

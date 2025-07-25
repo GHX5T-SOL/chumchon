@@ -3,38 +3,38 @@ import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useAuth } from '../contexts/AuthProvider';
-import { theme } from '../theme';
+import { useAuth } from '@/contexts/AuthProvider';
+import { theme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { WalletConnectButton } from '../../components/solana/WalletConnectButton';
+import { WalletConnectButton } from '@/components/solana/WalletConnectButton';
 
 // Auth screens
-import WelcomeScreen from '../screens/auth/WelcomeScreen';
-import LoginScreen from '../screens/auth/LoginScreen';
-import CreateProfileScreen from '../screens/auth/CreateProfileScreen';
+import WelcomeScreen from '@/screens/auth/WelcomeScreen';
+import LoginScreen from '@/screens/auth/LoginScreen';
+import CreateProfileScreen from '@/screens/auth/CreateProfileScreen';
 
 // Main screens
-import HomeScreen from '../screens/main/HomeScreen';
-import GroupsScreen from '../screens/main/GroupsScreen';
-import ProfileScreen from '../screens/main/ProfileScreen';
-import MemesScreen from '../screens/main/MemesScreen';
-import EscrowScreen from '../screens/main/EscrowScreen';
-import ChannelsScreen from '../screens/main/ChannelsScreen';
-import SettingsScreen from '../screens/main/SettingsScreen';
-import AchievementsScreen from '../screens/main/AchievementsScreen';
-import ReputationScreen from '../screens/main/ReputationScreen';
-import NFTProfilePickerScreen from '../screens/main/NFTProfilePickerScreen';
+import HomeScreen from '@/screens/main/HomeScreen';
+import GroupsScreen from '@/screens/main/GroupsScreen';
+import ProfileScreen from '@/screens/main/ProfileScreen';
+import MemesScreen from '@/screens/main/MemesScreen';
+import EscrowScreen from '@/screens/main/EscrowScreen';
+import ChannelsScreen from '@/screens/main/ChannelsScreen';
+import SettingsScreen from '@/screens/main/SettingsScreen';
+import AchievementsScreen from '@/screens/main/AchievementsScreen';
+import ReputationScreen from '@/screens/main/ReputationScreen';
+import NFTProfilePickerScreen from '@/screens/main/NFTProfilePickerScreen';
 
 // Detail screens
-import GroupChatScreen from '../screens/details/GroupChatScreen';
-import EscrowDetailScreen from '../screens/details/EscrowDetailScreen';
-import MemeChallengeScreen from '../screens/details/MemeChallengeScreen';
-import TutorialScreen from '../screens/details/TutorialScreen';
-import ChannelDetailScreen from '../screens/details/ChannelDetailScreen';
-import InviteScreen from '../screens/details/InviteScreen';
-import TipScreen from '../screens/details/TipScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
-import OnboardingScreen from '../screens/auth/OnboardingScreen';
+import GroupChatScreen from '@/screens/details/GroupChatScreen';
+import EscrowDetailScreen from '@/screens/details/EscrowDetailScreen';
+import MemeChallengeScreen from '@/screens/details/MemeChallengeScreen';
+import TutorialScreen from '@/screens/details/TutorialScreen';
+import ChannelDetailScreen from '@/screens/details/ChannelDetailScreen';
+import InviteScreen from '@/screens/details/InviteScreen';
+import TipScreen from '@/screens/details/TipScreen';
+import NotFoundScreen from '@/screens/NotFoundScreen';
+import OnboardingScreen from '@/screens/auth/OnboardingScreen';
 
 // Define the stack navigator types
 export type AuthStackParamList = {

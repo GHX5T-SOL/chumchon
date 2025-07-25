@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { cyberpunkStyles, theme } from '../../theme';
+import { cyberpunkStyles, theme } from '@/theme';
 
 const NFTProfilePickerScreen = () => (
   <View style={[{ flex: 1, backgroundColor: theme.colors.background }, cyberpunkStyles.animePanel]}>

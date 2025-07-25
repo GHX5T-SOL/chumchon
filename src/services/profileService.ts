@@ -1,8 +1,8 @@
 // src/services/profileService.ts
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { useSolana } from '../contexts/SolanaProvider';
-import { UserProfile } from '../contexts/AuthProvider';
-import { getProgramId } from './programService';
+import { useSolana } from '@/contexts/SolanaProvider';
+import { UserProfile } from '@/contexts/AuthProvider';
+import { getProgramId } from '@/services/programService';
 
 // Import the program client
 import { createUserProfile as createUserProfileInstruction, getUserProfile as fetchUserProfile } from '../../chumchon_program/app/program_client/rpc';

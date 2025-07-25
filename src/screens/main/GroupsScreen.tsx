@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme, commonStyles, cyberpunkStyles } from '../../theme';
-import { getUserGroups, Group } from '../../services/groupService';
-import { useSolana } from '../../contexts/SolanaProvider';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme, commonStyles, cyberpunkStyles } from '@/theme';
+import { getUserGroups, Group } from '@/services/groupService';
+import { useSolana } from '@/contexts/SolanaProvider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type GroupsScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;

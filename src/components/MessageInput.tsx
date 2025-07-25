@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
 import { PublicKey } from '@solana/web3.js';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../contexts/AuthProvider';
-import { sendMessage } from '../services/messageService';
-import { theme } from '../theme';
+import { useAuth } from '@/contexts/AuthProvider';
+import { sendMessage } from '@/services/messageService';
+import { theme } from '@/theme';
 
 interface MessageInputProps {
   group: PublicKey;

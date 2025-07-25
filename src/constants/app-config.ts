@@ -1,6 +1,6 @@
 import { clusterApiUrl } from '@solana/web3.js'
-import { Cluster } from '../components/cluster/cluster'
-import { ClusterNetwork } from '../components/cluster/cluster-network'
+import { Cluster } from '@/components/cluster/cluster'
+import { ClusterNetwork } from '@/components/cluster/cluster-network'
 
 export class AppConfig {
   static name = 'chumchon_mobile'

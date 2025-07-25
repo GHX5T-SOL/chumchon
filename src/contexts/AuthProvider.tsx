@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { PublicKey } from '@solana/web3.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSolana } from './SolanaProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
 
 // Define the user profile type
 export interface UserProfile {
@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     const loadProfileService = async () => {
       try {
-        const module = await import('../services/profileService');
+        const module = await import('@/services/profileService');
         if (isMounted) {
           setProfileService(module);
         }

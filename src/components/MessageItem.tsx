@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { PublicKey } from '@solana/web3.js';
-import { useAuth } from '../contexts/AuthProvider';
-import { tipMessage } from '../services/messageService';
+import { useAuth } from '@/contexts/AuthProvider';
+import { tipMessage } from '@/services/messageService';
 import { formatDistanceToNow } from 'date-fns';
-import { theme } from '../theme';
+import { theme } from '@/theme';
 
 interface MessageItemProps {
   address: PublicKey;

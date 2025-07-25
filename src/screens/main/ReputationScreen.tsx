@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { cyberpunkStyles, theme } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
-import { getUserProfile } from '../../services/profileService';
-import { useSolana } from '../../contexts/SolanaProvider';
+import { cyberpunkStyles, theme } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
+import { getUserProfile } from '@/services/profileService';
+import { useSolana } from '@/contexts/SolanaProvider';
 
 // Placeholder for reputation milestones
 const REPUTATION_MILESTONES = [

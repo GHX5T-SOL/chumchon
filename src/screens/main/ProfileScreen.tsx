@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme, commonStyles, cyberpunkStyles } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
-import { useSolana } from '../../contexts/SolanaProvider';
-import { shortenAddress } from '../../services/programService';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme, commonStyles, cyberpunkStyles } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
+import { shortenAddress } from '@/services/programService';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;

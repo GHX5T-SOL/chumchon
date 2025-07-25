@@ -1,6 +1,6 @@
 // src/services/programService.ts
 import { Connection, PublicKey, Commitment } from '@solana/web3.js';
-import { PROGRAM_ID } from './programId';
+import { PROGRAM_ID } from '@/services/programId';
 
 // Environment variables (these will be replaced at build time or loaded from .env in development)
 const RPC_URL = 'https://api.devnet.solana.com';

@@ -3,8 +3,8 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-import { AuthStackParamList } from '../../navigation/AppNavigator';
-import { theme, commonStyles, cyberpunkStyles } from '../../theme';
+import { AuthStackParamList } from '@/navigation/AppNavigator';
+import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 // Type the navigation prop for correct route names
@@ -18,7 +18,7 @@ const WelcomeScreen = () => {
     <View style={{ flex: 1, backgroundColor: theme.colors.background, justifyContent: 'center', alignItems: 'center' }}>
       <View style={styles.logoContainer}>
         <Image
-          source={require('../../../assets/images/logo.png')}
+          source={require('@/assets/images/logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />

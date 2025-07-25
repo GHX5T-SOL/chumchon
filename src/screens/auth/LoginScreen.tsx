@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-import { AuthStackParamList } from '../../navigation/AppNavigator';
-import { theme, commonStyles } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
-import { useSolana } from '../../contexts/SolanaProvider';
+import { AuthStackParamList } from '@/navigation/AppNavigator';
+import { theme, commonStyles } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;

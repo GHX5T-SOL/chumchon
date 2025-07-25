@@ -13,11 +13,11 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
 import { Ionicons } from '@expo/vector-icons';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
-import { Escrow, getEscrow, acceptEscrow, completeEscrow } from '../../services/escrowService';
-import { shortenAddress } from '../../services/programService';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
+import { Escrow, getEscrow, acceptEscrow, completeEscrow } from '@/services/escrowService';
+import { shortenAddress } from '@/services/programService';
 
 type EscrowDetailScreenRouteProp = RouteProp<MainStackParamList, 'EscrowDetail'>;
 type EscrowDetailScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;

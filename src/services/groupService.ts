@@ -1,7 +1,8 @@
 // src/services/groupService.ts
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { useSolana } from '../contexts/SolanaProvider';
-import { getProgramId } from './programService';
+import { useSolana } from '@/contexts/SolanaProvider';
+import { getProgramId } from '@/services/programService';
+import * as programClient from '@/../chumchon_program/app/program_client';
 
 // Group interface
 export interface Group {

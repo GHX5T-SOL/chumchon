@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme, commonStyles, cyberpunkStyles } from '../../theme';
-import { useSolana } from '../../contexts/SolanaProvider';
-import { getUserEscrows, Escrow, EscrowStatus } from '../../services/escrowService';
-import { shortenAddress } from '../../services/programService';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme, commonStyles, cyberpunkStyles } from '@/theme';
+import { useSolana } from '@/contexts/SolanaProvider';
+import { getUserEscrows, Escrow, EscrowStatus } from '@/services/escrowService';
+import { shortenAddress } from '@/services/programService';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type EscrowScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { cyberpunkStyles, theme } from '../../theme';
+import { cyberpunkStyles, theme } from '@/theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getUserProfile } from '../../services/profileService';
-import { useSolana } from '../../contexts/SolanaProvider';
+import { getUserProfile } from '@/services/profileService';
+import { useSolana } from '@/contexts/SolanaProvider';
 
 // Placeholder achievements
 const ACHIEVEMENTS = [

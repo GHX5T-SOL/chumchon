@@ -1,8 +1,8 @@
 // src/services/memeService.ts
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { useSolana } from '../contexts/SolanaProvider';
-import { getProgramId } from './programService';
-import * as programClient from '../../chumchon_program/app/program_client';
+import { useSolana } from '@/contexts/SolanaProvider';
+import { getProgramId } from '@/services/programService';
+import * as programClient from '@/../chumchon_program/app/program_client';
 
 // MemeChallenge interface
 export interface MemeChallenge {

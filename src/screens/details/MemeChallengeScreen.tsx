@@ -16,9 +16,9 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
 import { Ionicons } from '@expo/vector-icons';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme, cyberpunkStyles } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme, cyberpunkStyles } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
 import { 
   MemeChallenge, 
   MemeSubmission, 
@@ -27,9 +27,9 @@ import {
   submitMeme, 
   voteForMeme, 
   endMemeChallenge 
-} from '../../services/memeService';
-import { shortenAddress } from '../../services/programService';
-import MemeSubmissionItem from '../../components/MemeSubmissionItem';
+} from '@/services/memeService';
+import { shortenAddress } from '@/services/programService';
+import MemeSubmissionItem from '@/components/MemeSubmissionItem';
 
 type MemeChallengeScreenRouteProp = RouteProp<MainStackParamList, 'MemeChallenge'>;
 type MemeChallengeScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;

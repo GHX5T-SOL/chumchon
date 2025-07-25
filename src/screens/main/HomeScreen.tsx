@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme, commonStyles } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme, commonStyles } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Mock data for the home screen

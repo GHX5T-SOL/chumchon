@@ -8,7 +8,7 @@ import {
   ReauthorizeAPI,
 } from '@solana-mobile/mobile-wallet-adapter-protocol';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getNetwork } from '../services/programService';
+import { getNetwork } from '@/services/programService';
 
 // Storage keys
 const WALLET_AUTH_KEY = 'chumchon_wallet_auth';
@@ -70,7 +70,7 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
   useEffect(() => {
     // Use a timeout to defer connection initialization
     const timer = setTimeout(() => {
-      import('../services/programService').then(({ getConnection }) => {
+      import('@/services/programService').then(({ getConnection }) => {
         setConnection(getConnection());
       });
     }, 100);

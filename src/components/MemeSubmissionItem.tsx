@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { PublicKey } from '@solana/web3.js';
 import { formatDistanceToNow } from 'date-fns';
-import { theme } from '../theme';
+import { theme } from '@/theme';
 
 interface MemeSubmissionItemProps {
   address: PublicKey;

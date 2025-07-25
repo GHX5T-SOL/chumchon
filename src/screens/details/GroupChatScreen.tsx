@@ -14,13 +14,13 @@ import {
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme, cyberpunkStyles } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
-import { Message, getGroupMessages } from '../../services/messageService';
-import GroupHeader from '../../components/GroupHeader';
-import MessageItem from '../../components/MessageItem';
-import MessageInput from '../../components/MessageInput';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme, cyberpunkStyles } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
+import { Message, getGroupMessages } from '@/services/messageService';
+import GroupHeader from '@/components/GroupHeader';
+import MessageItem from '@/components/MessageItem';
+import MessageInput from '@/components/MessageInput';
 import { format } from 'date-fns';
 
 type GroupChatScreenRouteProp = RouteProp<MainStackParamList, 'GroupChat'>;

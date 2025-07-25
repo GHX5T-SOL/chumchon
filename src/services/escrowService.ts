@@ -1,7 +1,7 @@
 // src/services/escrowService.ts
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { useSolana } from '../contexts/SolanaProvider';
-import { getProgramId } from './programService';
+import { useSolana } from '@/contexts/SolanaProvider';
+import { getProgramId } from '@/services/programService';
 
 // Escrow status enum
 export enum EscrowStatus {
