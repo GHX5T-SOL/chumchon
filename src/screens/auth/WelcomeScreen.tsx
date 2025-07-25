@@ -1,11 +1,13 @@
 // src/screens/auth/WelcomeScreen.tsx
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
 
 // Type the navigation prop for correct route names
 // (If you get a type error, make sure AuthStackParamList is correct)
@@ -13,6 +15,13 @@ type WelcomeScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList,
 
 const WelcomeScreen = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
+  const { login, isLoading, userProfile } = useAuth();
+  const { connected } = useSolana();
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  const handleLogin = () => {
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background, justifyContent: 'center', alignItems: 'center' }}>
@@ -36,12 +45,19 @@ const WelcomeScreen = () => {
         <Text style={styles.featureListItem}>🎓  Educational Rewards: Complete tutorials to earn SOL or token rewards</Text>
       </View>
 
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer, { marginBottom: 64 }]}>
+        <TouchableOpacity
+          style={[styles.button, cyberpunkStyles.neonBorder, { marginBottom: 12 }]}
+          onPress={handleLogin}
+          disabled={isLoading}
+        >
+          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Login</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, cyberpunkStyles.neonBorder]}
           onPress={() => navigation.navigate('CreateProfile')}
         >
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Start Onboarding</Text>
+          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -76,8 +92,8 @@ const styles = StyleSheet.create({
     marginTop: 60,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 160,
+    height: 160,
     marginBottom: 16,
   },
   title: {
@@ -115,7 +131,7 @@ const styles = StyleSheet.create({
     color: theme.colors.accent, // changed from theme.colors.muted
   },
   buttonContainer: {
-    marginBottom: 32,
+    marginBottom: 64,
   },
   button: {
     marginTop: theme.spacing.xl,

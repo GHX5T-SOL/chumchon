@@ -5,11 +5,12 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { theme, commonStyles } from '@/theme';
 import { shortenAddress } from '@/services/programService';
-import { WalletConnectButton } from '@/components/solana/WalletConnectButton';
+import { useNavigation } from '@react-navigation/native';
 
 const CreateProfileScreen = () => {
   const { createProfile, isLoading } = useAuth();
   const { publicKey } = useSolana();
+  const navigation = useNavigation();
   
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
@@ -47,15 +48,19 @@ const CreateProfileScreen = () => {
 
   // Handle create profile
   const handleCreateProfile = async () => {
+    console.log('[CreateProfile] Button pressed');
     if (!validateForm()) {
+      console.log('[CreateProfile] Validation failed', { username, bio, usernameError, bioError });
       return;
     }
-    
+    console.log('[CreateProfile] Validation passed', { username, bio });
     try {
+      console.log('[CreateProfile] Calling createProfile...');
       await createProfile(username, bio);
-      Alert.alert('Success', 'Your profile has been created!');
+      console.log('[CreateProfile] createProfile success');
+      // Do not manually navigate; let the root navigator handle the switch
     } catch (error) {
-      console.error('Failed to create profile:', error);
+      console.error('[CreateProfile] Failed to create profile:', error);
       Alert.alert('Error', 'Failed to create profile. Please try again.');
     }
   };
@@ -65,7 +70,6 @@ const CreateProfileScreen = () => {
       {/* Top bar with persistent wallet connect button */}
       <View style={styles.topBar}>
         <View style={{ flex: 1 }} />
-        <WalletConnectButton />
       </View>
       <View style={styles.header}>
         <Text style={styles.title}>Create Your Profile</Text>
@@ -74,14 +78,9 @@ const CreateProfileScreen = () => {
         </Text>
       </View>
 
-      <View style={styles.walletInfo}>
-        <Text style={styles.walletLabel}>Connected Wallet</Text>
-        <Text style={styles.walletAddress}>
-          {publicKey ? shortenAddress(publicKey.toBase58(), 6) : 'Not connected'}
-        </Text>
-      </View>
+      {/* Removed walletInfo box */}
 
-      <View style={styles.form}>
+      <View style={styles.formCentered}> {/* New style for centering */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Username</Text>
           <TextInput
@@ -111,8 +110,11 @@ const CreateProfileScreen = () => {
           <Text style={styles.charCount}>{bio.length}/256</Text>
         </View>
 
+      </View>
+
+      <View style={{ width: '100%', alignItems: 'center', marginTop: 24, marginBottom: 16 }}>
         <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
+          style={[styles.button, styles.primaryButton, { width: '100%' }]}
           onPress={handleCreateProfile}
           disabled={isLoading}
         >
@@ -139,9 +141,12 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
+    flexGrow: 1,
+    justifyContent: 'space-between',
   },
   header: {
-    marginBottom: 32,
+    marginBottom: 12,
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
@@ -153,6 +158,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.colors.accent,
     lineHeight: 24,
+    textAlign: 'center',
   },
   walletInfo: {
     backgroundColor: theme.colors.surface,
@@ -175,8 +181,15 @@ const styles = StyleSheet.create({
   form: {
     marginBottom: 32,
   },
+  formCentered: {
+    marginBottom: 0,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
   inputContainer: {
     marginBottom: 24,
+    width: '100%',
   },
   label: {
     fontSize: 16,
@@ -187,11 +200,13 @@ const styles = StyleSheet.create({
   input: {
     ...commonStyles.input,
     height: 50,
+    width: '100%',
   },
   bioInput: {
     height: 120,
     textAlignVertical: 'top',
     paddingTop: 12,
+    width: '100%',
   },
   inputError: {
     borderColor: theme.colors.error,
@@ -206,6 +221,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'right',
     marginTop: 4,
+    alignSelf: 'flex-end',
   },
   button: {
     ...commonStyles.button,

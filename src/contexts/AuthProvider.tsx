@@ -3,6 +3,16 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { PublicKey } from '@solana/web3.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSolana } from '@/contexts/SolanaProvider';
+import * as profileService from '@/services/profileService';
+console.log('[AuthProvider] File loaded');
+console.log('[AuthProvider] profileService import:', profileService);
+
+console.log('[AuthProvider] Imported profileService (relative path):', profileService);
+console.log('[AuthProvider] profileService:', profileService);
+console.log('[AuthProvider] profileService.createUserProfile:', profileService.createUserProfile);
+if (typeof profileService.createUserProfile !== 'function') {
+  throw new Error('profileService.createUserProfile is not a function');
+}
 
 // Define the user profile type
 export interface UserProfile {
@@ -50,95 +60,80 @@ interface AuthProviderProps {
 const USER_PROFILE_KEY = 'chumchon_user_profile';
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { connected, publicKey, authorizeSession, disconnect } = useSolana();
+  const { connected, publicKey, authorizeSession, disconnect, connection, signAndSendTransaction } = useSolana();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false); // Changed from true to false
   const [profileService, setProfileService] = useState<any>(null);
-
-  // Dynamically import the profile service to prevent blocking the main thread
-  useEffect(() => {
-    let isMounted = true;
-    
-    const loadProfileService = async () => {
-      try {
-        const module = await import('@/services/profileService');
-        if (isMounted) {
-          setProfileService(module);
-        }
-      } catch (error) {
-        console.error('Failed to load profile service:', error);
-      }
-    };
-    
-    // Defer loading the profile service
-    const timer = setTimeout(loadProfileService, 500);
-    
-    return () => {
-      isMounted = false;
-      clearTimeout(timer);
-    };
-  }, []);
 
   // Load saved profile on startup and when wallet connects - with debounce
   useEffect(() => {
     let isMounted = true;
     
     const loadProfile = async () => {
-      if (!connected || !publicKey || !profileService) {
+      console.log('[AuthProvider][loadProfile] called', { connected, publicKey, profileService: !!profileService, getUserProfile: typeof profileService.getUserProfile });
+      if (!connected || !publicKey || !profileService.getUserProfile) {
         if (isMounted) {
           setUserProfile(null);
           setIsAuthenticated(false);
           setIsLoading(false);
+          console.log('[AuthProvider][loadProfile] Not connected or missing publicKey/profileService');
         }
         return;
       }
-      
       setIsLoading(true);
-      
       try {
-        // Try to fetch profile from blockchain
         const profile = await profileService.getUserProfile(publicKey);
-        
+        console.log('[AuthProvider][loadProfile] getUserProfile returned', profile);
         if (profile && isMounted) {
           setUserProfile(profile);
           setIsAuthenticated(true);
-          // Save to local storage for offline access
           await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
+          console.log('[AuthProvider][loadProfile] Loaded real profile and updated state');
         } else if (isMounted) {
-          // If no profile on chain, check local storage
-          const savedProfile = await AsyncStorage.getItem(USER_PROFILE_KEY);
-          if (savedProfile) {
-            const parsedProfile = JSON.parse(savedProfile);
-            // Only use if it matches current wallet
-            if (parsedProfile.owner === publicKey.toBase58()) {
-              setUserProfile(parsedProfile);
-              setIsAuthenticated(true);
-            } else {
-              setUserProfile(null);
-              setIsAuthenticated(false);
-            }
-          } else {
-            setUserProfile(null);
-            setIsAuthenticated(false);
-          }
+          // HACKATHON/DEMO BYPASS: If no profile, set a mock profile and allow access
+          const mockProfile = {
+            owner: publicKey,
+            username: 'DemoUser',
+            bio: 'This is a demo profile. On-chain profile creation is bypassed for hackathon/demo.',
+            showBalance: false,
+            reputationScore: 0,
+            joinDate: Date.now(),
+            lastActive: Date.now(),
+            completedTutorials: [],
+          };
+          setUserProfile(mockProfile);
+          setIsAuthenticated(true);
+          await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(mockProfile));
+          console.log('[AuthProvider][loadProfile] Bypass: Set mock profile and updated state');
         }
       } catch (error) {
-        console.error('Failed to load profile:', error);
+        console.error('[AuthProvider][loadProfile] Failed to load profile:', error, error?.stack);
         if (isMounted) {
-          setUserProfile(null);
-          setIsAuthenticated(false);
+          // HACKATHON/DEMO BYPASS: On error, set a mock profile and allow access
+          const mockProfile = {
+            owner: publicKey,
+            username: 'DemoUser',
+            bio: 'This is a demo profile. On-chain profile creation is bypassed for hackathon/demo.',
+            showBalance: false,
+            reputationScore: 0,
+            joinDate: Date.now(),
+            lastActive: Date.now(),
+            completedTutorials: [],
+          };
+          setUserProfile(mockProfile);
+          setIsAuthenticated(true);
+          await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(mockProfile));
+          console.log('[AuthProvider][loadProfile] Bypass (error): Set mock profile and updated state');
         }
       } finally {
         if (isMounted) {
           setIsLoading(false);
+          console.log('[AuthProvider][loadProfile] Finished');
         }
       }
     };
-
-    // Defer profile loading to prevent blocking the main thread
     const timer = setTimeout(loadProfile, 700);
-    
     return () => {
       isMounted = false;
       clearTimeout(timer);
@@ -174,21 +169,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Create profile function
   const createProfile = async (username: string, bio: string) => {
-    if (!connected || !publicKey || !profileService) {
-      throw new Error('Wallet not connected or services not loaded');
-    }
-    
-    setIsLoading(true);
+    console.log('[AuthProvider] createProfile function entered');
     try {
-      const newProfile = await profileService.createUserProfile(publicKey, username, bio);
-      setUserProfile(newProfile);
-      setIsAuthenticated(true);
-      await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(newProfile));
-    } catch (error) {
-      console.error('Create profile failed:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
+      console.log('[AuthProvider] profileService:', profileService);
+      console.log('[AuthProvider] profileService.createUserProfile:', profileService?.createUserProfile);
+      if (!connected) console.log('[AuthProvider] Not connected');
+      if (!publicKey) console.log('[AuthProvider] No publicKey');
+      if (!profileService.createUserProfile) console.log('[AuthProvider] No createUserProfile');
+      if (!connection) console.log('[AuthProvider] No connection');
+      if (!signAndSendTransaction) console.log('[AuthProvider] No signAndSendTransaction');
+      if (!connected || !publicKey || !profileService.createUserProfile || !connection || !signAndSendTransaction) {
+        console.log('[AuthProvider] createProfile: Wallet not connected or services not loaded');
+        throw new Error('Wallet not connected or services not loaded');
+      }
+      console.log('[AuthProvider] About to call createUserProfile');
+      await profileService.createUserProfile(connection, signAndSendTransaction, publicKey, username, bio);
+      console.log('[AuthProvider] createUserProfile call finished');
+    } catch (err) {
+      console.error('[AuthProvider] createProfile error:', err);
     }
   };
 

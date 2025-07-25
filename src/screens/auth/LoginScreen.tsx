@@ -40,17 +40,6 @@ const LoginScreen = () => {
       {/* Top bar with Connect Wallet button on the right */}
       <View style={styles.topBar}>
         <View style={{ flex: 1 }} />
-        <TouchableOpacity
-          style={styles.connectButton}
-          onPress={handleLogin}
-          disabled={connecting || isLoading}
-        >
-          {(connecting || isLoading) ? (
-            <ActivityIndicator color={theme.colors.text} />
-          ) : (
-            <Text style={styles.connectButtonText}>Connect Wallet</Text>
-          )}
-        </TouchableOpacity>
       </View>
       <View style={styles.content}>
         <Icon name="wallet" size={80} color={theme.colors.accent} style={styles.icon} />
