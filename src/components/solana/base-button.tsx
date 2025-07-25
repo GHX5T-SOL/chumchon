@@ -1,7 +1,7 @@
 import React from 'react'
-import { AppText } from '../app-text'
+import { AppText } from '@/components/app-text'
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import { UiIconSymbol } from '../ui/ui-icon-symbol'
+import { UiIconSymbol } from '@/components/ui/ui-icon-symbol'
 import { useWalletUiTheme } from './use-wallet-ui-theme'
 import { AppConfig } from '@/constants/app-config';
 

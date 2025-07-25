@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert } from 'react-native';
-import { cyberpunkStyles, theme } from '../../theme';
+import { cyberpunkStyles, theme } from '@/theme';
 import { redeemInvite } from '@/services/groupService';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { PublicKey } from '@solana/web3.js';

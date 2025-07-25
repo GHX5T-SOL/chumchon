@@ -1,4 +1,4 @@
-import { useThemeColor } from '../../hooks/use-theme-color'
+import { useThemeColor } from '@/hooks/use-theme-color'
 import { AppConfig } from '@/constants/app-config';
 
 export function useWalletUiTheme() {

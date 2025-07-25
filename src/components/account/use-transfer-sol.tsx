@@ -1,7 +1,7 @@
 import { PublicKey, TransactionSignature } from '@solana/web3.js'
-import { useConnection } from '../solana/solana-provider'
+import { useConnection } from '@/components/solana/solana-provider'
 import { useMutation } from '@tanstack/react-query'
-import { useWalletUi } from '../solana/use-wallet-ui'
+import { useWalletUi } from '@/components/solana/use-wallet-ui'
 import { createTransaction } from './create-transaction'
 import { useGetBalanceInvalidate } from './use-get-balance'
 

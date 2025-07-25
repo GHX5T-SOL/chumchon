@@ -1,9 +1,9 @@
-import { useWalletUi } from '../solana/use-wallet-ui'
-import { ellipsify } from '../../utils/ellipsify'
-import { AppText } from '../app-text'
-import { AppView } from '../app-view'
-import { WalletUiButtonConnect } from '../solana/wallet-ui-button-connect'
-import { WalletUiButtonDisconnect } from '../solana/wallet-ui-button-disconnect'
+import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import React from 'react';
+import { AppText } from '@/components/app-text'
+import { AppView } from '@/components/app-view'
+import { WalletUiButtonConnect } from '@/components/solana/wallet-ui-button-connect'
+import { WalletUiButtonDisconnect } from '@/components/solana/wallet-ui-button-disconnect'
 import { AppConfig } from '@/constants/app-config';
 
 export function SettingsUiAccount() {
@@ -13,7 +13,7 @@ export function SettingsUiAccount() {
       <AppText type="subtitle">Account</AppText>
       {account ? (
         <AppView style={{ flexDirection: 'column', justifyContent: 'flex-end' }}>
-          <AppText>Connected to {ellipsify(account.publicKey.toString(), 8)}</AppText>
+          <AppText>Connected to {account.publicKey.toString().slice(0, 4) + '...' + account.publicKey.toString().slice(-4)}</AppText>
           <WalletUiButtonDisconnect />
         </AppView>
       ) : (

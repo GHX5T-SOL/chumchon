@@ -2,10 +2,9 @@ import React, { Fragment } from 'react'
 import { Linking, StyleSheet } from 'react-native'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useWalletUi } from './use-wallet-ui'
-import { ellipsify } from '../../utils/ellipsify'
-import { UiIconSymbol } from '../ui/ui-icon-symbol'
-import { useCluster } from '../cluster/cluster-provider'
-import { AppText } from '../app-text'
+import { UiIconSymbol } from '@/components/ui/ui-icon-symbol'
+import { useCluster } from '@/components/cluster/cluster-provider'
+import { AppText } from '@/components/app-text'
 import * as Dropdown from '@rn-primitives/dropdown-menu'
 import { WalletUiButtonConnect } from './wallet-ui-button-connect'
 import { useWalletUiTheme } from './use-wallet-ui-theme'
@@ -47,7 +46,7 @@ export function WalletUiDropdown() {
     <Dropdown.Root>
       <Dropdown.Trigger style={[styles.trigger, { backgroundColor, borderColor }]}>
         <UiIconSymbol name="wallet.pass.fill" color={textColor} />
-        <AppText>{ellipsify(account.publicKey.toString())}</AppText>
+        <AppText>{account.publicKey.toString().slice(0, 4) + '...' + account.publicKey.toString().slice(-4)}</AppText>
       </Dropdown.Trigger>
       <Dropdown.Portal>
         <Dropdown.Overlay style={StyleSheet.absoluteFill}>

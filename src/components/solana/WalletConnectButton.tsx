@@ -1,9 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { useWalletUi } from '@/components/solana/use-wallet-ui';
-import { theme } from '../../src/theme';
+import { theme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { ellipsify } from '../../utils/ellipsify';
 
 export function WalletConnectButton() {
   const { account, connect, disconnect } = useWalletUi();
@@ -26,7 +25,7 @@ export function WalletConnectButton() {
         />
         <Text style={styles.buttonText}>
           {isConnected
-            ? ellipsify(account.publicKey?.toString() || '', 4)
+            ? (account.publicKey?.toString()?.slice(0, 4) + '...' + account.publicKey?.toString()?.slice(-4))
             : 'Connect Wallet'}
         </Text>
       </View>

@@ -14,16 +14,16 @@ import {
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
-import { MainStackParamList } from '../../navigation/AppNavigator';
-import { theme } from '../../theme';
-import { useAuth } from '../../contexts/AuthProvider';
+import { MainStackParamList } from '@/navigation/AppNavigator';
+import { theme } from '@/theme';
+import { useAuth } from '@/contexts/AuthProvider';
 import { 
   Tutorial, 
   TutorialStep, 
   getTutorialById, 
   hasTutorialCompleted, 
   completeTutorial 
-} from '../../services/tutorialService';
+} from '@/services/tutorialService';
 
 type TutorialScreenRouteProp = RouteProp<MainStackParamList, 'Tutorial'>;
 type TutorialScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;

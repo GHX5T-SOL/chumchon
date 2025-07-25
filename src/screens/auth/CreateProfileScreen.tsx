@@ -1,11 +1,11 @@
 // src/screens/auth/CreateProfileScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
-import { useAuth } from '../../contexts/AuthProvider';
-import { useSolana } from '../../contexts/SolanaProvider';
-import { theme, commonStyles } from '../../theme';
-import { shortenAddress } from '../../services/programService';
-import { WalletConnectButton } from '../../../components/solana/WalletConnectButton';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useSolana } from '@/contexts/SolanaProvider';
+import { theme, commonStyles } from '@/theme';
+import { shortenAddress } from '@/services/programService';
+import { WalletConnectButton } from '@/components/solana/WalletConnectButton';
 
 const CreateProfileScreen = () => {
   const { createProfile, isLoading } = useAuth();

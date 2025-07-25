@@ -13,9 +13,8 @@ import {
 import { toUint8Array } from 'js-base64'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useMemo } from 'react'
-import { useCluster } from '../cluster/cluster-provider'
+import { useCluster } from '@/components/cluster/cluster-provider'
 import { WalletIcon } from '@wallet-standard/core'
-import { ellipsify } from '../../utils/ellipsify'
 import { AppConfig } from '@/constants/app-config';
 
 const identity: AppIdentity = { name: AppConfig.name, uri: AppConfig.uri }
@@ -41,7 +40,7 @@ function getAccountFromAuthorizedAccount(account: AuthorizedAccount): Account {
     // TODO: Fix?
     displayAddress: (account as unknown as { display_address: string }).display_address,
     icon: account.icon,
-    label: account.label ?? ellipsify(publicKey.toString(), 8),
+    label: account.label ?? (publicKey.toString().slice(0, 4) + '...' + publicKey.toString().slice(-4)),
     publicKey,
   }
 }

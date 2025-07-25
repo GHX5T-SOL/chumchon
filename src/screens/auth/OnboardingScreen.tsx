@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { cyberpunkStyles, theme } from '../../theme';
+import { cyberpunkStyles, theme } from '@/theme';
 import { useNavigation } from '@react-navigation/native';
 
 const OnboardingScreen = () => {

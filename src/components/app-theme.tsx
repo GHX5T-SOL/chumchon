@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { DarkTheme as AppThemeDark, DefaultTheme as AppThemeLight, ThemeProvider } from '@react-navigation/native'
+import { DarkTheme as AppThemeDark, DefaultTheme as AppThemeLight } from '@react-navigation/native'
 import { useColorScheme } from 'react-native'
 
 export function useAppTheme() {
@@ -11,10 +11,4 @@ export function useAppTheme() {
     isDark,
     theme,
   }
-}
-
-export function AppTheme({ children }: PropsWithChildren) {
-  const { theme } = useAppTheme()
-
-  return <ThemeProvider value={theme}>{children}</ThemeProvider>
 }

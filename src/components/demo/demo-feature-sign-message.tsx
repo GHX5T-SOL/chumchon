@@ -1,14 +1,13 @@
-import { AppView } from '../app-view'
-import { AppText } from '../app-text'
+import { AppView } from '@/components/app-view'
+import { AppText } from '@/components/app-text'
 import { PublicKey } from '@solana/web3.js'
 import Snackbar from 'react-native-snackbar'
 import { ActivityIndicator, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { Button } from '@react-navigation/elements'
-import { useThemeColor } from '../../hooks/use-theme-color'
+import { useThemeColor } from '@/hooks/use-theme-color'
 import { useMutation } from '@tanstack/react-query'
-import { useWalletUi } from '../solana/use-wallet-ui'
-import { ellipsify } from '../../utils/ellipsify'
+import { useWalletUi } from '@/components/solana/use-wallet-ui'
 
 function useSignMessage({ address }: { address: PublicKey }) {
   const { signMessage } = useWalletUi()
@@ -53,7 +52,7 @@ export function DemoFeatureSignMessage({ address }: { address: PublicKey }) {
                 .then(() => {
                   console.log(`Signed message: ${message} with ${address.toString()}`)
                   Snackbar.show({
-                    text: `Signed message with ${ellipsify(address.toString(), 8)}`,
+                    text: `Signed message with ${address.toString().slice(0, 4) + '...' + address.toString().slice(-4)}`,
                     duration: Snackbar.LENGTH_SHORT,
                   })
                 })

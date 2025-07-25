@@ -1,8 +1,7 @@
 import { PublicKey } from '@solana/web3.js'
-import { AppText } from '../app-text'
+import { AppText } from '@/components/app-text'
 import { ActivityIndicator, View } from 'react-native'
-import { AppView } from '../app-view'
-import { ellipsify } from '../../utils/ellipsify'
+import { AppView } from '@/components/app-view'
 import { AccountUiTokenBalance } from './account-ui-token-balance'
 import { useGetTokenAccounts } from './use-get-token-accounts'
 
@@ -42,8 +41,8 @@ export function AccountUiTokenAccounts({ address }: { address: PublicKey }) {
                 borderBottomColor: '#ddd',
               }}
             >
-              <AppText style={{ flex: 1 }}>{ellipsify(item.pubkey.toString())}</AppText>
-              <AppText style={{ flex: 1 }}>{ellipsify(item.account.data.parsed.info.mint)}</AppText>
+              <AppText style={{ flex: 1 }}>{item.pubkey.toString().slice(0, 4) + '...' + item.pubkey.toString().slice(-4)}</AppText>
+              <AppText style={{ flex: 1 }}>{item.account.data.parsed.info.mint.slice(0, 4) + '...' + item.account.data.parsed.info.mint.slice(-4)}</AppText>
               <View style={{ flex: 1, alignItems: 'flex-end' }}>
                 <AccountUiTokenBalance address={item.pubkey} />
               </View>

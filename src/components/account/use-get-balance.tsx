@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useConnection } from '../solana/solana-provider'
+import { useConnection } from '@/components/solana/solana-provider'
 
 export function useGetBalanceQueryKey({ address, endpoint }: { address: PublicKey; endpoint: string }) {
   return ['get-balance', { endpoint, address }]

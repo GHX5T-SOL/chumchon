@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { ActivityIndicator } from 'react-native'
-import { AppText } from '../app-text'
+import { AppText } from '@/components/app-text'
 import { useGetTokenAccountBalance } from './use-get-token-account-balance'
 
 export function AccountUiTokenBalance({ address }: { address: PublicKey }) {
