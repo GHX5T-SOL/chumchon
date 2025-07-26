@@ -1,3 +1,9 @@
+import { Buffer } from 'buffer';
+global.Buffer = Buffer;
+
+import structuredClone from '@ungap/structured-clone';
+global.structuredClone = structuredClone;
+
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "@/navigation/AppNavigator";

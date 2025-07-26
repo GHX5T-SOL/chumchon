@@ -1,6 +1,6 @@
 // src/screens/main/HomeScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -72,7 +72,9 @@ const HomeScreen = () => {
         <Text style={styles.tutorialDescription}>{item.description}</Text>
         <View style={styles.tutorialReward}>
           <Icon name="coins" size={16} color={theme.colors.warning} />
-          <Text style={styles.rewardText}>{item.reward} SOL</Text>
+          <Text style={styles.rewardText}>
+            {item.reward ? `${item.reward} SOL` : '0 SOL'}
+          </Text>
         </View>
       </View>
       <View style={styles.tutorialStatus}>
@@ -140,7 +142,7 @@ const HomeScreen = () => {
             {/* Welcome section */}
             <View style={styles.welcomeSection}>
               <Text style={styles.welcomeTitle}>
-                Welcome, {userProfile?.username || 'Anon'}
+                Welcome, Degen 🚀
               </Text>
               <Text style={styles.welcomeSubtitle}>
                 Your on-chain social experience starts here
@@ -155,14 +157,17 @@ const HomeScreen = () => {
                   <Text style={styles.seeAllText}>See All</Text>
                 </TouchableOpacity>
               </View>
-              <FlatList
-                data={tutorials}
-                renderItem={renderTutorialItem}
-                keyExtractor={item => item.id}
+              <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.tutorialsList}
-              />
+              >
+                {tutorials.map((item) => (
+                  <View key={item.id} style={styles.tutorialItem}>
+                    {renderTutorialItem({ item })}
+                  </View>
+                ))}
+              </ScrollView>
             </View>
 
             {/* Recent activity section */}
@@ -170,12 +175,13 @@ const HomeScreen = () => {
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>Recent Activity</Text>
               </View>
-              <FlatList
-                data={recentActivity}
-                renderItem={renderActivityItem}
-                keyExtractor={item => item.id}
-                scrollEnabled={false}
-              />
+              <View>
+                {recentActivity.map((item) => (
+                  <View key={item.id}>
+                    {renderActivityItem({ item })}
+                  </View>
+                ))}
+              </View>
             </View>
 
             {/* Quick actions */}
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
   },
   tutorialDescription: {
     fontSize: 14,
-    color: theme.colors.muted,
+    color: theme.colors.text, // Changed from theme.colors.muted to white
     marginBottom: 12,
   },
   tutorialReward: {
@@ -328,7 +334,7 @@ const styles = StyleSheet.create({
   },
   activityTime: {
     fontSize: 14,
-    color: theme.colors.muted,
+    color: theme.colors.text, // Changed from theme.colors.muted to white
   },
   quickActions: {
     flexDirection: 'row',

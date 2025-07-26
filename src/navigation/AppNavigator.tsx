@@ -24,6 +24,10 @@ import SettingsScreen from '@/screens/main/SettingsScreen';
 import AchievementsScreen from '@/screens/main/AchievementsScreen';
 import ReputationScreen from '@/screens/main/ReputationScreen';
 import NFTProfilePickerScreen from '@/screens/main/NFTProfilePickerScreen';
+import CreateGroupScreen from '@/screens/main/CreateGroupScreen';
+import JoinGroupScreen from '@/screens/main/JoinGroupScreen';
+import CreateEscrowScreen from '@/screens/main/CreateEscrowScreen';
+import CreateMemeScreen from '@/screens/main/CreateMemeScreen';
 
 // Detail screens
 import GroupChatScreen from '@/screens/details/GroupChatScreen';
@@ -68,6 +72,7 @@ export type MainStackParamList = {
   CreateGroup: undefined;
   CreateEscrow: undefined;
   CreateMeme: undefined;
+  JoinGroup: undefined;
 };
 
 export type MainTabsParamList = {
@@ -120,14 +125,7 @@ const MainTabsNavigator = () => {
         },
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.textSecondary,
-        headerStyle: {
-          backgroundColor: theme.colors.card,
-        },
-        headerTintColor: theme.colors.text,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-        headerRight: () => <WalletConnectButton />, // Add button to all main tab screens
+        headerShown: false, // Hide header since MainNavigator provides it
       }}
     >
       <MainTabs.Screen
@@ -211,7 +209,11 @@ const MainNavigator = () => {
         headerRight: () => <WalletConnectButton />, // Add button to all main stack screens
       }}
     >
-      <MainStack.Screen name="MainTabs" component={MainTabsNavigator} />
+      <MainStack.Screen 
+        name="MainTabs" 
+        component={MainTabsNavigator} 
+        options={{ title: 'Chumchon' }}
+      />
       <MainStack.Screen name="GroupChat" component={GroupChatScreen} />
       <MainStack.Screen name="EscrowDetail" component={EscrowDetailScreen} />
       <MainStack.Screen name="MemeChallenge" component={MemeChallengeScreen} />
@@ -225,9 +227,10 @@ const MainNavigator = () => {
       <MainStack.Screen name="Tip" component={TipScreen} />
       <MainStack.Screen name="NotFound" component={NotFoundScreen} />
       <MainStack.Screen name="Onboarding" component={OnboardingScreen} />
-      <MainStack.Screen name="CreateGroup" component={PlaceholderScreen} />
-      <MainStack.Screen name="CreateEscrow" component={PlaceholderScreen} />
-      <MainStack.Screen name="CreateMeme" component={PlaceholderScreen} />
+      <MainStack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ title: 'Create Group' }} />
+      <MainStack.Screen name="CreateEscrow" component={CreateEscrowScreen} options={{ title: 'Create Escrow' }} />
+      <MainStack.Screen name="CreateMeme" component={CreateMemeScreen} options={{ title: 'Create Meme Challenge' }} />
+      <MainStack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ title: 'Join Group' }} />
     </MainStack.Navigator>
   );
 };

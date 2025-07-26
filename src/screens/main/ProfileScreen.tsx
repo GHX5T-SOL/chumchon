@@ -177,7 +177,7 @@ const ProfileScreen = () => {
         
         <View style={styles.nftGrid}>
           <View style={styles.emptyNftContainer}>
-            <Icon name="image-off" size={32} color={theme.colors.muted} />
+            <Icon name="image-off" size={32} color={theme.colors.text} />
             <Text style={styles.emptyNftText}>No NFTs found</Text>
             <TouchableOpacity style={styles.browseNftButton}>
               <Text style={styles.browseNftText}>Browse Marketplace</Text>
@@ -193,7 +193,7 @@ const ProfileScreen = () => {
         </View>
         
         <View style={styles.emptyActivityContainer}>
-          <Icon name="history" size={32} color={theme.colors.muted} />
+          <Icon name="history" size={32} color={theme.colors.text} />
           <Text style={styles.emptyActivityText}>No recent activity</Text>
           <Text style={styles.emptyActivitySubtext}>
             Your interactions will appear here
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
   },
   emptyNftText: {
     fontSize: 16,
-    color: theme.colors.muted,
+    color: theme.colors.text,
     marginTop: 12,
     marginBottom: 16,
   },
@@ -418,13 +418,13 @@ const styles = StyleSheet.create({
   },
   emptyActivityText: {
     fontSize: 16,
-    color: theme.colors.muted,
+    color: theme.colors.text,
     marginTop: 12,
     marginBottom: 8,
   },
   emptyActivitySubtext: {
     fontSize: 14,
-    color: theme.colors.muted,
+    color: theme.colors.text,
     textAlign: 'center',
   },
   buttonContainer: {

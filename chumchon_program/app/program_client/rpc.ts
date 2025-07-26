@@ -28,6 +28,7 @@ export type CreateUserProfileArgs = {
   owner: web3.PublicKey;
   username: string;
   bio: string;
+  show_balance: boolean;
 };
 
 /**
@@ -57,6 +58,7 @@ export const createUserProfileBuilder = (
     .createUserProfile(
       args.username,
       args.bio,
+      args.show_balance,
     )
     .accountsStrict({
       feePayer: args.feePayer,
@@ -1520,6 +1522,11 @@ export const getUserProfile = (
     publicKey: web3.PublicKey,
     commitment?: web3.Commitment
 ): Promise<IdlAccounts<Chumchon>["userProfile"]> => _program.account.userProfile.fetch(publicKey, commitment);
+
+export const getUserProfileNullable = (
+    publicKey: web3.PublicKey,
+    commitment?: web3.Commitment
+): Promise<IdlAccounts<Chumchon>["userProfile"] | null> => _program.account.userProfile.fetchNullable(publicKey, commitment);
 
 export const getGroup = (
     publicKey: web3.PublicKey,

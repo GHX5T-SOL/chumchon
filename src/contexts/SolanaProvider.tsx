@@ -175,16 +175,22 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
       // Save the authorization result
       const walletPublicKey = authResult.accounts[0].address;
       console.log('[SolanaProvider] Received address from wallet:', walletPublicKey);
+      
+      // Decode base64 address to bytes, then create PublicKey
+      const pubkeyBytes = Buffer.from(walletPublicKey, 'base64');
+      const newPublicKey = new PublicKey(pubkeyBytes);
+      console.log('[SolanaProvider] Decoded public key:', newPublicKey.toString());
+      
       const newAuthResult = {
         authToken: authResult.auth_token,
-        publicKey: walletPublicKey,
+        publicKey: newPublicKey.toString(), // Save as base58 string
       };
       
       await AsyncStorage.setItem(WALLET_AUTH_KEY, JSON.stringify(newAuthResult));
       setAuthorizationResult(newAuthResult);
-      setPublicKey(new PublicKey(walletPublicKey));
+      setPublicKey(newPublicKey);
       setConnected(true);
-      console.log('[SolanaProvider] Authorization succeeded, state updated:', { connected: true, publicKey: walletPublicKey });
+      console.log('[SolanaProvider] Authorization succeeded, state updated:', { connected: true, publicKey: newPublicKey.toString() });
     } catch (error) {
       console.error('Authorization error:', error);
       console.error('Authorization error stack:', error.stack);

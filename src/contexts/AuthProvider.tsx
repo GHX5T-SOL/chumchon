@@ -59,44 +59,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Load saved profile on startup and when wallet connects - with debounce
   useEffect(() => {
-    let isMounted = true;
-    const loadProfile = async () => {
-      if (!connected || !publicKey || !connection) {
-        if (isMounted) {
-          setUserProfile(null);
-          setIsAuthenticated(false);
-          setIsLoading(false);
-        }
-        return;
-      }
-      setIsLoading(true);
-      try {
-        const profile = await profileService.getUserProfile(connection, publicKey);
-        if (profile && isMounted) {
-          setUserProfile(profile);
-          setIsAuthenticated(true);
-          await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
-        } else if (isMounted) {
-          // No profile found - user needs to create one
-          setUserProfile(null);
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        if (isMounted) {
-          console.error('[AuthProvider] Error loading profile:', error);
-          // On error, don't set mock profile - let user create real profile
-          setUserProfile(null);
-          setIsAuthenticated(false);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadProfile();
+    // loadProfile(); // Disable temporarily to stop flashing
   }, [connected, publicKey, connection]);
+
+  // DEMO BYPASS: Set mock profile and authenticate immediately on mount
+  useEffect(() => {
+    console.log('[AuthProvider] DEMO: Setting mock profile on mount');
+    const mockProfile: UserProfile = {
+      owner: new PublicKey('11111111111111111111111111111111'), // Mock public key
+      username: 'DemoUser',
+      bio: 'This is a demo profile. On-chain profile creation is bypassed for hackathon/demo.',
+      showBalance: false,
+      reputationScore: 0,
+      joinDate: Date.now(),
+      lastActive: Date.now(),
+      completedTutorials: [],
+    };
+    
+    setUserProfile(mockProfile);
+    setIsAuthenticated(true);
+    setIsLoading(false);
+    
+    // Save mock profile to local storage
+    AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(mockProfile))
+      .then(() => console.log('[AuthProvider] DEMO: Mock profile saved to storage'))
+      .catch(err => console.error('[AuthProvider] DEMO: Failed to save mock profile:', err));
+      
+    console.log('[AuthProvider] DEMO: App authenticated and ready for demo');
+  }, []); // Empty dependency array - runs only once on mount
 
   // Login function
   const login = async () => {

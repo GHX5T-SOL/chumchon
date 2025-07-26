@@ -1,13 +1,21 @@
 {
-	"compilerOptions": {
-	  "types": ["mocha", "chai"],
-	  "typeRoots": ["./node_modules/@types"],
-	  "lib": ["es2015"],
-	  "module": "commonjs",
-	  "target": "es6",
-	  "esModuleInterop": true,
-	  "resolveJsonModule": true,
-	  "forceConsistentCasingInFileNames": true,
-	  "strict": true
-	}
+  "compilerOptions": {
+    "types": [
+      "mocha",
+      "chai"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "lib": [
+      "es2015"
+    ],
+    "module": "commonjs",
+    "target": "es6",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true
+  },
+  "extends": "expo/tsconfig.base"
 }

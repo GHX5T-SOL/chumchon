@@ -63,7 +63,9 @@ const AchievementsScreen = () => {
           keyExtractor={item => item.key}
           renderItem={renderItem}
           numColumns={2}
+          columnWrapperStyle={styles.row}
           contentContainerStyle={styles.grid}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </View>
@@ -77,18 +79,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   grid: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingBottom: theme.spacing.xl,
+  },
+  row: {
+    justifyContent: 'space-around',
+    marginBottom: theme.spacing.md,
   },
   badge: {
-    flex: 1,
+    width: '45%',
     alignItems: 'center',
-    margin: 12,
     padding: 16,
     borderRadius: theme.roundness * 2,
     backgroundColor: theme.colors.card,
-    minWidth: 140,
     minHeight: 120,
+    marginHorizontal: 4,
   },
   lockedBadge: {
     opacity: 0.4,

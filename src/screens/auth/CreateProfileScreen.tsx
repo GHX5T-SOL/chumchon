@@ -102,27 +102,7 @@ const CreateProfileScreen = () => {
         <Text style={styles.subtitle}>
           Set up your on-chain identity to start using Chumchon
         </Text>
-        <Text style={styles.networkText}>Network: {String(network ?? 'Unknown')}</Text>
-      </View>
-
-      {/* Reconnect Wallet Button */}
-      <View style={{ width: '100%', alignItems: 'center', marginBottom: 16 }}>
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton, { width: '100%' }]}
-          onPress={handleReconnectWallet}
-        >
-          <Text style={styles.secondaryButtonText}>Reconnect Wallet</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Clear Storage Button */}
-      <View style={{ width: '100%', alignItems: 'center', marginBottom: 16 }}>
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton, { width: '100%' }]}
-          onPress={handleClearStorage}
-        >
-          <Text style={styles.secondaryButtonText}>Clear Wallet Storage</Text>
-        </TouchableOpacity>
+        <Text style={styles.networkText}>Network: {network ?? 'Unknown'}</Text>
       </View>
 
       <View style={styles.formCentered}> {/* New style for centering */}
@@ -137,7 +117,7 @@ const CreateProfileScreen = () => {
             maxLength={32}
           />
           {usernameError && <Text style={styles.errorText}>{usernameError}</Text>}
-          <Text style={styles.charCount}>{String(username.length)}/32</Text>
+          {true && <Text style={styles.charCount}>{String(username.length)}/32</Text>}
         </View>
 
         <View style={styles.inputContainer}>
@@ -152,7 +132,7 @@ const CreateProfileScreen = () => {
             maxLength={256}
           />
           {bioError && <Text style={styles.errorText}>{bioError}</Text>}
-          <Text style={styles.charCount}>{String(bio.length)}/256</Text>
+          {true && <Text style={styles.charCount}>{String(bio.length)}/256</Text>}
         </View>
 
       </View>

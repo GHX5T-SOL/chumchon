@@ -1,6 +1,6 @@
 # Chumchon - Decentralized Social App for Solana Mobile
 
-![Chumchon Logo](https://i.ibb.co/d4fcp5t5/chumchon.png)
+![Chumchon Logo](https://i.ibb.co/7tw4D4MM/logo.png)
 
 Chumchon is a decentralized social app built for Solana Mobile, featuring token-gated communities, on-chain messaging, escrow trading, and meme challenges.
 

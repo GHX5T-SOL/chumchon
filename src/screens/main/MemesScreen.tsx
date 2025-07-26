@@ -1,6 +1,6 @@
 // src/screens/main/MemesScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, RefreshControl, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -258,37 +258,7 @@ const MemesScreen = () => {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: theme.colors.background }}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Meme Challenges</Text>
-        <Text style={styles.headerSubtitle}>
-          Create and vote on AI-powered memes
-        </Text>
-      </View>
-      
-      {/* Tabs */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'active' && styles.activeTab]}
-          onPress={() => setActiveTab('active')}
-        >
-          <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
-            Active
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'completed' && styles.activeTab]}
-          onPress={() => setActiveTab('completed')}
-        >
-          <Text style={[styles.tabText, activeTab === 'completed' && styles.activeTabText]}>
-            Completed
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Challenge list */}
+    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
       <FlatList
         data={filteredChallenges}
         renderItem={renderChallengeItem}
@@ -301,6 +271,38 @@ const MemesScreen = () => {
             colors={[theme.colors.accent]}
             tintColor={theme.colors.accent}
           />
+        }
+        ListHeaderComponent={
+          <>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Meme Challenges</Text>
+              <Text style={styles.headerSubtitle}>
+                Create and vote on AI-powered memes
+              </Text>
+            </View>
+            
+            {/* Tabs */}
+            <View style={styles.tabContainer}>
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'active' && styles.activeTab]}
+                onPress={() => setActiveTab('active')}
+              >
+                <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
+                  Active
+                </Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'completed' && styles.activeTab]}
+                onPress={() => setActiveTab('completed')}
+              >
+                <Text style={[styles.tabText, activeTab === 'completed' && styles.activeTabText]}>
+                  Completed
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
@@ -318,6 +320,16 @@ const MemesScreen = () => {
             </TouchableOpacity>
           </View>
         }
+        ListFooterComponent={
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('CreateMeme')}>
+              <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Meme Challenge</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('MemeChallenge', { challengeAddress: '1' })}>
+              <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>View Meme Challenges</Text>
+            </TouchableOpacity>
+          </View>
+        }
       />
       
       {/* Create challenge button */}
@@ -327,16 +339,7 @@ const MemesScreen = () => {
       >
         <Icon name="plus" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => {/* TODO: Implement create meme challenge logic */}}>
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Meme Challenge</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('MemeChallenge', { challengeAddress: '1' })}>
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>View Meme Challenges</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -348,6 +351,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.colors.primary,
     padding: 24,
+    marginHorizontal: -16, // Extend beyond the parent's horizontal padding
   },
   headerTitle: {
     fontSize: 24,
@@ -424,7 +428,7 @@ const styles = StyleSheet.create({
   },
   challengeDescription: {
     fontSize: 14,
-    color: theme.colors.muted,
+    color: theme.colors.text, // Changed from theme.colors.muted to white
     marginBottom: 12,
   },
   promptContainer: {
@@ -454,7 +458,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: 12,
-    color: theme.colors.muted,
+    color: theme.colors.text, // Changed from theme.colors.muted to white
     marginLeft: 4,
   },
   challengeFooter: {
@@ -471,7 +475,7 @@ const styles = StyleSheet.create({
   },
   endedText: {
     fontSize: 14,
-    color: theme.colors.muted,
+    color: theme.colors.text, // Changed from theme.colors.muted to white
   },
   submitButton: {
     backgroundColor: theme.colors.accent,
@@ -513,7 +517,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: theme.colors.muted,
+    color: theme.colors.text, // Changed from theme.colors.muted to white
     textAlign: 'center',
     marginTop: 16,
     marginBottom: 24,

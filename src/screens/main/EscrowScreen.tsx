@@ -1,6 +1,6 @@
 // src/screens/main/EscrowScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -248,37 +248,7 @@ const EscrowScreen = () => {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: theme.colors.background }}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Escrow Deals</Text>
-        <Text style={styles.headerSubtitle}>
-          Securely trade tokens with other users
-        </Text>
-      </View>
-      
-      {/* Tabs */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'active' && styles.activeTab]}
-          onPress={() => setActiveTab('active')}
-        >
-          <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
-            Active
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'completed' && styles.activeTab]}
-          onPress={() => setActiveTab('completed')}
-        >
-          <Text style={[styles.tabText, activeTab === 'completed' && styles.activeTabText]}>
-            History
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Escrow list */}
+    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
       <FlatList
         data={filteredEscrows}
         renderItem={renderEscrowItem}
@@ -292,19 +262,55 @@ const EscrowScreen = () => {
             tintColor={theme.colors.accent}
           />
         }
+        ListHeaderComponent={
+          <>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Escrow Deals</Text>
+              <Text style={styles.headerSubtitle}>
+                Securely trade tokens with other users
+              </Text>
+            </View>
+            
+            {/* Tabs */}
+            <View style={styles.tabContainer}>
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'active' && styles.activeTab]}
+                onPress={() => setActiveTab('active')}
+              >
+                <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
+                  Active
+                </Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'completed' && styles.activeTab]}
+                onPress={() => setActiveTab('completed')}
+              >
+                <Text style={[styles.tabText, activeTab === 'completed' && styles.activeTabText]}>
+                  History
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Icon name="swap-horizontal" size={48} color={theme.colors.muted} />
+            <Icon name="swap-horizontal" size={48} color={theme.colors.text} />
             <Text style={styles.emptyText}>
               {activeTab === 'active'
                 ? 'No active escrow deals'
                 : 'No completed escrow deals'}
             </Text>
-            <TouchableOpacity
-              style={styles.createEscrowButton}
-              onPress={() => navigation.navigate('CreateEscrow')}
-            >
-              <Text style={styles.createEscrowText}>Create Escrow Deal</Text>
+          </View>
+        }
+        ListFooterComponent={
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('CreateEscrow')}>
+              <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Escrow</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('EscrowDetail', { escrowAddress: '1' })}>
+              <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>View Escrow Details</Text>
             </TouchableOpacity>
           </View>
         }
@@ -317,16 +323,7 @@ const EscrowScreen = () => {
       >
         <Icon name="plus" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => {/* TODO: Implement create escrow logic */}}>
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Escrow</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('EscrowDetail', { escrowAddress: '1' })}>
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>View Escrow Details</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -338,6 +335,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.colors.primary,
     padding: 24,
+    marginHorizontal: -16, // Extend beyond the parent's horizontal padding
   },
   headerTitle: {
     fontSize: 24,
@@ -463,7 +461,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: theme.colors.muted,
+    color: theme.colors.text,
     textAlign: 'center',
     marginTop: 16,
     marginBottom: 24,

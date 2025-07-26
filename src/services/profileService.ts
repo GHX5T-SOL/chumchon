@@ -1,7 +1,7 @@
 // src/services/profileService.ts
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
-import { initializeClient, createUserProfile as createUserProfileInstruction, getUserProfile as fetchUserProfile } from '../../chumchon_program/app/program_client/rpc';
+import { initializeClient, createUserProfile as createUserProfileInstruction, getUserProfileNullable } from '../../chumchon_program/app/program_client/rpc';
 
 // Program ID from Anchor.toml
 const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');
@@ -61,6 +61,7 @@ export const createUserProfile = async (
       owner: owner.toString(),
       username,
       bio,
+      show_balance: false
     });
     
     let ix;
@@ -70,9 +71,10 @@ export const createUserProfile = async (
         owner,
         username,
         bio,
+        show_balance: false
       });
       console.log('[profileService] Instruction built successfully:', ix);
-    } catch (instructionError) {
+    } catch (instructionError: any) {
       console.error('[profileService] Failed to build instruction:', instructionError);
       throw new Error(`Failed to build createUserProfile instruction: ${instructionError.message}`);
     }
@@ -100,7 +102,7 @@ export const createUserProfile = async (
     
     console.log('[profileService] Returning new profile:', newProfile);
     return newProfile;
-  } catch (error) {
+  } catch (error: any) {
     console.error('[profileService] Failed to create profile:', error);
     console.error('[profileService] Error details:', {
       message: error.message,
@@ -144,9 +146,23 @@ export const getUserProfile = async (
     
     console.log('[profileService] Derived profile PDA:', profilePda.toString());
     
-    const profile = await fetchUserProfile(profilePda);
-    
-    console.log('[profileService] Profile fetched:', profile);
+    // Use fetchNullable to handle non-existent accounts gracefully
+    let profile;
+    try {
+      profile = await getUserProfileNullable(profilePda);
+      if (profile === null) {
+        console.log('[profileService] No profile found, returning null');
+        return null;
+      }
+      console.log('[profileService] Profile fetched:', profile);
+    } catch (fetchError: any) {
+      console.error('[profileService] Fetch error:', fetchError);
+      if (fetchError.message && fetchError.message.includes('Account does not exist')) {
+        console.log('[profileService] Account does not exist, returning null');
+        return null;
+      }
+      throw fetchError;
+    }
     
     // Transform the profile data to match the expected format
     return {
@@ -154,12 +170,12 @@ export const getUserProfile = async (
       username: profile.username,
       bio: profile.bio,
       showBalance: profile.showBalance,
-      reputationScore: profile.reputationScore?.toNumber() || 0,
-      joinDate: profile.joinDate?.toNumber() || Date.now(),
+      reputationScore: profile.tutorialRewards?.toNumber() || 0,
+      joinDate: profile.createdAt?.toNumber() || Date.now(),
       lastActive: profile.lastActive?.toNumber() || Date.now(),
       completedTutorials: profile.completedTutorials || [],
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('[profileService] Failed to get profile:', error);
     throw error;
   }

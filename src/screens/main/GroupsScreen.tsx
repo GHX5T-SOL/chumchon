@@ -1,6 +1,6 @@
 // src/screens/main/GroupsScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -209,46 +209,7 @@ const GroupsScreen = () => {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: theme.colors.background }}>
-      {/* Search bar */}
-      <View style={styles.searchContainer}>
-        <Icon name="magnify" size={20} color={theme.colors.muted} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search groups..."
-          placeholderTextColor={theme.colors.muted}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchQuery('')}>
-            <Icon name="close" size={20} color={theme.colors.muted} />
-          </TouchableOpacity>
-        )}
-      </View>
-      
-      {/* Tabs */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'joined' && styles.activeTab]}
-          onPress={() => setActiveTab('joined')}
-        >
-          <Text style={[styles.tabText, activeTab === 'joined' && styles.activeTabText]}>
-            My Groups
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'discover' && styles.activeTab]}
-          onPress={() => setActiveTab('discover')}
-        >
-          <Text style={[styles.tabText, activeTab === 'discover' && styles.activeTabText]}>
-            Discover
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Group list */}
+    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
       <FlatList
         data={filteredGroups}
         renderItem={renderGroupItem}
@@ -262,9 +223,50 @@ const GroupsScreen = () => {
             tintColor={theme.colors.accent}
           />
         }
+        ListHeaderComponent={
+          <>
+            {/* Search bar */}
+            <View style={styles.searchContainer}>
+              <Icon name="magnify" size={20} color={theme.colors.muted} style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search groups..."
+                placeholderTextColor={theme.colors.muted}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery('')}>
+                  <Icon name="close" size={20} color={theme.colors.muted} />
+                </TouchableOpacity>
+              )}
+            </View>
+            
+            {/* Tabs */}
+            <View style={styles.tabContainer}>
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'joined' && styles.activeTab]}
+                onPress={() => setActiveTab('joined')}
+              >
+                <Text style={[styles.tabText, activeTab === 'joined' && styles.activeTabText]}>
+                  My Groups
+                </Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'discover' && styles.activeTab]}
+                onPress={() => setActiveTab('discover')}
+              >
+                <Text style={[styles.tabText, activeTab === 'discover' && styles.activeTabText]}>
+                  Discover
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Icon name="account-group-outline" size={48} color={theme.colors.muted} />
+            <Icon name="account-group-outline" size={48} color={theme.colors.text} />
             <Text style={styles.emptyText}>
               {searchQuery.length > 0
                 ? 'No groups match your search'
@@ -272,14 +274,19 @@ const GroupsScreen = () => {
                 ? 'You haven\'t joined any groups yet'
                 : 'No groups to discover'}
             </Text>
-            {activeTab === 'joined' && (
-              <TouchableOpacity
-                style={styles.createGroupButton}
-                onPress={() => navigation.navigate('CreateGroup')}
-              >
-                <Text style={styles.createGroupText}>Create a Group</Text>
-              </TouchableOpacity>
-            )}
+          </View>
+        }
+        ListFooterComponent={
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('CreateGroup')}>
+              <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Group</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('JoinGroup')}>
+              <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Join Group (with Invite)</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Invite', { groupAddress: '1' })}>
+              <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>View Group Invites</Text>
+            </TouchableOpacity>
           </View>
         }
       />
@@ -291,19 +298,7 @@ const GroupsScreen = () => {
       >
         <Icon name="plus" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => {/* TODO: Implement create group logic */}}>
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Group</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => {/* TODO: Implement join group logic */}}>
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Join Group (with Invite)</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Invite', { groupAddress: item.address.toBase58() })}>
-          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>View Group Invites</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -429,7 +424,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: theme.colors.muted,
+    color: theme.colors.text,
     textAlign: 'center',
     marginTop: 16,
     marginBottom: 24,

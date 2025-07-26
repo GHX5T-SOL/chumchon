@@ -36,7 +36,7 @@ export const theme = {
     // UI elements
     border: '#333333', // Border color
     highlight: '#FF00FF80', // Semi-transparent magenta
-    overlay: 'rgba(0, 0, 0, 0.7)', // Overlay for modals
+    overlay: 'rgba(18, 18, 18, 0.8)', // Overlay for modals
     
     // Gradients (to be used with linear gradient)
     gradientStart: '#8A2BE2', // Purple start
@@ -46,7 +46,7 @@ export const theme = {
     // Special colors
     notification: '#FF00FF', // Magenta for notifications
     white: '#FFFFFF', // Pure white
-    black: '#000000', // Pure black
+    black: '#CCCCCC', // Light grey (changed from pure black)
     
     // Specific UI elements
     buttonPrimary: '#FF00FF',

@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.card,
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: theme.colors.black,
+    shadowColor: theme.colors.accent,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
