@@ -49,32 +49,45 @@ export const createUserProfile = async (
     if (!signAndSendTransaction) throw new Error('No signAndSendTransaction');
     if (!owner) throw new Error('No owner');
     
+    console.log('[profileService] All parameters validated, creating transaction...');
+    
     // Create the transaction
     const transaction = new Transaction();
     console.log('[profileService] Transaction created');
     
     // Add the create user profile instruction, explicitly passing show_balance: false
-    const ix = await createUserProfileInstruction({
-      feePayer: owner,
-      owner,
+    console.log('[profileService] Building instruction with params:', {
+      feePayer: owner.toString(),
+      owner: owner.toString(),
       username,
       bio,
-      showBalance: false,
-    }, {
-      programId,
-      connection,
     });
     
+    let ix;
+    try {
+      ix = await createUserProfileInstruction({
+        feePayer: owner,
+        owner,
+        username,
+        bio,
+      });
+      console.log('[profileService] Instruction built successfully:', ix);
+    } catch (instructionError) {
+      console.error('[profileService] Failed to build instruction:', instructionError);
+      throw new Error(`Failed to build createUserProfile instruction: ${instructionError.message}`);
+    }
+    
     transaction.add(ix);
-    console.log('[profileService] Instruction added to transaction', transaction);
+    console.log('[profileService] Instruction added to transaction, transaction size:', transaction.instructions.length);
     
     // Sign and send the transaction
+    console.log('[profileService] About to sign and send transaction...');
     const signature = await signAndSendTransaction(transaction);
     console.log('[profileService] Profile created with signature:', signature);
     
     // Return the new profile
     const now = Date.now();
-    return {
+    const newProfile = {
       owner,
       username,
       bio,
@@ -84,8 +97,16 @@ export const createUserProfile = async (
       lastActive: now,
       completedTutorials: [],
     };
+    
+    console.log('[profileService] Returning new profile:', newProfile);
+    return newProfile;
   } catch (error) {
     console.error('[profileService] Failed to create profile:', error);
+    console.error('[profileService] Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
     throw error;
   }
 };
@@ -112,12 +133,18 @@ export const getUserProfile = async (
     if (!connection) throw new Error('No Solana connection');
     if (!owner) throw new Error('No owner');
     
-    const profile = await fetchUserProfile({
-      owner,
-    }, {
-      programId,
-      connection,
-    });
+    // Derive the PDA for the user profile
+    const [profilePda] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("user"),
+        owner.toBuffer(),
+      ],
+      programId
+    );
+    
+    console.log('[profileService] Derived profile PDA:', profilePda.toString());
+    
+    const profile = await fetchUserProfile(profilePda);
     
     console.log('[profileService] Profile fetched:', profile);
     

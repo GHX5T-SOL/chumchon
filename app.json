@@ -40,7 +40,13 @@
         }
       ],
       "expo-web-browser",
-      "expo-font"
+      "expo-font",
+      [
+        "@solana-mobile/mobile-wallet-adapter-expo-bottom-sheet",
+        {
+          "walletUriBase": "https://phantom.app"
+        }
+      ]
     ],
     "extra": {
       "eas": {

@@ -15,8 +15,8 @@ const WALLET_AUTH_KEY = 'chumchon_wallet_auth';
 
 // App identity information (ideally would come from environment variables)
 const APP_NAME = process.env.APP_NAME || 'Chumchon App';
-const APP_URI = process.env.APP_URI || 'https://chumchon.app';
-const APP_ICON = process.env.APP_ICON || 'https://chumchon.app/icon.png';
+const APP_URI = process.env.APP_URI || 'https://example.com';
+const APP_ICON = process.env.APP_ICON || ''; // Empty to omit icon
 
 // Define the context type
 interface SolanaContextType {
@@ -66,16 +66,11 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
     publicKey?: string;
   } | null>(null);
 
-  // Initialize connection after component mount
+  // Initialize connection immediately
   useEffect(() => {
-    // Use a timeout to defer connection initialization
-    const timer = setTimeout(() => {
-      import('@/services/programService').then(({ getConnection }) => {
-        setConnection(getConnection());
-      });
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    import('@/services/programService').then(({ getConnection }) => {
+      setConnection(getConnection());
+    });
   }, []);
 
   // Load saved authorization on startup - with debounce
@@ -87,14 +82,31 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
         const savedAuth = await AsyncStorage.getItem(WALLET_AUTH_KEY);
         if (savedAuth && isMounted) {
           const auth = JSON.parse(savedAuth);
-          setAuthorizationResult(auth);
+          
+          // Validate the stored publicKey before setting it
           if (auth.publicKey) {
-            setPublicKey(new PublicKey(auth.publicKey));
-            setConnected(true);
+            try {
+              new PublicKey(auth.publicKey); // Throws if invalid base58
+              setAuthorizationResult(auth);
+              setPublicKey(new PublicKey(auth.publicKey));
+              setConnected(true);
+            } catch (publicKeyError) {
+              console.error('Invalid stored publicKey:', publicKeyError);
+              // Clear corrupt data
+              await AsyncStorage.removeItem(WALLET_AUTH_KEY);
+              setAuthorizationResult(null);
+              setPublicKey(null);
+              setConnected(false);
+            }
           }
         }
       } catch (error) {
         console.error('Failed to load authorization:', error);
+        // Clear any corrupt data
+        await AsyncStorage.removeItem(WALLET_AUTH_KEY);
+        setAuthorizationResult(null);
+        setPublicKey(null);
+        setConnected(false);
       }
     };
 
@@ -119,32 +131,50 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
         // Try to reauthorize if we have an auth token
         if (authorizationResult?.authToken) {
           try {
+            const identity = {
+              name: APP_NAME,
+              uri: APP_URI,
+            };
+            
+            // Only include icon if it's provided
+            if (APP_ICON) {
+              identity.icon = APP_ICON;
+            }
+            
             return await wallet.reauthorize({
               auth_token: authorizationResult.authToken,
-              identity: {
-                name: APP_NAME,
-                uri: APP_URI,
-                icon: APP_ICON,
-              },
+              identity,
             });
-          } catch (e) {
-            console.log('Reauthorization failed, falling back to authorization', e);
-          }
+                      } catch (e) {
+              console.log('Reauthorization failed, falling back to authorization', e);
+              // Clear invalid token
+              setAuthorizationResult(null);
+              await AsyncStorage.removeItem(WALLET_AUTH_KEY);
+            }
         }
         
         // If reauthorization fails or we don't have an auth token, authorize
+        const identity = {
+          name: APP_NAME,
+          uri: APP_URI,
+        };
+        
+        // Only include icon if it's provided
+        if (APP_ICON) {
+          identity.icon = APP_ICON;
+        }
+        
         return await wallet.authorize({
-          cluster: network,
-          identity: {
-            name: APP_NAME,
-            uri: APP_URI,
-            icon: APP_ICON,
-          },
+          cluster: 'devnet', // Explicitly set to devnet to match the network
+          identity,
         });
       });
       
+      console.log('[SolanaProvider] Authorization result:', authResult);
+      
       // Save the authorization result
       const walletPublicKey = authResult.accounts[0].address;
+      console.log('[SolanaProvider] Received address from wallet:', walletPublicKey);
       const newAuthResult = {
         authToken: authResult.auth_token,
         publicKey: walletPublicKey,
@@ -154,8 +184,29 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
       setAuthorizationResult(newAuthResult);
       setPublicKey(new PublicKey(walletPublicKey));
       setConnected(true);
+      console.log('[SolanaProvider] Authorization succeeded, state updated:', { connected: true, publicKey: walletPublicKey });
     } catch (error) {
       console.error('Authorization error:', error);
+      console.error('Authorization error stack:', error.stack);
+      console.error('Authorization error details:', {
+        APP_NAME,
+        APP_URI,
+        APP_ICON,
+        hasAuthToken: !!authorizationResult?.authToken
+      });
+      
+      // Handle cancellation exception specifically
+      if (error instanceof Error && error.message.includes('CancellationException')) {
+        console.log('[SolanaProvider] Connection was cancelled by user or wallet');
+        // Clear invalid token on cancellation
+        await AsyncStorage.removeItem(WALLET_AUTH_KEY);
+        setAuthorizationResult(null);
+        setPublicKey(null);
+        setConnected(false);
+        throw new Error('Wallet connection was cancelled. Please try again.');
+      }
+      
+      throw error;
     } finally {
       setAuthorizationInProgress(false);
       setConnecting(false);

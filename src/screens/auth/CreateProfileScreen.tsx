@@ -1,6 +1,7 @@
 // src/screens/auth/CreateProfileScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { theme, commonStyles } from '@/theme';
@@ -9,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const CreateProfileScreen = () => {
   const { createProfile, isLoading } = useAuth();
-  const { publicKey } = useSolana();
+  const { publicKey, authorizeSession, disconnect, network } = useSolana();
   const navigation = useNavigation();
   
   const [username, setUsername] = useState('');
@@ -46,6 +47,30 @@ const CreateProfileScreen = () => {
     return isValid;
   };
 
+  // Handle reconnect wallet
+  const handleReconnectWallet = async () => {
+    console.log('[CreateProfile] Reconnecting wallet...');
+    try {
+      await disconnect();
+      await authorizeSession();
+      console.log('[CreateProfile] Wallet reconnected successfully');
+    } catch (error) {
+      console.error('[CreateProfile] Reconnect failed:', error);
+      Alert.alert('Reconnect Error', error.message || 'Failed to reconnect wallet. Please try again.');
+    }
+  };
+
+  // Handle clear wallet storage
+  const handleClearStorage = async () => {
+    try {
+      await AsyncStorage.removeItem('chumchon_wallet_auth');
+      Alert.alert('Storage Cleared', 'Wallet storage has been cleared. Please restart the app and reconnect your wallet.');
+    } catch (error) {
+      console.error('[CreateProfile] Failed to clear storage:', error);
+      Alert.alert('Error', 'Failed to clear storage. Please try again.');
+    }
+  };
+
   // Handle create profile
   const handleCreateProfile = async () => {
     console.log('[CreateProfile] Button pressed');
@@ -55,6 +80,7 @@ const CreateProfileScreen = () => {
     }
     console.log('[CreateProfile] Validation passed', { username, bio });
     try {
+      console.log('[CreateProfile] About to call createProfile from useAuth:', { createProfile: typeof createProfile });
       console.log('[CreateProfile] Calling createProfile...');
       await createProfile(username, bio);
       console.log('[CreateProfile] createProfile success');
@@ -76,9 +102,28 @@ const CreateProfileScreen = () => {
         <Text style={styles.subtitle}>
           Set up your on-chain identity to start using Chumchon
         </Text>
+        <Text style={styles.networkText}>Network: {String(network ?? 'Unknown')}</Text>
       </View>
 
-      {/* Removed walletInfo box */}
+      {/* Reconnect Wallet Button */}
+      <View style={{ width: '100%', alignItems: 'center', marginBottom: 16 }}>
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton, { width: '100%' }]}
+          onPress={handleReconnectWallet}
+        >
+          <Text style={styles.secondaryButtonText}>Reconnect Wallet</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Clear Storage Button */}
+      <View style={{ width: '100%', alignItems: 'center', marginBottom: 16 }}>
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton, { width: '100%' }]}
+          onPress={handleClearStorage}
+        >
+          <Text style={styles.secondaryButtonText}>Clear Wallet Storage</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.formCentered}> {/* New style for centering */}
         <View style={styles.inputContainer}>
@@ -92,7 +137,7 @@ const CreateProfileScreen = () => {
             maxLength={32}
           />
           {usernameError && <Text style={styles.errorText}>{usernameError}</Text>}
-          <Text style={styles.charCount}>{username.length}/32</Text>
+          <Text style={styles.charCount}>{String(username.length)}/32</Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -107,7 +152,7 @@ const CreateProfileScreen = () => {
             maxLength={256}
           />
           {bioError && <Text style={styles.errorText}>{bioError}</Text>}
-          <Text style={styles.charCount}>{bio.length}/256</Text>
+          <Text style={styles.charCount}>{String(bio.length)}/256</Text>
         </View>
 
       </View>
@@ -159,6 +204,12 @@ const styles = StyleSheet.create({
     color: theme.colors.accent,
     lineHeight: 24,
     textAlign: 'center',
+  },
+  networkText: {
+    fontSize: 14,
+    color: theme.colors.muted,
+    textAlign: 'center',
+    marginTop: 8,
   },
   walletInfo: {
     backgroundColor: theme.colors.surface,
@@ -232,8 +283,18 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.buttonPrimary,
     ...commonStyles.shadow,
   },
+  secondaryButton: {
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    ...commonStyles.shadow,
+  },
   buttonText: {
     ...commonStyles.buttonText,
+  },
+  secondaryButtonText: {
+    ...commonStyles.buttonText,
+    color: theme.colors.text,
   },
   infoContainer: {
     padding: 16,

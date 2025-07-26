@@ -77,37 +77,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsAuthenticated(true);
           await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
         } else if (isMounted) {
-          // HACKATHON/DEMO BYPASS: If no profile, set a mock profile and allow access
-          const mockProfile = {
-            owner: publicKey,
-            username: 'DemoUser',
-            bio: 'This is a demo profile. On-chain profile creation is bypassed for hackathon/demo.',
-            showBalance: false,
-            reputationScore: 0,
-            joinDate: Date.now(),
-            lastActive: Date.now(),
-            completedTutorials: [],
-          };
-          setUserProfile(mockProfile);
-          setIsAuthenticated(true);
-          await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(mockProfile));
+          // No profile found - user needs to create one
+          setUserProfile(null);
+          setIsAuthenticated(false);
         }
       } catch (error) {
         if (isMounted) {
-          // HACKATHON/DEMO BYPASS: On error, set a mock profile and allow access
-          const mockProfile = {
-            owner: publicKey,
-            username: 'DemoUser',
-            bio: 'This is a demo profile. On-chain profile creation is bypassed for hackathon/demo.',
-            showBalance: false,
-            reputationScore: 0,
-            joinDate: Date.now(),
-            lastActive: Date.now(),
-            completedTutorials: [],
-          };
-          setUserProfile(mockProfile);
-          setIsAuthenticated(true);
-          await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(mockProfile));
+          console.error('[AuthProvider] Error loading profile:', error);
+          // On error, don't set mock profile - let user create real profile
+          setUserProfile(null);
+          setIsAuthenticated(false);
         }
       } finally {
         if (isMounted) {
@@ -148,13 +127,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Create profile function
   const createProfile = async (username: string, bio: string) => {
+    console.log('[AuthProvider] createProfile entered, pre-check state:', {
+      connected,
+      hasPublicKey: !!publicKey,
+      hasConnection: !!connection,
+      hasSignAndSend: !!signAndSendTransaction,
+      network: connection?.rpcEndpoint // Log endpoint to check devnet/mainnet
+    });
+    
+    if (!connected || !publicKey || !connection || !signAndSendTransaction) {
+      console.error('[AuthProvider] Validation failed:', { 
+        connected, 
+        publicKey: publicKey?.toString(), 
+        connection: !!connection, 
+        signAndSendTransaction: !!signAndSendTransaction 
+      });
+      throw new Error('Wallet not connected or services not loaded');
+    }
+    
+    setIsLoading(true);
     try {
-      if (!connected || !publicKey || !connection || !signAndSendTransaction) {
-        throw new Error('Wallet not connected or services not loaded');
-      }
-      await profileService.createUserProfile(connection, signAndSendTransaction, publicKey, username, bio);
+      console.log('[AuthProvider] Creating profile with:', { username, bio, publicKey: publicKey.toString() });
+      
+      // Call the profile service to create the profile on-chain
+      const newProfile = await profileService.createUserProfile(connection, signAndSendTransaction, publicKey, username, bio);
+      
+      console.log('[AuthProvider] Profile created successfully:', newProfile);
+      
+      // Update the local state with the new profile
+      setUserProfile(newProfile);
+      setIsAuthenticated(true);
+      
+      // Save to local storage
+      await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(newProfile));
+      
+      console.log('[AuthProvider] Profile saved to local storage and state updated');
     } catch (err) {
       console.error('[AuthProvider] createProfile error:', err);
+      throw err; // Re-throw the error so the UI can handle it
+    } finally {
+      setIsLoading(false);
     }
   };
 
