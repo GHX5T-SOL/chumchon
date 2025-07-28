@@ -58,57 +58,52 @@ chumchon_mobile/
 
 ---
 
-## 🛠️ Prerequisites
+## 🛠️ Prerequisites to preview UI demo
 
-- **Node.js** (v16+)
-- **Yarn** or **npm**
-- **Android Studio** (for Android emulator/AVD) **or** a physical Android device
-- **Solana CLI tools** ([Install Guide](https://docs.solana.com/cli/install-solana-cli-tools))
-- **Anchor Framework** ([Install Guide](https://book.anchor-lang.com/chapter_2/installation.html))
+
+- **Android** (for Android emulator/AVD) **or** a physical Android device
+
 - **Solana Wallet App** (e.g., [Phantom](https://phantom.app/), [Backpack](https://backpack.app/))
   - Set wallet to **devnet**
-- **Expo Go** app (from Google Play) **or** an [Expo account](https://expo.dev/signup) (for EAS builds)
-
 ---
 
 ## ⚡ Installation & Running
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/GHX5T-SOL/chumchon.git
-   cd chumchon_mobile
-   ```
+1. **Download and Install the APK:**
+   https://expo.dev/accounts/ghxstxbt/projects/chumchon/builds/f7c01e1c-611a-492e-9747-fa5184dabe41
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  █ ▄▄▄▄▄ █   █▄ █▄▀▄▄▀▄ ▀▄▀▄ ▄▄█ ▄▄▄▄▄ █
+  █ █   █ █ ▀▄ █▀▄  ▄▄▄█▄█▄█▀▀▄▄█ █   █ █
+  █ █▄▄▄█ █▀██▀▀ ▀▄▄▀█▀█ ▀▄█ █▄▄█ █▄▄▄█ █
+  █▄▄▄▄▄▄▄█▄▀▄█ █ █▄▀▄█▄▀ █▄█▄▀▄█▄▄▄▄▄▄▄█
+  █▄▄▀█ ▄▄▀▀▀▀▄▀█▄▀▀▄▄▄▀ █▀▄█ ▀ ██▄▀▄  ▄█
+  █▄█▀ ▄▄▄█▄ ▄ ▄██ █ ▀█ ▀█  ▄ ▄▀▄▀▄█ ▀▄▀█
+  █▀█   ▄▄▀█▀▄█▄▀▄ █▄▄▄▄▄▄ ▄▀█▀ ▄▄▄▀▀ ▀▄█
+  █▄█▀█▀▄▄█  ▄█▀█▄▄█ ▀█▄▀   ██  ▄▀  ▀▀▀██
+  ██ ▀▀▄ ▄▄▀█▀▄▀▀▀▀▄▄▀▄▀▄ ▀█▀█  ▄▄ ▀▀ ▀▄█
+  █▄ ▀   ▄▄▄▄▄ ▄█▄ ▄ ▀██ █ █▄█  █ ▀▄█▀▀██
+  █▄█▀ ▄▀▄ ▀▀██▄▀▀▀▄  ▄▀ ▄ ▄█▀ ▀ ▄█▀▀▄ ▄█
+  █▄   ██▄██▀▄█▀█▀▄█  ▀▄ ▄▄▄▄ ▄███ ██ ▀██
+  █▀▀▄█▄▀▄▀█  ▄▀▀▀▀▄▄▄▄▄ ▄▀▄█▀▀▀▄▄▄▀▄  ▄█
+  ███▄  ▄▄█▄▄▄ ▄▄█ ▀ ▄▀  ▀▄ ▄█▄█▀ ▀█▄ ▀██
+  █▄▄█▄▄▄▄▄▀█ █▄▀▀ ▄ ▄▄▀▄▄  ▀▀▄ ▄▄▄ ▄▄███
+  █ ▄▄▄▄▄ █▀ ▀█▀█  █ ▀▀▀ ▀▄▄█ ▀ █▄█ ▄ ▀██
+  █ █   █ █▄ ▀▄ ▀▄ █▄▄▄▄▄ ▀█▀▀▀    ▄▀ █▄█
+  █ █▄▄▄█ █▀ ▄ ▄█▄ █▀█▀ ▀▄ ▀▄▀▄▄█▄▄▀▀▀▀██
+  █▄▄▄▄▄▄▄█▄▄████▄██▄██▄▄█████▄██▄███▄▄▄█
 
-3. **Build the Android app (EAS Build):**
-   ```bash
-   npx eas build --profile development --platform android
-   ```
-   - Follow the prompts. You may need to log in to Expo.
-   - When the build is ready, you can:
-     - **On emulator:** Press `a` to open on Android emulator (if running)
-     - **On device:** Scan the QR code with Expo Go or your camera app
 
-4. **Start the Expo development server:**
-   - Open a new terminal in `chumchon_mobile`:
-   ```bash
-   npx expo start
-   ```
-   - Press `a` to open on Android emulator, or scan the QR code with Expo Go on your device.
 
----
+   Or for preview on web: https://chumchon--demo.expo.app/
+
 
 ## 🧪 Testing
 
 Run the Solana program tests:
 
 ```bash
+git clone https://github.com/GHX5T-SOL/chumchon.git
 cd chumchon_program
 anchor test
 ```

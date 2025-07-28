@@ -15,7 +15,8 @@
     },
     "preview": {
       "extends": "base",
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "demo"
     },
     "production": {
       "extends": "base",
