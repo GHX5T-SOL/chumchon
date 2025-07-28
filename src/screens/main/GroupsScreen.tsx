@@ -74,6 +74,7 @@ const MOCK_GROUPS: Group[] = [
 ];
 
 const GroupsScreen = () => {
+  console.log('GroupsScreen rendered');
   const navigation = useNavigation<GroupsScreenNavigationProp>();
   const { publicKey, connection } = useSolana();
   const [groups, setGroups] = useState<Group[]>([]);

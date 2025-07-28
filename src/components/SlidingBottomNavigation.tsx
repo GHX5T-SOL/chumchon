@@ -11,15 +11,20 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { MainTabsParamList } from '@/navigation/AppNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MainTabsParamList, MainStackParamList } from '@/navigation/AppNavigator';
 import { theme } from '@/theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-type SlidingBottomNavigationProp = BottomTabNavigationProp<MainTabsParamList>;
+type SlidingBottomNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<MainTabsParamList>,
+  NativeStackNavigationProp<MainStackParamList>
+>;
 
 interface TabItem {
   name: keyof MainTabsParamList;
@@ -49,6 +54,10 @@ const SlidingBottomNavigation = () => {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const panRef = useRef(null);
 
+  // Debug current route
+  console.log('Current route:', route.name);
+  console.log('Available tabs:', TAB_ITEMS.map(tab => tab.name));
+
   const primaryTabs = TAB_ITEMS.filter(tab => tab.isPrimary);
   const secondaryTabs = TAB_ITEMS.filter(tab => !tab.isPrimary);
 
@@ -65,7 +74,14 @@ const SlidingBottomNavigation = () => {
   };
 
   const handleTabPress = (tabName: keyof MainTabsParamList) => {
-    navigation.navigate(tabName);
+    console.log('Navigating to:', tabName);
+    console.log('Current route before navigation:', route.name);
+    try {
+      navigation.navigate(tabName);
+      console.log('Navigation successful');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   const renderIcon = (item: TabItem, isActive: boolean) => {
@@ -82,10 +98,15 @@ const SlidingBottomNavigation = () => {
   const renderTab = (item: TabItem, index: number) => {
     const isActive = route.name === item.name;
     
+    console.log(`Tab ${item.name}: isActive = ${isActive}, current route = ${route.name}`);
+    
     return (
       <TouchableOpacity
         key={item.name}
-        style={styles.tabButton}
+        style={[
+          styles.tabButton,
+          isActive && styles.tabButtonActive
+        ]}
         onPress={() => handleTabPress(item.name)}
         activeOpacity={0.7}
       >
@@ -185,6 +206,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minWidth: 60,
     paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+  },
+  tabButtonActive: {
+    backgroundColor: theme.colors.accent + '20',
   },
   tabLabel: {
     fontSize: 10,

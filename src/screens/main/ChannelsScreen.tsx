@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 
 const ChannelsScreen = () => {
+  console.log('ChannelsScreen rendered');
   const navigation = useNavigation();
   // Placeholder channel list
   const channels = [

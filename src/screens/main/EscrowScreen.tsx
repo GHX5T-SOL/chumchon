@@ -81,6 +81,7 @@ const TOKEN_NAMES: Record<string, string> = {
 };
 
 const EscrowScreen = () => {
+  console.log('EscrowScreen rendered');
   const navigation = useNavigation<EscrowScreenNavigationProp>();
   const { publicKey, connection } = useSolana();
   const [escrows, setEscrows] = useState<Escrow[]>([]);

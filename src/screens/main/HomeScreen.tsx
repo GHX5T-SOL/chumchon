@@ -27,6 +27,7 @@ const RECENT_ACTIVITY = [
 type HomeScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 const HomeScreen = () => {
+  console.log('HomeScreen rendered');
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { userProfile, refreshProfile } = useAuth();
   const [refreshing, setRefreshing] = useState(false);

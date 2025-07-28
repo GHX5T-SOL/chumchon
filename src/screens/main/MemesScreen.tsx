@@ -113,6 +113,7 @@ const MOCK_SUBMISSIONS: MemeSubmission[] = [
 ];
 
 const MemesScreen = () => {
+  console.log('MemesScreen rendered');
   const navigation = useNavigation<MemesScreenNavigationProp>();
   const { publicKey } = useSolana();
   const [challenges, setChallenges] = useState<MemeChallenge[]>([]);
