@@ -72,7 +72,10 @@ chumchon_mobile/
 1. **Download and Install the APK:**
    https://expo.dev/accounts/ghxstxbt/projects/chumchon/builds/f7c01e1c-611a-492e-9747-fa5184dabe41
 
-   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+
+[QR CODE] (https://i.ibb.co/Ng5Sfv1d/chumchon-qr.png)
+
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   █ ▄▄▄▄▄ █   █▄ █▄▀▄▄▀▄ ▀▄▀▄ ▄▄█ ▄▄▄▄▄ █
   █ █   █ █ ▀▄ █▀▄  ▄▄▄█▄█▄█▀▀▄▄█ █   █ █
   █ █▄▄▄█ █▀██▀▀ ▀▄▄▀█▀█ ▀▄█ █▄▄█ █▄▄▄█ █
@@ -93,7 +96,7 @@ chumchon_mobile/
   █ █▄▄▄█ █▀ ▄ ▄█▄ █▀█▀ ▀▄ ▀▄▀▄▄█▄▄▀▀▀▀██
   █▄▄▄▄▄▄▄█▄▄████▄██▄██▄▄█████▄██▄███▄▄▄█
 
-
+ 
 
    Or for preview on web: https://chumchon--demo.expo.app/
 
