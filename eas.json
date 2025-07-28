@@ -10,7 +10,8 @@
     "development": {
       "extends": "base",
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "demo"
     },
     "preview": {
       "extends": "base",
