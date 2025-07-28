@@ -55,7 +55,9 @@
     },
     "runtimeVersion": "1.0.0",
     "updates": {
-      "url": "https://u.expo.dev/84e8dcd8-1c98-40a2-9eac-98ead946c368"
+      "url": "https://u.expo.dev/84e8dcd8-1c98-40a2-9eac-98ead946c368",
+      "fallbackToCacheTimeout": 0,
+      "enabled": true
     },
     "owner": "ghxstxbt"
   }
