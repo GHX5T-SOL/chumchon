@@ -10,21 +10,13 @@ import {
   State,
   Dimensions,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { CompositeNavigationProp } from '@react-navigation/native';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainTabsParamList, MainStackParamList } from '@/navigation/AppNavigator';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { MainTabsParamList } from '@/navigation/AppNavigator';
 import { theme } from '@/theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width: screenWidth } = Dimensions.get('window');
-
-type SlidingBottomNavigationProp = CompositeNavigationProp<
-  BottomTabNavigationProp<MainTabsParamList>,
-  NativeStackNavigationProp<MainStackParamList>
->;
 
 interface TabItem {
   name: keyof MainTabsParamList;
@@ -47,16 +39,19 @@ const TAB_ITEMS: TabItem[] = [
   { name: 'Prices', label: 'Prices', icon: 'trending-up', iconType: 'ionicons', isPrimary: false },
 ];
 
-const SlidingBottomNavigation = () => {
-  const navigation = useNavigation<SlidingBottomNavigationProp>();
-  const route = useRoute();
+const SlidingBottomNavigation = (props: BottomTabBarProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
   const panRef = useRef(null);
 
+  // Get current tab from props
+  const currentTabName = props.state.routes[props.state.index].name as keyof MainTabsParamList;
+
   // Debug current route
-  console.log('Current route:', route.name);
+  console.log('=== SLIDING NAVIGATION DEBUG ===');
+  console.log('Current tab name:', currentTabName);
   console.log('Available tabs:', TAB_ITEMS.map(tab => tab.name));
+  console.log('Navigation state:', props.state);
 
   const primaryTabs = TAB_ITEMS.filter(tab => tab.isPrimary);
   const secondaryTabs = TAB_ITEMS.filter(tab => !tab.isPrimary);
@@ -74,13 +69,23 @@ const SlidingBottomNavigation = () => {
   };
 
   const handleTabPress = (tabName: keyof MainTabsParamList) => {
-    console.log('Navigating to:', tabName);
-    console.log('Current route before navigation:', route.name);
+    console.log('=== TAB PRESS DEBUG ===');
+    console.log('Pressed tab:', tabName);
+    console.log('Current tab before navigation:', currentTabName);
+    console.log('Navigation props:', props);
+    
     try {
-      navigation.navigate(tabName);
+      console.log('Attempting navigation to:', tabName);
+      props.navigation.navigate(tabName);
       console.log('Navigation successful');
     } catch (error) {
       console.error('Navigation error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        tabName,
+        currentTabName
+      });
     }
   };
 
@@ -96,9 +101,9 @@ const SlidingBottomNavigation = () => {
   };
 
   const renderTab = (item: TabItem, index: number) => {
-    const isActive = route.name === item.name;
+    const isActive = currentTabName === item.name;
     
-    console.log(`Tab ${item.name}: isActive = ${isActive}, current route = ${route.name}`);
+    console.log(`Tab ${item.name}: isActive = ${isActive}, current tab = ${currentTabName}`);
     
     return (
       <TouchableOpacity

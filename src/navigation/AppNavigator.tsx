@@ -133,6 +133,7 @@ const MainTabsNavigator = () => {
         tabBarStyle: { display: 'none' }, // Hide default tab bar
         headerShown: false, // Hide header since MainNavigator provides it
       }}
+      tabBar={(props) => <SlidingBottomNavigation {...props} />}
     >
       <MainTabs.Screen
         name="Home"
@@ -185,16 +186,6 @@ const PlaceholderScreen = ({ route, navigation }: any) => (
   </View>
 );
 
-// Wrapper component that includes sliding navigation
-const MainTabsWithSlidingNavigation = () => {
-  return (
-    <View style={{ flex: 1 }}>
-      <MainTabsNavigator />
-      <SlidingBottomNavigation />
-    </View>
-  );
-};
-
 // Main navigator
 const MainNavigator = () => {
   return (
@@ -213,7 +204,7 @@ const MainNavigator = () => {
     >
       <MainStack.Screen 
         name="MainTabs" 
-        component={MainTabsWithSlidingNavigation} 
+        component={MainTabsNavigator} 
         options={{ title: 'Chumchon' }}
       />
       <MainStack.Screen name="GroupChat" component={GroupChatScreen} />
