@@ -1,3 +1,4 @@
+npx eas build --profile development --platform android
 # Node modules
 node_modules/
 
