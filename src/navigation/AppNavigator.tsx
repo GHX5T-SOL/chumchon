@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { theme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { WalletConnectButton } from '@/components/solana/WalletConnectButton';
+import SlidingBottomNavigation from '@/components/SlidingBottomNavigation';
 
 // Auth screens
 import WelcomeScreen from '@/screens/auth/WelcomeScreen';
@@ -28,6 +29,10 @@ import CreateGroupScreen from '@/screens/main/CreateGroupScreen';
 import JoinGroupScreen from '@/screens/main/JoinGroupScreen';
 import CreateEscrowScreen from '@/screens/main/CreateEscrowScreen';
 import CreateMemeScreen from '@/screens/main/CreateMemeScreen';
+import LeaderboardScreen from '@/screens/main/LeaderboardScreen';
+import TradeScreen from '@/screens/main/TradeScreen';
+import PricesScreen from '@/screens/main/PricesScreen';
+import MessagesScreen from '@/screens/main/MessagesScreen';
 
 // Detail screens
 import GroupChatScreen from '@/screens/details/GroupChatScreen';
@@ -73,6 +78,10 @@ export type MainStackParamList = {
   CreateEscrow: undefined;
   CreateMeme: undefined;
   JoinGroup: undefined;
+  Leaderboard: undefined;
+  Trade: undefined;
+  Prices: undefined;
+  Messages: undefined;
 };
 
 export type MainTabsParamList = {
@@ -81,6 +90,10 @@ export type MainTabsParamList = {
   Channels: undefined;
   Memes: undefined;
   Escrow: undefined;
+  Leaderboard: undefined;
+  Trade: undefined;
+  Prices: undefined;
+  Messages: undefined;
   Profile: undefined;
 };
 
@@ -112,75 +125,54 @@ const AuthNavigator = () => {
   );
 };
 
-// Main tabs navigator
+// Main tabs navigator with custom sliding navigation
 const MainTabsNavigator = () => {
   return (
     <MainTabs.Navigator
       screenOptions={{
-        tabBarStyle: {
-          backgroundColor: theme.colors.card,
-          borderTopColor: theme.colors.border,
-          height: 60,
-          paddingBottom: 8,
-        },
-        tabBarActiveTintColor: theme.colors.accent,
-        tabBarInactiveTintColor: theme.colors.textSecondary,
+        tabBarStyle: { display: 'none' }, // Hide default tab bar
         headerShown: false, // Hide header since MainNavigator provides it
       }}
     >
       <MainTabs.Screen
         name="Home"
         component={HomeScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size} />
-          ),
-        }}
       />
       <MainTabs.Screen
         name="Groups"
         component={GroupsScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people" color={color} size={size} />
-          ),
-        }}
       />
       <MainTabs.Screen
         name="Channels"
         component={ChannelsScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="megaphone" color={color} size={size} />
-          ),
-        }}
       />
       <MainTabs.Screen
         name="Memes"
         component={MemesScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="images" color={color} size={size} />
-          ),
-        }}
       />
       <MainTabs.Screen
         name="Escrow"
         component={EscrowScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="swap-horizontal" color={color} size={size} />
-          ),
-        }}
+      />
+      <MainTabs.Screen
+        name="Leaderboard"
+        component={LeaderboardScreen}
+      />
+      <MainTabs.Screen
+        name="Trade"
+        component={TradeScreen}
+      />
+      <MainTabs.Screen
+        name="Prices"
+        component={PricesScreen}
+      />
+      <MainTabs.Screen
+        name="Messages"
+        component={MessagesScreen}
       />
       <MainTabs.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
-          ),
-        }}
       />
     </MainTabs.Navigator>
   );
@@ -192,6 +184,16 @@ const PlaceholderScreen = ({ route, navigation }: any) => (
     <Text style={{ color: theme.colors.text, fontSize: 18 }}>This screen is under construction.</Text>
   </View>
 );
+
+// Wrapper component that includes sliding navigation
+const MainTabsWithSlidingNavigation = () => {
+  return (
+    <View style={{ flex: 1 }}>
+      <MainTabsNavigator />
+      <SlidingBottomNavigation />
+    </View>
+  );
+};
 
 // Main navigator
 const MainNavigator = () => {
@@ -211,7 +213,7 @@ const MainNavigator = () => {
     >
       <MainStack.Screen 
         name="MainTabs" 
-        component={MainTabsNavigator} 
+        component={MainTabsWithSlidingNavigation} 
         options={{ title: 'Chumchon' }}
       />
       <MainStack.Screen name="GroupChat" component={GroupChatScreen} />
@@ -231,6 +233,10 @@ const MainNavigator = () => {
       <MainStack.Screen name="CreateEscrow" component={CreateEscrowScreen} options={{ title: 'Create Escrow' }} />
       <MainStack.Screen name="CreateMeme" component={CreateMemeScreen} options={{ title: 'Create Meme Challenge' }} />
       <MainStack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ title: 'Join Group' }} />
+      <MainStack.Screen name="Leaderboard" component={LeaderboardScreen} options={{ title: 'Top Traders' }} />
+      <MainStack.Screen name="Trade" component={TradeScreen} options={{ title: 'Trade' }} />
+      <MainStack.Screen name="Prices" component={PricesScreen} options={{ title: 'Prices' }} />
+      <MainStack.Screen name="Messages" component={MessagesScreen} options={{ title: 'Messages' }} />
     </MainStack.Navigator>
   );
 };

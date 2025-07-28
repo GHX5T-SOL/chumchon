@@ -120,6 +120,81 @@ const ProfileScreen = () => {
         </View>
       </View>
 
+      {/* My Holdings */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>My Holdings</Text>
+          <TouchableOpacity>
+            <Text style={styles.seeAllText}>View All</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.holdingsContainer}>
+          {/* SOL */}
+          <View style={styles.holdingItem}>
+            <View style={styles.holdingInfo}>
+              <View style={styles.tokenIcon}>
+                <Icon name="currency-btc" size={20} color="#9945FF" />
+              </View>
+              <View style={styles.holdingDetails}>
+                <Text style={styles.tokenName}>SOL</Text>
+                <Text style={styles.tokenAmount}>14.000</Text>
+              </View>
+            </View>
+            <View style={styles.holdingValue}>
+              <Text style={styles.valueText}>$2,604.00</Text>
+              <Text style={styles.priceText}>$186.00 each</Text>
+            </View>
+          </View>
+
+          {/* FART Token */}
+          <View style={styles.holdingItem}>
+            <View style={styles.holdingInfo}>
+              <View style={[styles.tokenIcon, { backgroundColor: '#FF6B6B' }]}>
+                <Icon name="currency-usd" size={20} color="#FFFFFF" />
+              </View>
+              <View style={styles.holdingDetails}>
+                <Text style={styles.tokenName}>$FART</Text>
+                <Text style={styles.tokenAmount}>5,320.000</Text>
+              </View>
+            </View>
+            <View style={styles.holdingValue}>
+              <Text style={styles.valueText}>$6,543.60</Text>
+              <Text style={styles.priceText}>$1.23 each</Text>
+            </View>
+          </View>
+
+          {/* AURA Token */}
+          <View style={styles.holdingItem}>
+            <View style={styles.holdingInfo}>
+              <View style={[styles.tokenIcon, { backgroundColor: '#4ECDC4' }]}>
+                <Icon name="star" size={20} color="#FFFFFF" />
+              </View>
+              <View style={styles.holdingDetails}>
+                <Text style={styles.tokenName}>$AURA</Text>
+                <Text style={styles.tokenAmount}>250,000.000</Text>
+              </View>
+            </View>
+            <View style={styles.holdingValue}>
+              <Text style={styles.valueText}>$42,500.00</Text>
+              <Text style={styles.priceText}>$0.17 each</Text>
+            </View>
+          </View>
+
+          {/* Total Holdings */}
+          <View style={styles.totalHoldings}>
+            <View style={styles.totalInfo}>
+              <Text style={styles.totalLabel}>Total Portfolio Value</Text>
+              <Text style={styles.totalValue}>$51,647.60</Text>
+            </View>
+            <View style={styles.portfolioChange}>
+              <Icon name="trending-up" size={16} color={theme.colors.success} />
+              <Text style={[styles.changeText, { color: theme.colors.success }]}>+12.4%</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
       {/* Actions */}
       <View style={styles.actionsContainer}>
         <TouchableOpacity 
@@ -426,6 +501,93 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.text,
     textAlign: 'center',
+  },
+  // Holdings styles
+  holdingsContainer: {
+    gap: 12,
+  },
+  holdingItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surface,
+    padding: 16,
+    borderRadius: theme.roundness,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  holdingInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  tokenIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: theme.colors.accent + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  holdingDetails: {
+    flex: 1,
+  },
+  tokenName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+    marginBottom: 2,
+  },
+  tokenAmount: {
+    fontSize: 14,
+    color: theme.colors.textSecondary,
+  },
+  holdingValue: {
+    alignItems: 'flex-end',
+  },
+  valueText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+    marginBottom: 2,
+  },
+  priceText: {
+    fontSize: 12,
+    color: theme.colors.textSecondary,
+  },
+  totalHoldings: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.colors.card,
+    padding: 16,
+    borderRadius: theme.roundness,
+    borderWidth: 2,
+    borderColor: theme.colors.accent,
+    marginTop: 8,
+  },
+  totalInfo: {
+    flex: 1,
+  },
+  totalLabel: {
+    fontSize: 14,
+    color: theme.colors.textSecondary,
+    marginBottom: 4,
+  },
+  totalValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+  },
+  portfolioChange: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  changeText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   buttonContainer: {
     marginTop: theme.spacing.xl,
