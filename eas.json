@@ -24,8 +24,5 @@
   },
   "submit": {
     "production": {}
-  },
-  "updates": {
-    "branches": ["demo"]
   }
 }
