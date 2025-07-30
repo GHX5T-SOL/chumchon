@@ -340,7 +340,7 @@ const TradeScreen = () => {
             <ActivityIndicator color={theme.colors.background} />
           ) : (
             <Text style={styles.tradeButtonText}>
-              {publicKey ? 'Swap' : 'Connect Wallet'}
+              Swap
             </Text>
           )}
         </TouchableOpacity>
