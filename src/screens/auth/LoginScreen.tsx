@@ -14,16 +14,27 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, '
 const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const { login, isLoading } = useAuth();
-  const { connected, connecting } = useSolana();
+  const { connected, connecting, authorizeSession, authorizeSessionWithSignIn } = useSolana();
   const [error, setError] = useState<string | null>(null);
 
-  // Handle login
+  // Handle regular login
   const handleLogin = async () => {
     try {
       setError(null);
       await login();
     } catch (err) {
       setError('Failed to connect wallet. Please try again.');
+      console.error(err);
+    }
+  };
+
+  // Handle SIWS login
+  const handleSIWSLogin = async () => {
+    try {
+      setError(null);
+      await authorizeSessionWithSignIn();
+    } catch (err) {
+      setError('Failed to sign in with Solana. Please try again.');
       console.error(err);
     }
   };
@@ -52,6 +63,34 @@ const LoginScreen = () => {
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
+        
+        {/* Connection Options */}
+        <View style={styles.connectionOptions}>
+          <TouchableOpacity 
+            style={[styles.connectButton, styles.primaryButton]} 
+            onPress={handleLogin}
+            disabled={connecting}
+          >
+            {connecting ? (
+              <ActivityIndicator color={theme.colors.text} />
+            ) : (
+              <Text style={styles.connectButtonText}>Connect Wallet</Text>
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.connectButton, styles.siwsButton]} 
+            onPress={handleSIWSLogin}
+            disabled={connecting}
+          >
+            {connecting ? (
+              <ActivityIndicator color={theme.colors.text} />
+            ) : (
+              <Text style={styles.connectButtonText}>Sign In with Solana</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+        
         <View style={styles.walletOptions}>
           <Text style={styles.walletOptionsTitle}>Supported Wallets:</Text>
           <View style={styles.walletList}>
@@ -189,6 +228,14 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  connectionOptions: {
+    width: '100%',
+    marginBottom: 32,
+  },
+  siwsButton: {
+    backgroundColor: theme.colors.accent,
+    marginTop: 12,
   },
 });
 

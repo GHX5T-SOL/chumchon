@@ -8,15 +8,18 @@ import {
   ReauthorizeAPI,
 } from '@solana-mobile/mobile-wallet-adapter-protocol';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getNetwork } from '@/services/programService';
+import { getNetwork } from '../services/programService';
 
-// Storage keys
-const WALLET_AUTH_KEY = 'chumchon_wallet_auth';
+// Storage keys following Solana MWA best practices
+const AUTH_TOKEN_KEY = 'authToken';
+const BASE64_ADDRESS_KEY = 'base64Address';
 
-// App identity information (ideally would come from environment variables)
-const APP_NAME = process.env.APP_NAME || 'Chumchon App';
-const APP_URI = process.env.APP_URI || 'https://example.com';
-const APP_ICON = process.env.APP_ICON || ''; // Empty to omit icon
+// App identity information with your domain
+const APP_IDENTITY = {
+  name: 'Chumchon',
+  uri: 'https://chumchon.app',
+  icon: '/favicon.ico', // Full path resolves to https://chumchon.app/favicon.ico
+};
 
 // Define the context type
 interface SolanaContextType {
@@ -27,6 +30,7 @@ interface SolanaContextType {
   connecting: boolean;
   authorizationInProgress: boolean;
   authorizeSession: () => Promise<void>;
+  authorizeSessionWithSignIn: () => Promise<void>;
   deauthorizeSession: () => Promise<void>;
   signAndSendTransaction: (transaction: Transaction | VersionedTransaction) => Promise<string>;
   signMessage: (message: Uint8Array) => Promise<Uint8Array>;
@@ -42,6 +46,7 @@ const SolanaContext = createContext<SolanaContextType>({
   connecting: false,
   authorizationInProgress: false,
   authorizeSession: async () => {},
+  authorizeSessionWithSignIn: async () => {},
   deauthorizeSession: async () => {},
   signAndSendTransaction: async () => '',
   signMessage: async () => new Uint8Array(),
@@ -68,42 +73,57 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
 
   // Initialize connection immediately
   useEffect(() => {
-    import('@/services/programService').then(({ getConnection }) => {
+    import('../services/programService').then(({ getConnection }) => {
       setConnection(getConnection());
     });
   }, []);
 
-  // Load saved authorization on startup - with debounce
+  // Load saved authorization on startup - following Solana MWA best practices
   useEffect(() => {
     let isMounted = true;
     
     const loadAuthorization = async () => {
       try {
-        const savedAuth = await AsyncStorage.getItem(WALLET_AUTH_KEY);
-        if (savedAuth && isMounted) {
-          const auth = JSON.parse(savedAuth);
-          
-          // Validate the stored publicKey before setting it
-          if (auth.publicKey) {
-            try {
-              new PublicKey(auth.publicKey); // Throws if invalid base58
-              setAuthorizationResult(auth);
-              setPublicKey(new PublicKey(auth.publicKey));
-              setConnected(true);
-            } catch (publicKeyError) {
-              console.error('Invalid stored publicKey:', publicKeyError);
-              // Clear corrupt data
-              await AsyncStorage.removeItem(WALLET_AUTH_KEY);
-              setAuthorizationResult(null);
-              setPublicKey(null);
-              setConnected(false);
-            }
+        // Check for cached authorization using Solana's recommended keys
+        const [cachedAuthToken, cachedBase64Address] = await Promise.all([
+          AsyncStorage.getItem(AUTH_TOKEN_KEY),
+          AsyncStorage.getItem(BASE64_ADDRESS_KEY),
+        ]);
+        
+        if (cachedBase64Address && cachedAuthToken && isMounted) {
+          try {
+            // Convert base64 address to PublicKey
+            const pubkeyAsByteArray = Buffer.from(cachedBase64Address, 'base64');
+            const cachedPublicKey = new PublicKey(pubkeyAsByteArray);
+            
+            const cachedAuthResult = {
+              authToken: cachedAuthToken,
+              publicKey: cachedPublicKey.toString(),
+            };
+            
+            setAuthorizationResult(cachedAuthResult);
+            setPublicKey(cachedPublicKey);
+            setConnected(true);
+            console.log('[SolanaProvider] Loaded cached authorization:', cachedPublicKey.toString());
+          } catch (publicKeyError) {
+            console.error('Invalid cached publicKey:', publicKeyError);
+            // Clear corrupt data
+            await Promise.all([
+              AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+              AsyncStorage.removeItem(BASE64_ADDRESS_KEY),
+            ]);
+            setAuthorizationResult(null);
+            setPublicKey(null);
+            setConnected(false);
           }
         }
       } catch (error) {
         console.error('Failed to load authorization:', error);
         // Clear any corrupt data
-        await AsyncStorage.removeItem(WALLET_AUTH_KEY);
+        await Promise.all([
+          AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+          AsyncStorage.removeItem(BASE64_ADDRESS_KEY),
+        ]);
         setAuthorizationResult(null);
         setPublicKey(null);
         setConnected(false);
@@ -119,7 +139,7 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
     };
   }, []);
 
-  // Authorize session with a wallet
+    // Authorize session with a wallet
   const authorizeSession = async () => {
     if (authorizationInProgress) return;
     
@@ -131,42 +151,25 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
         // Try to reauthorize if we have an auth token
         if (authorizationResult?.authToken) {
           try {
-            const identity = {
-              name: APP_NAME,
-              uri: APP_URI,
-            };
-            
-            // Only include icon if it's provided
-            if (APP_ICON) {
-              identity.icon = APP_ICON;
-            }
-            
             return await wallet.reauthorize({
               auth_token: authorizationResult.authToken,
-              identity,
+              identity: APP_IDENTITY,
             });
-                      } catch (e) {
-              console.log('Reauthorization failed, falling back to authorization', e);
-              // Clear invalid token
-              setAuthorizationResult(null);
-              await AsyncStorage.removeItem(WALLET_AUTH_KEY);
-            }
+          } catch (e) {
+            console.log('Reauthorization failed, falling back to authorization', e);
+            // Clear invalid token
+            setAuthorizationResult(null);
+            await Promise.all([
+              AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+              AsyncStorage.removeItem(BASE64_ADDRESS_KEY),
+            ]);
+          }
         }
         
         // If reauthorization fails or we don't have an auth token, authorize
-        const identity = {
-          name: APP_NAME,
-          uri: APP_URI,
-        };
-        
-        // Only include icon if it's provided
-        if (APP_ICON) {
-          identity.icon = APP_ICON;
-        }
-        
         return await wallet.authorize({
-          cluster: 'devnet', // Explicitly set to devnet to match the network
-          identity,
+          chain: 'solana:devnet', // Use proper chain format
+          identity: APP_IDENTITY,
         });
       });
       
@@ -181,23 +184,28 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
       const newPublicKey = new PublicKey(pubkeyBytes);
       console.log('[SolanaProvider] Decoded public key:', newPublicKey.toString());
       
+      // Cache authorization following Solana MWA best practices
+      const firstAccount = authResult.accounts[0];
+      await Promise.all([
+        AsyncStorage.setItem(AUTH_TOKEN_KEY, authResult.auth_token),
+        AsyncStorage.setItem(BASE64_ADDRESS_KEY, firstAccount.address),
+      ]);
+      
       const newAuthResult = {
         authToken: authResult.auth_token,
         publicKey: newPublicKey.toString(), // Save as base58 string
       };
-      
-      await AsyncStorage.setItem(WALLET_AUTH_KEY, JSON.stringify(newAuthResult));
       setAuthorizationResult(newAuthResult);
       setPublicKey(newPublicKey);
       setConnected(true);
       console.log('[SolanaProvider] Authorization succeeded, state updated:', { connected: true, publicKey: newPublicKey.toString() });
     } catch (error) {
       console.error('Authorization error:', error);
-      console.error('Authorization error stack:', error.stack);
+      if (error instanceof Error) {
+        console.error('Authorization error stack:', error.stack);
+      }
       console.error('Authorization error details:', {
-        APP_NAME,
-        APP_URI,
-        APP_ICON,
+        APP_IDENTITY,
         hasAuthToken: !!authorizationResult?.authToken
       });
       
@@ -205,7 +213,10 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
       if (error instanceof Error && error.message.includes('CancellationException')) {
         console.log('[SolanaProvider] Connection was cancelled by user or wallet');
         // Clear invalid token on cancellation
-        await AsyncStorage.removeItem(WALLET_AUTH_KEY);
+        await Promise.all([
+          AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+          AsyncStorage.removeItem(BASE64_ADDRESS_KEY),
+        ]);
         setAuthorizationResult(null);
         setPublicKey(null);
         setConnected(false);
@@ -219,16 +230,76 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
     }
   };
 
+  // Authorize session with Sign In with Solana (SIWS)
+  const authorizeSessionWithSignIn = async () => {
+    if (authorizationInProgress) return;
+    
+    setAuthorizationInProgress(true);
+    setConnecting(true);
+    
+    try {
+      const authResult = await transact(async (wallet: AuthorizeAPI & ReauthorizeAPI) => {
+        return await wallet.authorize({
+          chain: 'solana:devnet',
+          identity: APP_IDENTITY,
+          sign_in_payload: {
+            domain: 'chumchon.app',
+            statement: 'Sign into Chumchon - Decentralized Social App',
+            uri: 'https://chumchon.app',
+          },
+        });
+      });
+      
+      console.log('[SolanaProvider] SIWS Authorization result:', authResult);
+      
+      if (authResult.sign_in_result) {
+        console.log('[SolanaProvider] Sign in result:', authResult.sign_in_result);
+        // Here you could verify the SIWS signature
+        // const isValid = verifySIWS(input, authResult.sign_in_result);
+      }
+      
+      // Save the authorization result
+      const walletPublicKey = authResult.accounts[0].address;
+      const pubkeyBytes = Buffer.from(walletPublicKey, 'base64');
+      const newPublicKey = new PublicKey(pubkeyBytes);
+      
+      const newAuthResult = {
+        authToken: authResult.auth_token,
+        publicKey: newPublicKey.toString(),
+      };
+      
+      // Cache authorization following Solana MWA best practices
+      const firstAccount = authResult.accounts[0];
+      await Promise.all([
+        AsyncStorage.setItem(AUTH_TOKEN_KEY, authResult.auth_token),
+        AsyncStorage.setItem(BASE64_ADDRESS_KEY, firstAccount.address),
+      ]);
+      setAuthorizationResult(newAuthResult);
+      setPublicKey(newPublicKey);
+      setConnected(true);
+            console.log('[SolanaProvider] SIWS Authorization succeeded');
+    } catch (error) {
+      console.error('SIWS Authorization error:', error);
+      throw error;
+    } finally {
+      setAuthorizationInProgress(false);
+      setConnecting(false);
+    }
+  };
+
   // Deauthorize session
   const deauthorizeSession = async () => {
     if (!authorizationResult?.authToken) return;
     
     try {
       await transact(async (wallet: DeauthorizeAPI) => {
-        await wallet.deauthorize({ auth_token: authorizationResult.authToken });
+        await wallet.deauthorize({ auth_token: authorizationResult.authToken || '' });
       });
       
-      await AsyncStorage.removeItem(WALLET_AUTH_KEY);
+      await Promise.all([
+        AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+        AsyncStorage.removeItem(BASE64_ADDRESS_KEY),
+      ]);
       setAuthorizationResult(null);
       setPublicKey(null);
       setConnected(false);
@@ -245,10 +316,10 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
     
     try {
       const signedTransaction = await transact(async (wallet) => {
-        const { signed_transactions } = await wallet.signTransactions({
+        const result = await wallet.signTransactions({
           transactions: [transaction],
         });
-        return signed_transactions[0];
+        return (result as any).signed_transactions[0];
       });
       
       // Send the signed transaction
@@ -274,10 +345,11 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
     
     try {
       return await transact(async (wallet) => {
-        const { signed_payloads } = await wallet.signMessages({
+        const result = await wallet.signMessages({
+          addresses: [authorizationResult?.publicKey || ''],
           payloads: [message],
         });
-        return signed_payloads[0];
+        return (result as any).signed_payloads[0];
       });
     } catch (error) {
       console.error('Message signing error:', error);
@@ -285,9 +357,39 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
     }
   };
 
-  // Disconnect wallet
+  // Disconnect wallet - following Solana MWA best practices
   const disconnect = async () => {
-    await deauthorizeSession();
+    if (!authorizationResult?.authToken) {
+      console.log('[SolanaProvider] No current account to disconnect');
+      return;
+    }
+    
+    try {
+      await transact(async (wallet: DeauthorizeAPI) => {
+        await wallet.deauthorize({ auth_token: authorizationResult.authToken || '' });
+      });
+      
+      // Clear all cached authorization data
+      await Promise.all([
+        AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+        AsyncStorage.removeItem(BASE64_ADDRESS_KEY),
+      ]);
+      
+      setAuthorizationResult(null);
+      setPublicKey(null);
+      setConnected(false);
+      console.log('[SolanaProvider] Wallet disconnected and cache cleared');
+    } catch (error) {
+      console.error('Disconnect error:', error);
+      // Even if deauthorize fails, clear the cache
+      await Promise.all([
+        AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+        AsyncStorage.removeItem(BASE64_ADDRESS_KEY),
+      ]);
+      setAuthorizationResult(null);
+      setPublicKey(null);
+      setConnected(false);
+    }
   };
 
   const value = {
@@ -298,6 +400,7 @@ export const SolanaProvider: React.FC<SolanaProviderProps> = ({ children }) => {
     connecting,
     authorizationInProgress,
     authorizeSession,
+    authorizeSessionWithSignIn,
     deauthorizeSession,
     signAndSendTransaction,
     signMessage,
