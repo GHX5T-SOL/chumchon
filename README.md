@@ -7,7 +7,7 @@
 [![Mobile Wallet Adapter](https://img.shields.io/badge/MWA-Supported-orange.svg)](https://docs.solanamobile.com/mobile-wallet-adapter/web-installation)
 [![Solana Mobile Stack](https://img.shields.io/badge/SMS-Implemented-red.svg)](https://docs.solanamobile.com/developers/overview)
 
-![Chumchon Logo](https://i.ibb.co/7tw4D4MM/logo.png)
+![Chumchon Logo](https://i.ibb.co/8nSwLf94/chumchon.png)
 
 > **A decentralized social app built for Solana Mobile, featuring token-gated communities, on-chain messaging, escrow trading, and meme challenges.**
 
