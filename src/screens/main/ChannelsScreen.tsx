@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiView } from 'moti'
 import { cyberpunkStyles, theme } from '@/theme';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
@@ -14,6 +16,7 @@ const ChannelsScreen = () => {
   ];
   return (
     <ScrollView style={{ backgroundColor: theme.colors.background }}>
+      <AppPage>
       <View style={styles.listContainer}>
         {channels.map(channel => (
           <TouchableOpacity
@@ -26,6 +29,7 @@ const ChannelsScreen = () => {
           </TouchableOpacity>
         ))}
       </View>
+      </AppPage>
     </ScrollView>
   );
 };

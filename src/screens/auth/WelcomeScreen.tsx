@@ -1,6 +1,8 @@
 // src/screens/auth/WelcomeScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '@/navigation/AppNavigator';
@@ -24,7 +26,7 @@ const WelcomeScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.background, justifyContent: 'center', alignItems: 'center' }}>
+    <AppPage style={{ justifyContent: 'center', alignItems: 'center' }}>
       <View style={styles.logoContainer}>
         <Image
           source={require('@/assets/logo.png')}
@@ -46,21 +48,14 @@ const WelcomeScreen = () => {
       </View>
 
       <View style={[styles.buttonContainer, { marginBottom: 64 }]}>
-        <TouchableOpacity
-          style={[styles.button, cyberpunkStyles.neonBorder, { marginBottom: 12 }]}
-          onPress={handleLogin}
-          disabled={isLoading}
-        >
+        <MotiPressable from={{ opacity: 0, translateY: 6 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', duration: 300 }} pressStyle={{ scale: 0.98 }} style={[styles.button, cyberpunkStyles.neonBorder, { marginBottom: 12 }]} onPress={handleLogin} disabled={isLoading}>
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, cyberpunkStyles.neonBorder]}
-          onPress={() => navigation.navigate('CreateProfile')}
-        >
+        </MotiPressable>
+        <MotiPressable from={{ opacity: 0, translateY: 10 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 60, type: 'timing', duration: 300 }} pressStyle={{ scale: 0.98 }} style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('CreateProfile')}>
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Profile</Text>
-        </TouchableOpacity>
+        </MotiPressable>
       </View>
-    </View>
+    </AppPage>
   );
 };
 

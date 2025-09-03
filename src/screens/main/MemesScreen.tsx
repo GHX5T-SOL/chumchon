@@ -1,6 +1,9 @@
 // src/screens/main/MemesScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, RefreshControl } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
+import { MotiView } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -174,16 +177,22 @@ const MemesScreen = () => {
   };
 
   // Render challenge item
-  const renderChallengeItem = ({ item }: { item: MemeChallenge }) => {
+  const renderChallengeItem = ({ item, index }: { item: MemeChallenge; index: number }) => {
     const isActive = item.endTime > Date.now();
     const hasSubmitted = MOCK_SUBMISSIONS.some(
       sub => sub.challengeId === item.id && sub.submitter === publicKey?.toBase58()
     );
     
     return (
-      <TouchableOpacity 
+      <MotiPressable 
+        from={{ opacity: 0, translateY: 6 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ delay: index * 50, type: 'timing', duration: 250 }}
+        pressStyle={{ scale: 0.98 }}
         style={styles.challengeItem}
-        onPress={() => {/* navigation.navigate('MemeDetail', { memeId: item.id }) */}}
+        onPress={() => {}}
+        accessibilityRole="button"
+        accessibilityLabel={`Open ${item.title} challenge`}
       >
         <View style={styles.challengeHeader}>
           <Text style={styles.challengeTitle}>{item.title}</Text>
@@ -233,7 +242,9 @@ const MemesScreen = () => {
               ) : (
                 <TouchableOpacity 
                   style={styles.submitButton}
-                  onPress={() => {/* navigation.navigate('MemeDetail', { memeId: item.id }) */}}
+                  onPress={() => {}}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Submit meme to ${item.title}`}
                 >
                   <Text style={styles.submitButtonText}>Submit Meme</Text>
                 </TouchableOpacity>
@@ -254,17 +265,20 @@ const MemesScreen = () => {
             </>
           )}
         </View>
-      </TouchableOpacity>
+      </MotiPressable>
     );
   };
 
   return (
-    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+    <AppPage>
       <FlatList
         data={filteredChallenges}
-        renderItem={renderChallengeItem}
+        renderItem={({ item, index }) => renderChallengeItem({ item, index })}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.challengeList}
+        initialNumToRender={10}
+        windowSize={11}
+        removeClippedSubviews
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -340,7 +354,7 @@ const MemesScreen = () => {
       >
         <Icon name="plus" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-    </View>
+    </AppPage>
   );
 };
 

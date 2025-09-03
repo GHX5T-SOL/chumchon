@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { cyberpunkStyles, theme } from '@/theme';
+import { AppPage } from '@/components/app-page'
+import { MotiView, MotiPressable } from 'moti'
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ChannelDetailScreen = () => {
@@ -9,13 +11,15 @@ const ChannelDetailScreen = () => {
   const { channelAddress } = route.params || {};
 
   return (
-    <View style={[{ flex: 1, backgroundColor: theme.colors.background }, cyberpunkStyles.animePanel]}>
-      <Text style={[cyberpunkStyles.neonGlow, styles.title]}>Channel Details</Text>
-      <Text style={styles.placeholder}>Coming soon: View posts, tip, and join creator channels.</Text>
-      <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: channelAddress })}>
-        <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Tip Channel Creator</Text>
-      </TouchableOpacity>
-    </View>
+    <AppPage>
+      <MotiView from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', duration: 300 }} style={{ flex: 1, justifyContent: 'center' }}>
+        <Text style={[cyberpunkStyles.neonGlow, styles.title]}>Channel Details</Text>
+        <Text style={styles.placeholder}>Coming soon: View posts, tip, and join creator channels.</Text>
+        <MotiPressable from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 60, type: 'timing', duration: 300 }} pressStyle={{ scale: 0.98 }} style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: channelAddress })}>
+          <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Tip Channel Creator</Text>
+        </MotiPressable>
+      </MotiView>
+    </AppPage>
   );
 };
 

@@ -1,6 +1,8 @@
 // src/screens/auth/CreateProfileScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useSolana } from '@/contexts/SolanaProvider';
@@ -93,6 +95,7 @@ const CreateProfileScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <AppPage>
       {/* Top bar with persistent wallet connect button */}
       <View style={styles.topBar}>
         <View style={{ flex: 1 }} />
@@ -138,7 +141,11 @@ const CreateProfileScreen = () => {
       </View>
 
       <View style={{ width: '100%', alignItems: 'center', marginTop: 24, marginBottom: 16 }}>
-        <TouchableOpacity
+        <MotiPressable
+          from={{ opacity: 0, translateY: 6 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 250 }}
+          pressStyle={{ scale: 0.98 }}
           style={[styles.button, styles.primaryButton, { width: '100%' }]}
           onPress={handleCreateProfile}
           disabled={isLoading}
@@ -148,7 +155,7 @@ const CreateProfileScreen = () => {
           ) : (
             <Text style={styles.buttonText}>Create Profile</Text>
           )}
-        </TouchableOpacity>
+        </MotiPressable>
       </View>
 
       <View style={styles.infoContainer}>
@@ -156,6 +163,7 @@ const CreateProfileScreen = () => {
           Your profile will be stored on the Solana blockchain and can be updated later.
         </Text>
       </View>
+      </AppPage>
     </ScrollView>
   );
 };

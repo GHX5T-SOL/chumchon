@@ -1,14 +1,7 @@
 // src/screens/details/EscrowDetailScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
-  ActivityIndicator,
-  Alert
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { AppPage } from '@/components/app-page'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
@@ -249,6 +242,7 @@ const EscrowDetailScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <AppPage>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -422,6 +416,7 @@ const EscrowDetailScreen = () => {
           </View>
         )}
       </View>
+      </AppPage>
     </ScrollView>
   );
 };

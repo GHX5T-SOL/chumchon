@@ -1,17 +1,8 @@
 // src/screens/main/MessagesScreen.tsx
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  RefreshControl,
-  ActivityIndicator,
-  Modal,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator, Modal, Alert } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -261,8 +252,14 @@ const MessagesScreen = () => {
   };
 
   // Render conversation item
-  const renderConversationItem = ({ item }: { item: Conversation }) => (
-    <TouchableOpacity 
+  const renderConversationItem = ({ item, index }: { item: Conversation; index: number }) => (
+    <MotiPressable 
+      from={{ opacity: 0, translateY: 6 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ delay: index * 50, type: 'timing', duration: 250 }}
+      pressStyle={{ scale: 0.98 }}
+      accessibilityRole="button"
+      accessibilityLabel={`Open conversation with ${item.participant.displayName}`}
       style={styles.conversationItem}
       onPress={() => handleConversationPress(item)}
     >
@@ -296,7 +293,7 @@ const MessagesScreen = () => {
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </MotiPressable>
   );
 
   // Render user item for new message modal
@@ -322,7 +319,7 @@ const MessagesScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <AppPage>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Messages</Text>
@@ -368,8 +365,11 @@ const MessagesScreen = () => {
       ) : filteredConversations.length > 0 ? (
         <FlatList
           data={filteredConversations}
-          renderItem={renderConversationItem}
+          renderItem={({ item, index }) => renderConversationItem({ item, index })}
           keyExtractor={(item) => item.id}
+          initialNumToRender={12}
+          windowSize={13}
+          removeClippedSubviews
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -466,7 +466,7 @@ const MessagesScreen = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </AppPage>
   );
 };
 

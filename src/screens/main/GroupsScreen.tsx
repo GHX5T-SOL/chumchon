@@ -1,6 +1,7 @@
 // src/screens/main/GroupsScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl } from 'react-native';
+import { AppPage } from '@/components/app-page'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -8,6 +9,7 @@ import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { getUserGroups, Group } from '@/services/groupService';
 import { useSolana } from '@/contexts/SolanaProvider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MotiPressable } from 'moti'
 
 type GroupsScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -124,8 +126,14 @@ const GroupsScreen = () => {
   };
 
   // Render group item
-  const renderGroupItem = ({ item }: { item: Group }) => (
-    <TouchableOpacity 
+  const renderGroupItem = ({ item, index }: { item: Group; index: number }) => (
+    <MotiPressable 
+      from={{ opacity: 0, translateY: 8 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ delay: index * 50, type: 'timing', duration: 250 }}
+      pressStyle={{ scale: 0.98 }}
+      accessibilityRole="button"
+      accessibilityLabel={`Open ${item.name} group`}
       style={styles.groupItem}
       onPress={() => navigation.navigate('GroupChat', {
         groupAddress: item.address.toBase58(),
@@ -190,7 +198,7 @@ const GroupsScreen = () => {
       </View>
       
       <Icon name="chevron-right" size={24} color={theme.colors.muted} />
-    </TouchableOpacity>
+    </MotiPressable>
   );
 
   // Format last active time
@@ -210,12 +218,15 @@ const GroupsScreen = () => {
   };
 
   return (
-    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+    <AppPage>
       <FlatList
         data={filteredGroups}
-        renderItem={renderGroupItem}
+        renderItem={({ item, index }) => renderGroupItem({ item, index })}
         keyExtractor={item => item.address.toBase58()}
         contentContainerStyle={styles.groupList}
+        initialNumToRender={10}
+        windowSize={11}
+        removeClippedSubviews
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -299,7 +310,7 @@ const GroupsScreen = () => {
       >
         <Icon name="plus" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-    </View>
+    </AppPage>
   );
 };
 

@@ -1,16 +1,8 @@
 // src/screens/main/PricesScreen.tsx
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  RefreshControl,
-  ActivityIndicator,
-  Modal,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator, Modal } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -318,8 +310,16 @@ const PricesScreen = () => {
   };
 
   // Render token item
-  const renderTokenItem = ({ item }: { item: Token }) => (
-    <TouchableOpacity style={styles.tokenItem}>
+  const renderTokenItem = ({ item, index }: { item: Token; index: number }) => (
+    <MotiPressable
+      from={{ opacity: 0, translateY: 6 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ delay: index * 40, type: 'timing', duration: 220 }}
+      pressStyle={{ scale: 0.98 }}
+      style={styles.tokenItem}
+      accessibilityRole="button"
+      accessibilityLabel={`Open token ${item.name}`}
+    >
       <View style={styles.tokenInfo}>
         <View style={[styles.tokenIcon, { backgroundColor: item.color }]}>
           <Icon name={item.icon as any} size={20} color="#FFFFFF" />
@@ -352,7 +352,7 @@ const PricesScreen = () => {
           <Text style={styles.trendingText}>Trending</Text>
         </View>
       )}
-    </TouchableOpacity>
+    </MotiPressable>
   );
 
   // Render sort option
@@ -389,7 +389,7 @@ const PricesScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <AppPage>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Prices</Text>
@@ -462,8 +462,11 @@ const PricesScreen = () => {
       ) : (
         <FlatList
           data={filteredTokens}
-          renderItem={renderTokenItem}
+          renderItem={({ item, index }) => renderTokenItem({ item, index })}
           keyExtractor={(item) => item.id}
+          initialNumToRender={12}
+          windowSize={13}
+          removeClippedSubviews
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -501,7 +504,7 @@ const PricesScreen = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </AppPage>
   );
 };
 

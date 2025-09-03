@@ -1,12 +1,14 @@
 // src/screens/main/HomeScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
+import { AppPage } from '@/components/app-page'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MotiPressable } from 'moti'
 
 // Mock data for the home screen
 const TUTORIALS = [
@@ -61,12 +63,14 @@ const HomeScreen = () => {
   }, [userProfile?.completedTutorials]);
 
   // Render tutorial item
-  const renderTutorialItem = ({ item }: { item: typeof TUTORIALS[0] }) => (
-    <TouchableOpacity
+  const renderTutorialItem = ({ item, index }: { item: typeof TUTORIALS[0]; index?: number }) => (
+    <MotiPressable
+      from={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: (index || 0) * 60, type: 'timing', duration: 300 }}
+      pressStyle={{ scale: 0.98 }}
       style={[styles.tutorialItem, item.completed && styles.completedTutorial]}
-      onPress={() => {
-        // Navigate to tutorial or mark as completed
-      }}
+      onPress={() => {}}
     >
       <View style={styles.tutorialContent}>
         <Text style={styles.tutorialTitle}>{item.title}</Text>
@@ -85,11 +89,11 @@ const HomeScreen = () => {
           <Icon name="arrow-right-circle" size={24} color={theme.colors.accent} />
         )}
       </View>
-    </TouchableOpacity>
+    </MotiPressable>
   );
 
   // Render activity item
-  const renderActivityItem = ({ item }: { item: typeof RECENT_ACTIVITY[0] }) => {
+  const renderActivityItem = ({ item, index }: { item: typeof RECENT_ACTIVITY[0]; index?: number }) => {
     let icon, title, subtitle;
     
     switch (item.type) {
@@ -120,7 +124,13 @@ const HomeScreen = () => {
     }
     
     return (
-      <TouchableOpacity style={styles.activityItem}>
+      <MotiPressable
+        from={{ opacity: 0, translateY: 6 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ delay: (index || 0) * 60, type: 'timing', duration: 300 }}
+        pressStyle={{ scale: 0.98 }}
+        style={styles.activityItem}
+      >
         <View style={styles.activityIcon}>
           <Icon name={icon} size={24} color={theme.colors.accent} />
         </View>
@@ -129,12 +139,12 @@ const HomeScreen = () => {
           <Text style={styles.activityTime}>{subtitle}</Text>
         </View>
         <Icon name="chevron-right" size={20} color={theme.colors.muted} />
-      </TouchableOpacity>
+      </MotiPressable>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <AppPage>
       <FlatList
         data={[]}
         renderItem={null}
@@ -222,7 +232,7 @@ const HomeScreen = () => {
           />
         }
       />
-    </View>
+    </AppPage>
   );
 };
 

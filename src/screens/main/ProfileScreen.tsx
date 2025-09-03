@@ -1,6 +1,7 @@
 // src/screens/main/ProfileScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native';
+import { AppPage } from '@/components/app-page'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -71,6 +72,7 @@ const ProfileScreen = () => {
         />
       }
     >
+      <AppPage>
       {/* Profile Header */}
       <View style={styles.header}>
         <View style={styles.profileImageContainer}>
@@ -291,6 +293,7 @@ const ProfileScreen = () => {
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Settings</Text>
         </TouchableOpacity>
       </View>
+      </AppPage>
     </ScrollView>
   );
 };

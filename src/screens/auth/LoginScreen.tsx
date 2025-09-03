@@ -1,6 +1,8 @@
 // src/screens/auth/LoginScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '@/navigation/AppNavigator';
@@ -47,7 +49,7 @@ const LoginScreen = () => {
   }, [connected, isLoading, navigation]);
 
   return (
-    <View style={styles.container}>
+    <AppPage style={styles.container}>
       {/* Top bar with Connect Wallet button on the right */}
       <View style={styles.topBar}>
         <View style={{ flex: 1 }} />
@@ -66,29 +68,41 @@ const LoginScreen = () => {
         
         {/* Connection Options */}
         <View style={styles.connectionOptions}>
-          <TouchableOpacity 
+          <MotiPressable 
+            from={{ opacity: 0, translateY: 6 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 250 }}
+            pressStyle={{ scale: 0.98 }}
             style={[styles.connectButton, styles.primaryButton]} 
             onPress={handleLogin}
             disabled={connecting}
+            accessibilityRole="button"
+            accessibilityLabel="Connect Wallet"
           >
             {connecting ? (
               <ActivityIndicator color={theme.colors.text} />
             ) : (
               <Text style={styles.connectButtonText}>Connect Wallet</Text>
             )}
-          </TouchableOpacity>
+          </MotiPressable>
           
-          <TouchableOpacity 
+          <MotiPressable 
+            from={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ delay: 60, type: 'timing', duration: 250 }}
+            pressStyle={{ scale: 0.98 }}
             style={[styles.connectButton, styles.siwsButton]} 
             onPress={handleSIWSLogin}
             disabled={connecting}
+            accessibilityRole="button"
+            accessibilityLabel="Sign In with Solana"
           >
             {connecting ? (
               <ActivityIndicator color={theme.colors.text} />
             ) : (
               <Text style={styles.connectButtonText}>Sign In with Solana</Text>
             )}
-          </TouchableOpacity>
+          </MotiPressable>
         </View>
         
         <View style={styles.walletOptions}>
@@ -106,7 +120,7 @@ const LoginScreen = () => {
           By connecting your wallet, you agree to our Terms of Service and Privacy Policy.
         </Text>
       </View>
-    </View>
+    </AppPage>
   );
 };
 

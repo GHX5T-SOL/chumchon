@@ -1,4 +1,5 @@
 import { SymbolView, SymbolViewProps, SymbolWeight } from 'expo-symbols'
+import { theme } from '@/theme'
 import { StyleProp, ViewStyle } from 'react-native'
 
 export function UiIconSymbol({
@@ -24,6 +25,9 @@ export function UiIconSymbol({
         {
           width: size,
           height: size,
+          shadowColor: theme.colors.accent,
+          shadowOpacity: 0.7,
+          shadowRadius: 6,
         },
         style,
       ]}

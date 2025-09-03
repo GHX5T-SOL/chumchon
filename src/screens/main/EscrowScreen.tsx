@@ -1,6 +1,9 @@
 // src/screens/main/EscrowScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiView } from 'moti'
+import { MotiPressable } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -181,14 +184,20 @@ const EscrowScreen = () => {
   };
 
   // Render escrow item
-  const renderEscrowItem = ({ item }: { item: Escrow }) => {
+  const renderEscrowItem = ({ item, index }: { item: Escrow; index: number }) => {
     const isInitiator = publicKey?.toBase58() === item.initiator.toBase58();
     const otherParty = isInitiator ? item.counterparty : item.initiator;
     
     return (
-      <TouchableOpacity 
+      <MotiPressable 
+        from={{ opacity: 0, translateY: 6 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ delay: index * 50, type: 'timing', duration: 250 }}
+        pressStyle={{ scale: 0.98 }}
         style={styles.escrowItem}
         onPress={() => navigation.navigate('EscrowDetail', { escrowAddress: item.address.toBase58() })}
+        accessibilityRole="button"
+        accessibilityLabel={`Open escrow ${item.address.toBase58()}`}
       >
         <View style={styles.escrowHeader}>
           <View style={[styles.statusIndicator, { backgroundColor: getStatusColor(item.status) }]} />
@@ -244,17 +253,20 @@ const EscrowScreen = () => {
             </TouchableOpacity>
           )}
         </View>
-      </TouchableOpacity>
+      </MotiPressable>
     );
   };
 
   return (
-    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+    <AppPage>
       <FlatList
         data={filteredEscrows}
-        renderItem={renderEscrowItem}
+        renderItem={({ item, index }) => renderEscrowItem({ item, index })}
         keyExtractor={item => item.address.toBase58()}
         contentContainerStyle={styles.escrowList}
+        initialNumToRender={12}
+        windowSize={13}
+        removeClippedSubviews
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -324,7 +336,7 @@ const EscrowScreen = () => {
       >
         <Icon name="plus" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-    </View>
+    </AppPage>
   );
 };
 

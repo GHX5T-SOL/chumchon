@@ -1,19 +1,9 @@
 // src/screens/main/LeaderboardScreen.tsx
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  RefreshControl,
-  Alert,
-  Modal,
-  TextInput,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, RefreshControl, Alert, Modal, TextInput, ScrollView, ActivityIndicator } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
+import { MotiView } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -308,7 +298,16 @@ const LeaderboardScreen = () => {
                 selectedTimeFrame === 'weekly' ? item.weeklyPnl : item.monthlyPnl;
     
     return (
-      <View style={styles.traderCard}>
+      <MotiPressable
+        from={{ opacity: 0, translateY: 6 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ delay: index * 40, type: 'timing', duration: 220 }}
+        pressStyle={{ scale: 0.98 }}
+        style={styles.traderCard}
+        accessibilityRole="button"
+        accessibilityLabel={`Open trader ${item.username}`}
+        onPress={() => {}}
+      >
         <View style={styles.rankContainer}>
           <Text style={styles.rankText}>#{item.rank}</Text>
           {index < 3 && (
@@ -378,7 +377,7 @@ const LeaderboardScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </MotiPressable>
     );
   };
 
@@ -405,7 +404,7 @@ const LeaderboardScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <AppPage>
       <View style={styles.header}>
         <Text style={styles.title}>Top Traders</Text>
         <Text style={styles.subtitle}>Live P&L Leaderboard</Text>
@@ -423,6 +422,9 @@ const LeaderboardScreen = () => {
           data={sortedTraders}
           renderItem={renderTraderItem}
           keyExtractor={(item) => item.id}
+          initialNumToRender={10}
+          windowSize={11}
+          removeClippedSubviews
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -490,7 +492,7 @@ const LeaderboardScreen = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </AppPage>
   );
 };
 

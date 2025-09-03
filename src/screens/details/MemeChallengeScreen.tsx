@@ -1,18 +1,8 @@
 // src/screens/details/MemeChallengeScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
-  Image, 
-  TextInput, 
-  Modal, 
-  Alert, 
-  ActivityIndicator,
-  Dimensions 
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, Modal, Alert, ActivityIndicator, Dimensions } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiView, MotiPressable } from 'moti'
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
@@ -328,7 +318,7 @@ const MemeChallengeScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <AppPage>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {/* Header */}
         <View style={styles.header}>
@@ -426,21 +416,14 @@ const MemeChallengeScreen = () => {
       {/* Action Buttons */}
       <View style={styles.actionContainer}>
         {isActive() && !hasUserSubmitted() && user && (
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => setSubmitModalVisible(true)}
-          >
+          <MotiPressable from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', duration: 250 }} pressStyle={{ scale: 0.98 }} style={styles.submitButton} onPress={() => setSubmitModalVisible(true)}>
             <Ionicons name="add" size={20} color={theme.colors.white} />
             <Text style={styles.submitButtonText}>Submit Meme</Text>
-          </TouchableOpacity>
+          </MotiPressable>
         )}
         
         {isCompleted() && isCreator() && !challenge.winner && (
-          <TouchableOpacity
-            style={styles.endButton}
-            onPress={handleEndChallenge}
-            disabled={processing}
-          >
+          <MotiPressable from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 60, type: 'timing', duration: 250 }} pressStyle={{ scale: 0.98 }} style={styles.endButton} onPress={handleEndChallenge} disabled={processing}>
             {processing ? (
               <ActivityIndicator size="small" color={theme.colors.white} />
             ) : (
@@ -449,15 +432,15 @@ const MemeChallengeScreen = () => {
                 <Text style={styles.endButtonText}>End Challenge & Reward Winner</Text>
               </>
             )}
-          </TouchableOpacity>
+          </MotiPressable>
         )}
       </View>
       
       {renderSubmitModal()}
-      <TouchableOpacity style={[styles.button, commonStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: challengeId })}>
+      <MotiPressable from={{ opacity: 0, translateY: 10 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 120, type: 'timing', duration: 250 }} pressStyle={{ scale: 0.98 }} style={[styles.button, commonStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: challengeId })}>
         <Text style={[styles.buttonText, commonStyles.neonGlow]}>Tip Meme Creator</Text>
-      </TouchableOpacity>
-    </View>
+      </MotiPressable>
+    </AppPage>
   );
 };
 

@@ -1,11 +1,10 @@
 import { PropsWithChildren } from 'react'
-import { DarkTheme as AppThemeDark, DefaultTheme as AppThemeLight } from '@react-navigation/native'
-import { useColorScheme } from 'react-native'
+import { theme as CyberTheme } from '@/theme'
 
 export function useAppTheme() {
-  const colorScheme = useColorScheme()
-  const isDark = colorScheme === 'dark'
-  const theme = isDark ? AppThemeDark : AppThemeLight
+  const colorScheme = 'dark'
+  const isDark = true
+  const theme = CyberTheme as any
   return {
     colorScheme,
     isDark,

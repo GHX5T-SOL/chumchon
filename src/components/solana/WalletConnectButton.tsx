@@ -1,5 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { BlurView } from 'expo-blur'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useWalletUi } from '@/components/solana/use-wallet-ui';
 import { theme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -35,7 +37,7 @@ export function WalletConnectButton() {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.card + 'AA',
     borderRadius: theme.roundness,
     paddingVertical: 8,
     paddingHorizontal: 16,
@@ -43,7 +45,9 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.accent,
     flexDirection: 'row',
     alignItems: 'center',
-    ...theme.shadow,
+    shadowColor: theme.colors.accent,
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
   },
   innerRow: {
     flexDirection: 'row',

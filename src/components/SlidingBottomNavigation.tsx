@@ -1,15 +1,9 @@
 // src/components/SlidingBottomNavigation.tsx
 import React, { useState, useRef } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Animated,
-  PanGestureHandler,
-  State,
-  Dimensions,
-} from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Animated, Dimensions } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { MainTabsParamList } from '@/navigation/AppNavigator';
 import { theme } from '@/theme';
@@ -59,6 +53,7 @@ const SlidingBottomNavigation = (props: BottomTabBarProps) => {
   const toggleExpanded = () => {
     const toValue = isExpanded ? 0 : 1;
     setIsExpanded(!isExpanded);
+    Haptics.selectionAsync();
     
     Animated.spring(slideAnim, {
       toValue,
@@ -76,6 +71,7 @@ const SlidingBottomNavigation = (props: BottomTabBarProps) => {
     
     try {
       console.log('Attempting navigation to:', tabName);
+      Haptics.selectionAsync();
       props.navigation.navigate(tabName);
       console.log('Navigation successful');
     } catch (error) {
@@ -114,6 +110,9 @@ const SlidingBottomNavigation = (props: BottomTabBarProps) => {
         ]}
         onPress={() => handleTabPress(item.name)}
         activeOpacity={0.7}
+        accessibilityRole="tab"
+        accessibilityLabel={`${item.label} tab`}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
         {renderIcon(item, isActive)}
         <Text style={[
@@ -142,7 +141,14 @@ const SlidingBottomNavigation = (props: BottomTabBarProps) => {
   });
 
   return (
-    <Animated.View style={[styles.container, { height: expandedHeight }]}>
+    <Animated.View style={[styles.container, { height: expandedHeight }]}> 
+      <LinearGradient
+        colors={[theme.colors.gradientStart, theme.colors.gradientEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
+      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFillObject} />
       {/* Primary Tabs Row */}
       <View style={styles.primaryTabsContainer}>
         {primaryTabs.map((item, index) => renderTab(item, index))}
@@ -185,7 +191,7 @@ const SlidingBottomNavigation = (props: BottomTabBarProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.card + 'AA',
     borderTopColor: theme.colors.border,
     borderTopWidth: 1,
     paddingBottom: 8,
@@ -215,7 +221,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   tabButtonActive: {
-    backgroundColor: theme.colors.accent + '20',
+    backgroundColor: theme.colors.accent + '30',
+    borderWidth: 1,
+    borderColor: theme.colors.accent + '80',
   },
   tabLabel: {
     fontSize: 10,
@@ -234,7 +242,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors.surface + 'AA',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,

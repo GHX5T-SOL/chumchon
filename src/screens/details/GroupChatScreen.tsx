@@ -1,16 +1,8 @@
 // src/screens/details/GroupChatScreen.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  FlatList, 
-  KeyboardAvoidingView, 
-  Platform,
-  ActivityIndicator,
-  Text,
-  Alert,
-  TouchableOpacity
-} from 'react-native';
+import { View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator, Text, Alert, TouchableOpacity } from 'react-native';
+import { AppPage } from '@/components/app-page'
+import { MotiPressable } from 'moti'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
@@ -175,11 +167,8 @@ const GroupChatScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
+      <AppPage>
       <GroupHeader
         name={groupName}
         description={groupDescription}
@@ -226,6 +215,7 @@ const GroupChatScreen = () => {
       <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress })}>
         <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Tip Group Member</Text>
       </TouchableOpacity>
+      </AppPage>
     </KeyboardAvoidingView>
   );
 };

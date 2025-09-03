@@ -1,6 +1,8 @@
 // src/navigation/AppNavigator.tsx
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -8,6 +10,7 @@ import { theme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { WalletConnectButton } from '@/components/solana/WalletConnectButton';
 import SlidingBottomNavigation from '@/components/SlidingBottomNavigation';
+import logo from '@/assets/images/logo.png';
 
 // Auth screens
 import WelcomeScreen from '@/screens/auth/WelcomeScreen';
@@ -113,7 +116,14 @@ const AuthNavigator = () => {
         headerTintColor: theme.colors.text,
         headerTitleStyle: {
           fontWeight: 'bold',
+          fontFamily: 'Orbitron-Bold',
         },
+        headerTitle: () => (
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={logo} style={{ width: 24, height: 24, borderRadius: 4, marginRight: 8 }} />
+            <Text style={{ color: theme.colors.text, fontFamily: 'Orbitron-Bold' }}>Chumchon</Text>
+          </View>
+        ),
         animation: 'slide_from_right',
         headerRight: () => <WalletConnectButton />, // Add button to all auth screens
       }}
@@ -197,9 +207,28 @@ const MainNavigator = () => {
         headerTintColor: theme.colors.text,
         headerTitleStyle: {
           fontWeight: 'bold',
+          fontFamily: 'Orbitron-Bold',
         },
+        headerTitle: () => (
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={logo} style={{ width: 24, height: 24, borderRadius: 4, marginRight: 8 }} />
+            <Text style={{ color: theme.colors.text, fontFamily: 'Orbitron-Bold' }}>Chumchon</Text>
+          </View>
+        ),
         animation: 'slide_from_right',
-        headerRight: () => <WalletConnectButton />, // Add button to all main stack screens
+        headerTransparent: true,
+        headerBackground: () => (
+          <View style={{ flex: 1 }}>
+            <LinearGradient
+              colors={[theme.colors.gradientStart, theme.colors.gradientEnd]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ ...StyleSheet.absoluteFillObject }}
+            />
+            <BlurView intensity={30} tint="dark" style={{ ...StyleSheet.absoluteFillObject }} />
+          </View>
+        ),
+        headerRight: () => <WalletConnectButton />,
       }}
     >
       <MainStack.Screen 
@@ -240,7 +269,17 @@ const LoadingScreen = () => (
     alignItems: 'center',
     backgroundColor: theme.colors.background
   }}>
-    <ActivityIndicator size="large" color={theme.colors.primary} />
+    {/* Neon Lottie Loader */}
+    {/* @ts-ignore - require handles .lottie via metro config */}
+    <View style={{ width: 160, height: 160 }}>
+      {/* lazy import to avoid app boot perf hit */}
+      {/* eslint-disable-next-line @typescript-eslint/no-var-requires */}
+      {require('@/components/animations/Lottie') &&
+        (() => {
+          const { LoaderLottie } = require('@/components/animations/Lottie')
+          return <LoaderLottie />
+        })()}
+    </View>
   </View>
 );
 

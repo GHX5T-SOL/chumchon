@@ -1,17 +1,7 @@
 // src/screens/main/TradeScreen.tsx
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
-  Modal,
-  FlatList,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, ActivityIndicator, Modal, FlatList } from 'react-native';
+import { AppPage } from '@/components/app-page'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -235,6 +225,7 @@ const TradeScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <AppPage>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Trade</Text>
@@ -425,6 +416,7 @@ const TradeScreen = () => {
           </View>
         </View>
       </Modal>
+      </AppPage>
     </ScrollView>
   );
 };
