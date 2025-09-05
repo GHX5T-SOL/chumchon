@@ -22,20 +22,29 @@ export default function App() {
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync();
-    (async () => {
+    async function prepare() {
       try {
+        // Keep the splash screen visible while we fetch resources
+        await SplashScreen.preventAutoHideAsync();
+        
+        // Load fonts
         await Font.loadAsync({
           Orbitron: Orbitron_400Regular,
           'Orbitron-Medium': Orbitron_500Medium,
           'Orbitron-Bold': Orbitron_700Bold,
         });
+        
+        // Add a small delay to ensure smooth transition
+        await new Promise(resolve => setTimeout(resolve, 500));
       } catch (e) {
         console.warn('Font load failed', e);
       } finally {
+        // Tell the application to render
         setAppReady(true);
       }
-    })();
+    }
+
+    prepare();
   }, []);
 
   useEffect(() => {
@@ -44,7 +53,9 @@ export default function App() {
     }
   }, [appReady]);
 
-  if (!appReady) return null;
+  if (!appReady) {
+    return null;
+  }
 
   return (
     <NavigationContainer theme={theme}>

@@ -10,7 +10,7 @@ import { theme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { WalletConnectButton } from '@/components/solana/WalletConnectButton';
 import SlidingBottomNavigation from '@/components/SlidingBottomNavigation';
-import logo from '@/assets/logo.png';
+// Logo will be loaded via require() in components
 
 // Auth screens
 import WelcomeScreen from '@/screens/auth/WelcomeScreen';
@@ -120,7 +120,7 @@ const AuthNavigator = () => {
         },
         headerTitle: () => (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={logo} style={{ width: 24, height: 24, borderRadius: 4, marginRight: 8 }} />
+            <Image source={require('@/assets/logo.png')} style={{ width: 24, height: 24, borderRadius: 4, marginRight: 8 }} />
             <Text style={{ color: theme.colors.text, fontFamily: 'Orbitron-Bold' }}>Chumchon</Text>
           </View>
         ),
@@ -211,7 +211,7 @@ const MainNavigator = () => {
         },
         headerTitle: () => (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={logo} style={{ width: 24, height: 24, borderRadius: 4, marginRight: 8 }} />
+            <Image source={require('@/assets/logo.png')} style={{ width: 24, height: 24, borderRadius: 4, marginRight: 8 }} />
             <Text style={{ color: theme.colors.text, fontFamily: 'Orbitron-Bold' }}>Chumchon</Text>
           </View>
         ),
@@ -269,17 +269,14 @@ const LoadingScreen = () => (
     alignItems: 'center',
     backgroundColor: theme.colors.background
   }}>
-    {/* Neon Lottie Loader */}
-    {/* @ts-ignore - require handles .lottie via metro config */}
-    <View style={{ width: 160, height: 160 }}>
-      {/* lazy import to avoid app boot perf hit */}
-      {/* eslint-disable-next-line @typescript-eslint/no-var-requires */}
-      {require('@/components/animations/Lottie') &&
-        (() => {
-          const { LoaderLottie } = require('@/components/animations/Lottie')
-          return <LoaderLottie />
-        })()}
-    </View>
+    <ActivityIndicator size="large" color={theme.colors.primary} />
+    <Text style={{ 
+      color: theme.colors.text, 
+      marginTop: 16, 
+      fontFamily: 'Orbitron-Medium' 
+    }}>
+      Loading Chumchon...
+    </Text>
   </View>
 );
 
