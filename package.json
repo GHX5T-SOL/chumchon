@@ -13,7 +13,8 @@
     "lint:check": "expo lint",
     "reset-project": "node ./scripts/reset-project.js",
     "start": "expo start",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "patch-package"
   },
   "description": "Chumchon - A Solana-powered social app for communities.",
   "keywords": [
@@ -29,7 +30,6 @@
     "@expo-google-fonts/orbitron": "^0.4.1",
     "@expo/metro-runtime": "~5.0.4",
     "@expo/vector-icons": "^14.1.0",
-    "@lottiefiles/dotlottie-react-native": "^0.2.0",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-clipboard/clipboard": "^1.16.2",
     "@react-navigation/bottom-tabs": "^7.4.2",
@@ -96,7 +96,8 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "prettier": "^3.5.3",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "patch-package": "^8.0.0"
   },
   "private": true
 }
