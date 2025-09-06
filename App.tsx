@@ -1,9 +1,23 @@
 import 'react-native-reanimated';
+import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto';
 import { Buffer } from 'buffer';
 global.Buffer = Buffer;
 
 import structuredClone from '@ungap/structured-clone';
 global.structuredClone = structuredClone;
+
+// Polyfill DOM-like Event & EventTarget for libraries that rely on them (e.g., rpc-websockets)
+try {
+  // Importing lazily to avoid bundling issues if unused
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { EventTarget: ShimEventTarget, Event: ShimEvent } = require('event-target-shim');
+  const g: any = globalThis as any;
+  if (typeof g.EventTarget === 'undefined') g.EventTarget = ShimEventTarget;
+  if (typeof g.Event === 'undefined') g.Event = ShimEvent;
+} catch (_) {
+  // ignore if not available
+}
 
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from 'react-native';
