@@ -11,7 +11,7 @@ import { useWalletUiTheme } from './use-wallet-ui-theme'
 import { AppConfig } from '@/constants/app-config';
 
 function useDropdownItems() {
-  const { getExplorerUrl } = useCluster()
+  const { getExplorerUrl } = useCluster() as any
   const { account, disconnect } = useWalletUi()
   if (!account) {
     return []

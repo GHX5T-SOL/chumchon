@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti'
+// Removed Moti animations to simplify startup
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useSolana } from '@/contexts/SolanaProvider';
@@ -57,8 +57,9 @@ const CreateProfileScreen = () => {
       await authorizeSession();
       console.log('[CreateProfile] Wallet reconnected successfully');
     } catch (error) {
-      console.error('[CreateProfile] Reconnect failed:', error);
-      Alert.alert('Reconnect Error', error.message || 'Failed to reconnect wallet. Please try again.');
+      const e: any = error;
+      console.error('[CreateProfile] Reconnect failed:', e);
+      Alert.alert('Reconnect Error', e?.message || 'Failed to reconnect wallet. Please try again.');
     }
   };
 
@@ -141,21 +142,18 @@ const CreateProfileScreen = () => {
       </View>
 
       <View style={{ width: '100%', alignItems: 'center', marginTop: 24, marginBottom: 16 }}>
-        <MotiPressable
-          from={{ opacity: 0, translateY: 6 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 250 }}
-          pressStyle={{ scale: 0.98 }}
+        <TouchableOpacity
           style={[styles.button, styles.primaryButton, { width: '100%' }]}
           onPress={handleCreateProfile}
           disabled={isLoading}
+          activeOpacity={0.8}
         >
           {isLoading ? (
             <ActivityIndicator color={theme.colors.text} />
           ) : (
             <Text style={styles.buttonText}>Create Profile</Text>
           )}
-        </MotiPressable>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.infoContainer}>

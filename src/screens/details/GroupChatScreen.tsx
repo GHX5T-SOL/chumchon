@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator, Text, Alert, TouchableOpacity } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti/interactions'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
@@ -39,8 +38,7 @@ const GroupChatScreen = () => {
     creator 
   } = route.params;
   
-  const { user } = useAuth();
-  const { connection } = useSolana();
+  const { connection, publicKey } = useSolana();
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
@@ -109,7 +107,7 @@ const GroupChatScreen = () => {
 
   // Render message item
   const renderMessageItem = ({ item }: { item: Message }) => {
-    const isOwnMessage = user?.publicKey.toString() === item.sender.toString();
+    const isOwnMessage = publicKey?.toString() === item.sender.toString();
     const senderKey = item.sender.toString();
     
     // Get mock user profile for the sender

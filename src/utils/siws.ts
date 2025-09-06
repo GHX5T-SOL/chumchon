@@ -8,11 +8,12 @@ export function verifySIWS(
   input: SolanaSignInInput,
   output: SolanaSignInOutput
 ): boolean {
+  const accountFixed = {
+    ...output.account,
+    publicKey: new Uint8Array(output.account.publicKey),
+  };
   const serialisedOutput: SolanaSignInOutput = {
-    account: {
-      publicKey: new Uint8Array(output.account.publicKey),
-      ...output.account,
-    },
+    account: accountFixed as any,
     signature: new Uint8Array(output.signature),
     signedMessage: new Uint8Array(output.signedMessage),
   };

@@ -35,9 +35,7 @@ export function WalletSuccessLottie({ style }: { style?: StyleProp<ViewStyle> })
 }
 
 export function BackgroundSparklesLottie({ style, opacity = 0.18 }: { style?: StyleProp<ViewStyle>; opacity?: number }) {
-  return (
-    <Lottie source={null as any} style={[{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity }, style]} />
-  )
+  return null
 }
 
 

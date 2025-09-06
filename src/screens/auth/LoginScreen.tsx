@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti'
+// Removed Moti; using TouchableOpacity only
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useSolana } from '@/contexts/SolanaProvider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -68,41 +68,35 @@ const LoginScreen = () => {
         
         {/* Connection Options */}
         <View style={styles.connectionOptions}>
-          <MotiPressable 
-            from={{ opacity: 0, translateY: 6 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 250 }}
-            pressStyle={{ scale: 0.98 }}
-            style={[styles.connectButton, styles.primaryButton]} 
+          <TouchableOpacity
+            style={[styles.connectButton, styles.primaryButton]}
             onPress={handleLogin}
             disabled={connecting}
             accessibilityRole="button"
             accessibilityLabel="Connect Wallet"
+            activeOpacity={0.8}
           >
             {connecting ? (
               <ActivityIndicator color={theme.colors.text} />
             ) : (
               <Text style={styles.connectButtonText}>Connect Wallet</Text>
             )}
-          </MotiPressable>
+          </TouchableOpacity>
           
-          <MotiPressable 
-            from={{ opacity: 0, translateY: 10 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 60, type: 'timing', duration: 250 }}
-            pressStyle={{ scale: 0.98 }}
-            style={[styles.connectButton, styles.siwsButton]} 
+          <TouchableOpacity
+            style={[styles.connectButton, styles.siwsButton]}
             onPress={handleSIWSLogin}
             disabled={connecting}
             accessibilityRole="button"
             accessibilityLabel="Sign In with Solana"
+            activeOpacity={0.8}
           >
             {connecting ? (
               <ActivityIndicator color={theme.colors.text} />
             ) : (
               <Text style={styles.connectButtonText}>Sign In with Solana</Text>
             )}
-          </MotiPressable>
+          </TouchableOpacity>
         </View>
         
         <View style={styles.walletOptions}>

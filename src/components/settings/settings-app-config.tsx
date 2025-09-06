@@ -8,12 +8,12 @@ export function SettingsAppConfig() {
     <AppView>
       <AppText type="subtitle">App Config</AppText>
       <AppText type="default">
-        Name <AppText type="defaultSemiBold">{AppConfig.name}</AppText>
+        Name <AppText type="defaultSemiBold">{AppConfig.appName}</AppText>
       </AppText>
       <AppText type="default">
         URL{' '}
         <AppText type="link">
-          <AppExternalLink href={AppConfig.uri as AppExternalLinkProps['href']}>{AppConfig.uri}</AppExternalLink>
+          <AppExternalLink href={AppConfig.appUri as AppExternalLinkProps['href']}>{AppConfig.appUri}</AppExternalLink>
         </AppText>
       </AppText>
     </AppView>

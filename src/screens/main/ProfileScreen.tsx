@@ -9,7 +9,7 @@ import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { shortenAddress } from '@/services/programService';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -90,7 +90,7 @@ const ProfileScreen = () => {
           )}
           <TouchableOpacity 
             style={styles.editProfileImageButton}
-            onPress={() => navigation.navigate('EditProfile')}
+            onPress={() => (navigation as any).navigate('EditProfile')}
           >
             <Icon name="pencil" size={16} color={theme.colors.text} />
           </TouchableOpacity>
@@ -201,7 +201,7 @@ const ProfileScreen = () => {
       <View style={styles.actionsContainer}>
         <TouchableOpacity 
           style={styles.actionButton}
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => (navigation as any).navigate('EditProfile')}
         >
           <Icon name="account-edit" size={20} color={theme.colors.text} />
           <Text style={styles.actionText}>Edit Profile</Text>
@@ -237,7 +237,7 @@ const ProfileScreen = () => {
           />
         </View>
         
-        <TouchableOpacity style={styles.tutorialButton}>
+        <TouchableOpacity style={styles.tutorialButton} onPress={() => (navigation as any).navigate('Tutorials' as never)}>
           <Text style={styles.tutorialButtonText}>Continue Learning</Text>
           <Icon name="arrow-right" size={16} color={theme.colors.accent} />
         </TouchableOpacity>

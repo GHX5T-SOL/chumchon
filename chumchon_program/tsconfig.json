@@ -1,21 +1,13 @@
 {
   "compilerOptions": {
-    "types": [
-      "mocha",
-      "chai"
-    ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "lib": [
-      "es2015"
-    ],
-    "module": "commonjs",
-    "target": "es6",
+    "lib": ["ES2021"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2021",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true
-  },
-  "extends": "expo/tsconfig.base"
+    "strict": true,
+    "skipLibCheck": true
+  }
 }

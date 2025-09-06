@@ -7,7 +7,8 @@ import * as Haptics from 'expo-haptics';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { MainTabsParamList } from '@/navigation/AppNavigator';
 import { theme } from '@/theme';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+// Avoid type error for vector-icons by importing from expo vector icons
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -74,11 +75,11 @@ const SlidingBottomNavigation = (props: BottomTabBarProps) => {
       Haptics.selectionAsync();
       props.navigation.navigate(tabName);
       console.log('Navigation successful');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Navigation error:', error);
       console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
+        message: error?.message,
+        stack: error?.stack,
         tabName,
         currentTabName
       });

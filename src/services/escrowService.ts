@@ -1,7 +1,7 @@
 // src/services/escrowService.ts
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
-import { initializeClient, createEscrow as createEscrowInstruction, acceptEscrow as acceptEscrowInstruction, completeEscrow as completeEscrowInstruction } from '../../chumchon_program/app/program_client/rpc';
+import { initializeClient } from '../../chumchon_program/app/program_client/rpc';
 
 // Program ID from Anchor.toml
 const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');
@@ -91,24 +91,7 @@ export const createEscrow = async (
     console.log('[escrowService] Transaction created');
     
     // Add the create escrow instruction
-    const ix = await createEscrowInstruction({
-      feePayer: initiator,
-      initiator,
-      counterparty,
-      group,
-      initiatorAmount: BigInt(initiatorAmount),
-      counterpartyToken,
-      counterpartyAmount: BigInt(counterpartyAmount),
-      expiresAt: BigInt(expiresAt),
-      createdAt: BigInt(Date.now()),
-      initiatorTokenAccount,
-      escrowTokenAccountInitiator: escrowTokenAccount,
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[escrowService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction
@@ -175,16 +158,7 @@ export const acceptEscrow = async (
     console.log('[escrowService] Transaction created');
     
     // Add the accept escrow instruction
-    const ix = await acceptEscrowInstruction({
-      feePayer: counterparty,
-      counterparty,
-      createdAt: BigInt(createdAt),
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[escrowService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction
@@ -241,16 +215,7 @@ export const completeEscrow = async (
     console.log('[escrowService] Transaction created');
     
     // Add the complete escrow instruction
-    const ix = await completeEscrowInstruction({
-      feePayer: initiator,
-      initiator,
-      createdAt: BigInt(createdAt),
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[escrowService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction

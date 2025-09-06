@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { cyberpunkStyles, theme } from '@/theme';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { getUserProfile } from '@/services/profileService';
 import { useSolana } from '@/contexts/SolanaProvider';
 
@@ -38,10 +38,10 @@ const AchievementsScreen = () => {
     return () => { isMounted = false; };
   }, [publicKey, connection]);
 
-  const renderItem = ({ item }: { item: typeof ACHIEVEMENTS[0] }) => (
+  const renderItem = ({ item }: { item: typeof ACHIEVEMENTS[0] & { unlocked?: boolean } }) => (
     <View style={[styles.badge, item.unlocked ? cyberpunkStyles.neonBorder : styles.lockedBadge]}>
       <Icon
-        name={item.icon}
+        name={item.icon as any}
         size={40}
         color={item.unlocked ? theme.colors.accent : theme.colors.disabled}
         style={item.unlocked ? cyberpunkStyles.neonGlow : {}}

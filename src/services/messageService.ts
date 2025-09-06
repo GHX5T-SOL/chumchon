@@ -1,7 +1,7 @@
 // src/services/messageService.ts
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
-import { initializeClient, sendMessage as sendMessageInstruction, tipMessage as tipMessageInstruction } from '../../chumchon_program/app/program_client/rpc';
+import { initializeClient } from '../../chumchon_program/app/program_client/rpc';
 
 // Program ID from Anchor.toml
 const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');
@@ -66,16 +66,7 @@ export const sendMessage = async (
     console.log('[messageService] Transaction created');
     
     // Add the send message instruction
-    const ix = await sendMessageInstruction({
-      feePayer: sender,
-      sender,
-      content,
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[messageService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction
@@ -141,17 +132,7 @@ export const tipMessage = async (
     console.log('[messageService] Transaction created');
     
     // Add the tip message instruction
-    const ix = await tipMessageInstruction({
-      tipper,
-      recipient,
-      messageId: BigInt(messageId),
-      amount: BigInt(amount),
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[messageService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction

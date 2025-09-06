@@ -34,8 +34,7 @@ const { width } = Dimensions.get('window');
 const TutorialScreen = () => {
   const route = useRoute<TutorialScreenRouteProp>();
   const navigation = useNavigation<TutorialScreenNavigationProp>();
-  const { user } = useAuth();
-  const { connection, signAndSendTransaction } = useSolana();
+  const { connection, signAndSendTransaction, publicKey } = useSolana();
   const { tutorialId } = route.params;
   
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
@@ -58,8 +57,8 @@ const TutorialScreen = () => {
           setTutorial(tutorialData);
           
           // Check if user has completed this tutorial
-          if (user && connection) {
-            const isCompleted = await hasTutorialCompleted(connection, user.publicKey, tutorialId);
+          if (publicKey && connection) {
+            const isCompleted = await hasTutorialCompleted(connection, publicKey, tutorialId);
             setCompleted(isCompleted);
           }
         }
@@ -72,7 +71,7 @@ const TutorialScreen = () => {
     };
     
     loadTutorial();
-  }, [tutorialId, user, connection]);
+  }, [tutorialId, publicKey, connection]);
 
   // Handle next step
   const handleNextStep = () => {
@@ -97,14 +96,14 @@ const TutorialScreen = () => {
 
   // Handle complete tutorial
   const handleCompleteTutorial = async () => {
-    if (!tutorial || !user || !connection || !signAndSendTransaction || completed || processing) return;
+    if (!tutorial || !publicKey || !connection || !signAndSendTransaction || completed || processing) return;
     
     setProcessing(true);
     try {
       await completeTutorial(
         connection,
         signAndSendTransaction,
-        user.publicKey,
+        publicKey,
         tutorialId
       );
       

@@ -18,7 +18,7 @@ import { theme, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { createGroup } from '@/services/groupService';
 import { PublicKey } from '@solana/web3.js';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type CreateGroupScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 

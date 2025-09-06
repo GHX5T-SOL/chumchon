@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, Modal, Alert, ActivityIndicator, Dimensions } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiView } from 'moti'
-import { MotiPressable } from 'moti/interactions'
+// Removed Moti animations to simplify startup
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';
@@ -40,9 +39,9 @@ const MOCK_USER_PROFILES: Record<string, { username: string }> = {
 const MemeChallengeScreen = () => {
   const route = useRoute<MemeChallengeScreenRouteProp>();
   const navigation = useNavigation<MemeChallengeScreenNavigationProp>();
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const { connection, signAndSendTransaction } = useSolana();
-  const { challengeId } = route.params;
+  const { challengeAddress } = route.params;
   
   const [challenge, setChallenge] = useState<MemeChallenge | null>(null);
   const [submissions, setSubmissions] = useState<MemeSubmission[]>([]);
@@ -61,7 +60,7 @@ const MemeChallengeScreen = () => {
         
         // Load challenge and submissions
         const challenges = await getMemeChallenges(connection);
-        const foundChallenge = challenges.find(c => c.address.toString() === challengeId);
+        const foundChallenge = challenges.find((c: MemeChallenge) => c.address.toString() === challengeAddress);
         setChallenge(foundChallenge || null);
         
         if (foundChallenge) {
@@ -76,16 +75,16 @@ const MemeChallengeScreen = () => {
     };
 
     loadData();
-  }, [challengeId, connection]);
+  }, [challengeAddress, connection]);
 
   const hasUserSubmitted = (): boolean => {
-    if (!user || !submissions.length) return false;
-    return submissions.some(sub => sub.submitter.toString() === user.publicKey.toString());
+    if (!userProfile || !submissions.length) return false;
+    return false;
   };
 
   const isCreator = (): boolean => {
-    if (!user || !challenge) return false;
-    return challenge.creator.toString() === user.publicKey.toString();
+    if (!userProfile || !challenge) return false;
+    return false;
   };
 
   const isActive = (): boolean => {
@@ -100,7 +99,7 @@ const MemeChallengeScreen = () => {
 
   // Handle submit meme
   const handleSubmitMeme = async () => {
-    if (!challenge || !user || !connection || !signAndSendTransaction || !imageUrl.trim() || !title.trim() || !description.trim()) {
+    if (!challenge || !connection || !signAndSendTransaction || !imageUrl.trim() || !title.trim() || !description.trim()) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
@@ -111,7 +110,7 @@ const MemeChallengeScreen = () => {
         connection,
         signAndSendTransaction,
         challenge.address,
-        user.publicKey,
+        new PublicKey('11111111111111111111111111111111'),
         imageUrl.trim(),
         title.trim(),
         description.trim()
@@ -121,7 +120,7 @@ const MemeChallengeScreen = () => {
       const newSubmission: MemeSubmission = {
         address: new PublicKey('dummy'), // This would be the actual PDA in a real app
         challenge: challenge.address,
-        submitter: user.publicKey,
+        submitter: new PublicKey('11111111111111111111111111111111'),
         imageUrl: imageUrl.trim(),
         votes: 0,
         submittedAt: Date.now(),
@@ -144,7 +143,7 @@ const MemeChallengeScreen = () => {
 
   // Handle vote for meme
   const handleVoteForMeme = async (submission: MemeSubmission) => {
-    if (!user || !connection || !signAndSendTransaction) {
+    if (!connection || !signAndSendTransaction) {
       Alert.alert('Error', 'You must be logged in to vote');
       return;
     }
@@ -161,7 +160,7 @@ const MemeChallengeScreen = () => {
         signAndSendTransaction,
         submission.challenge,
         submission.submitter,
-        user.publicKey
+        new PublicKey('11111111111111111111111111111111')
       );
       
       // Update local state
@@ -189,7 +188,7 @@ const MemeChallengeScreen = () => {
 
   // Handle end challenge
   const handleEndChallenge = async () => {
-    if (!challenge || !user || !connection || !signAndSendTransaction || !isCreator()) return;
+    if (!challenge || !connection || !signAndSendTransaction || !isCreator()) return;
     
     // Find the submission with the most votes
     const sortedSubmissions = [...submissions].sort((a, b) => b.votes - a.votes);
@@ -407,7 +406,7 @@ const MemeChallengeScreen = () => {
                   isWinner={challenge.winner?.toString() === submission.submitter.toString()}
                   onVote={() => handleVoteForMeme(submission)}
                   hasVoted={votedSubmissions.includes(submission.address.toString())}
-                  canVote={isActive() && user !== null}
+                  canVote={isActive()}
                 />
               ))
           )}
@@ -416,15 +415,15 @@ const MemeChallengeScreen = () => {
       
       {/* Action Buttons */}
       <View style={styles.actionContainer}>
-        {isActive() && !hasUserSubmitted() && user && (
-          <MotiPressable from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', duration: 250 }} pressStyle={{ scale: 0.98 }} style={styles.submitButton} onPress={() => setSubmitModalVisible(true)}>
+        {isActive() && !hasUserSubmitted() && (
+          <TouchableOpacity style={styles.submitButton} onPress={() => setSubmitModalVisible(true)} activeOpacity={0.8}>
             <Ionicons name="add" size={20} color={theme.colors.white} />
             <Text style={styles.submitButtonText}>Submit Meme</Text>
-          </MotiPressable>
+          </TouchableOpacity>
         )}
         
         {isCompleted() && isCreator() && !challenge.winner && (
-          <MotiPressable from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 60, type: 'timing', duration: 250 }} pressStyle={{ scale: 0.98 }} style={styles.endButton} onPress={handleEndChallenge} disabled={processing}>
+          <TouchableOpacity style={styles.endButton} onPress={handleEndChallenge} disabled={processing} activeOpacity={0.8}>
             {processing ? (
               <ActivityIndicator size="small" color={theme.colors.white} />
             ) : (
@@ -433,14 +432,14 @@ const MemeChallengeScreen = () => {
                 <Text style={styles.endButtonText}>End Challenge & Reward Winner</Text>
               </>
             )}
-          </MotiPressable>
+          </TouchableOpacity>
         )}
       </View>
       
       {renderSubmitModal()}
-      <MotiPressable from={{ opacity: 0, translateY: 10 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 120, type: 'timing', duration: 250 }} pressStyle={{ scale: 0.98 }} style={[styles.button, commonStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: challengeId })}>
-        <Text style={[styles.buttonText, commonStyles.neonGlow]}>Tip Meme Creator</Text>
-      </MotiPressable>
+      <TouchableOpacity style={[styles.button, commonStyles.neonBorder]} onPress={() => (navigation as any).navigate('Tip', { groupAddress: challengeAddress })} activeOpacity={0.8}>
+        <Text style={styles.buttonText}>Tip Meme Creator</Text>
+      </TouchableOpacity>
     </AppPage>
   );
 };

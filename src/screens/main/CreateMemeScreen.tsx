@@ -13,11 +13,11 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@/navigation/AppNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type CreateMemeScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -80,7 +80,7 @@ const CreateMemeScreen = () => {
       });
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise<void>(resolve => setTimeout(resolve, 2000));
 
       Alert.alert(
         'Success',

@@ -2,14 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator, Modal, Alert } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti/interactions'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { useAuth } from '@/contexts/AuthProvider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type MessagesScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -149,7 +148,7 @@ const MessagesScreen = () => {
     setRefreshing(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise<void>(resolve => setTimeout(resolve, 1000));
       
       // Update online status randomly
       setConversations(prev => prev.map(conv => ({
@@ -253,15 +252,12 @@ const MessagesScreen = () => {
 
   // Render conversation item
   const renderConversationItem = ({ item, index }: { item: Conversation; index: number }) => (
-    <MotiPressable 
-      from={{ opacity: 0, translateY: 6 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ delay: index * 50, type: 'timing', duration: 250 }}
-      pressStyle={{ scale: 0.98 }}
+    <TouchableOpacity 
       accessibilityRole="button"
       accessibilityLabel={`Open conversation with ${item.participant.displayName}`}
       style={styles.conversationItem}
       onPress={() => handleConversationPress(item)}
+      activeOpacity={0.8}
     >
       <View style={styles.avatarContainer}>
         <Text style={styles.avatar}>{item.participant.avatar}</Text>
@@ -293,7 +289,7 @@ const MessagesScreen = () => {
           )}
         </View>
       </View>
-    </MotiPressable>
+    </TouchableOpacity>
   );
 
   // Render user item for new message modal

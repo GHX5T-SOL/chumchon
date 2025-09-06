@@ -32,7 +32,7 @@ function useSignInMutation() {
   return useMutation({
     mutationFn: async () =>
       await signIn({
-        uri: AppConfig.uri,
+        uri: AppConfig.appUri,
       }),
   })
 }

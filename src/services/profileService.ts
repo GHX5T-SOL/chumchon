@@ -2,6 +2,7 @@
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { initializeClient, createUserProfile as createUserProfileInstruction, getUserProfileNullable } from '../../chumchon_program/app/program_client/rpc';
+import { Buffer } from 'buffer';
 
 // Program ID from Anchor.toml
 const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');

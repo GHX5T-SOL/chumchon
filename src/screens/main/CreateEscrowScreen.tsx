@@ -16,13 +16,13 @@ import {
   FlatList
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@/navigation/AppNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { createEscrow } from '@/services/escrowService';
 import { PublicKey } from '@solana/web3.js';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type CreateEscrowScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 

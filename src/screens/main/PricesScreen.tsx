@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator, Modal } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti'
+// Removed Moti animations to simplify startup
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type PricesScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -268,7 +268,7 @@ const PricesScreen = () => {
     setRefreshing(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise<void>(resolve => setTimeout(resolve, 1000));
       
       // Update prices with random changes
       setTokens(prev => prev.map(token => ({
@@ -311,14 +311,11 @@ const PricesScreen = () => {
 
   // Render token item
   const renderTokenItem = ({ item, index }: { item: Token; index: number }) => (
-    <MotiPressable
-      from={{ opacity: 0, translateY: 6 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ delay: index * 40, type: 'timing', duration: 220 }}
-      pressStyle={{ scale: 0.98 }}
+    <TouchableOpacity
       style={styles.tokenItem}
       accessibilityRole="button"
       accessibilityLabel={`Open token ${item.name}`}
+      activeOpacity={0.8}
     >
       <View style={styles.tokenInfo}>
         <View style={[styles.tokenIcon, { backgroundColor: item.color }]}>
@@ -352,7 +349,7 @@ const PricesScreen = () => {
           <Text style={styles.trendingText}>Trending</Text>
         </View>
       )}
-    </MotiPressable>
+    </TouchableOpacity>
   );
 
   // Render sort option

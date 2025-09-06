@@ -17,7 +17,7 @@ import { useCluster } from '@/components/cluster/cluster-provider'
 import { WalletIcon } from '@wallet-standard/core'
 import { AppConfig } from '@/constants/app-config';
 
-const identity: AppIdentity = { name: AppConfig.name, uri: AppConfig.uri }
+const identity: AppIdentity = { name: AppConfig.appName, uri: AppConfig.appUri }
 
 export type Account = Readonly<{
   address: Base64EncodedAddress
@@ -136,9 +136,8 @@ export function useAuthorization() {
     async (wallet: AuthorizeAPI) => {
       const authorizationResult = await wallet.authorize({
         identity,
-        chain: selectedCluster.id,
-        auth_token: fetchQuery.data?.authToken,
-      })
+        cluster: selectedCluster.id as any,
+      } as any)
       return (await handleAuthorizationResult(authorizationResult)).selectedAccount
     },
     [fetchQuery.data?.authToken, handleAuthorizationResult, selectedCluster.id],
@@ -148,10 +147,9 @@ export function useAuthorization() {
     async (wallet: AuthorizeAPI, signInPayload: SignInPayload) => {
       const authorizationResult = await wallet.authorize({
         identity,
-        chain: selectedCluster.id,
-        auth_token: fetchQuery.data?.authToken,
+        cluster: selectedCluster.id as any,
         sign_in_payload: signInPayload,
-      })
+      } as any)
       return (await handleAuthorizationResult(authorizationResult)).selectedAccount
     },
     [fetchQuery.data?.authToken, handleAuthorizationResult, selectedCluster.id],

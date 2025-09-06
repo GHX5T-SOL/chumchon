@@ -2,24 +2,24 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { cyberpunkStyles, theme } from '@/theme';
 import { AppPage } from '@/components/app-page'
-import { MotiView } from 'moti'
-import { MotiPressable } from 'moti/interactions'
-import { useNavigation, useRoute } from '@react-navigation/native';
+// Removed Moti animations to simplify startup
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { MainStackParamList } from '@/navigation/AppNavigator';
 
 const ChannelDetailScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const { channelAddress } = route.params || {};
+  const route = useRoute<RouteProp<MainStackParamList, 'ChannelDetail'>>();
+  const { channelAddress } = route.params;
 
   return (
     <AppPage>
-      <MotiView from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', duration: 300 }} style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text style={[cyberpunkStyles.neonGlow, styles.title]}>Channel Details</Text>
         <Text style={styles.placeholder}>Coming soon: View posts, tip, and join creator channels.</Text>
-        <MotiPressable from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 60, type: 'timing', duration: 300 }} pressStyle={{ scale: 0.98 }} style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('Tip', { groupAddress: channelAddress })}>
+        <TouchableOpacity style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => (navigation as any).navigate('Tip', { groupAddress: channelAddress })} activeOpacity={0.8}>
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Tip Channel Creator</Text>
-        </MotiPressable>
-      </MotiView>
+        </TouchableOpacity>
+      </View>
     </AppPage>
   );
 };

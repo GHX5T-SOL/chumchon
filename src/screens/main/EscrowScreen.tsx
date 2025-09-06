@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiView } from 'moti'
-import { MotiPressable } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -11,7 +9,7 @@ import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { getUserEscrows, Escrow, EscrowStatus } from '@/services/escrowService';
 import { shortenAddress } from '@/services/programService';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type EscrowScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -189,15 +187,12 @@ const EscrowScreen = () => {
     const otherParty = isInitiator ? item.counterparty : item.initiator;
     
     return (
-      <MotiPressable 
-        from={{ opacity: 0, translateY: 6 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: index * 50, type: 'timing', duration: 250 }}
-        pressStyle={{ scale: 0.98 }}
+      <TouchableOpacity 
         style={styles.escrowItem}
         onPress={() => navigation.navigate('EscrowDetail', { escrowAddress: item.address.toBase58() })}
         accessibilityRole="button"
         accessibilityLabel={`Open escrow ${item.address.toBase58()}`}
+        activeOpacity={0.8}
       >
         <View style={styles.escrowHeader}>
           <View style={[styles.statusIndicator, { backgroundColor: getStatusColor(item.status) }]} />
@@ -253,7 +248,7 @@ const EscrowScreen = () => {
             </TouchableOpacity>
           )}
         </View>
-      </MotiPressable>
+      </TouchableOpacity>
     );
   };
 

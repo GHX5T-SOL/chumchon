@@ -32,8 +32,7 @@ const EscrowDetailScreen = () => {
   const route = useRoute<EscrowDetailScreenRouteProp>();
   const navigation = useNavigation<EscrowDetailScreenNavigationProp>();
   const { escrowAddress } = route.params;
-  const { user } = useAuth();
-  const { connection, signAndSendTransaction } = useSolana();
+  const { connection, signAndSendTransaction, publicKey } = useSolana();
   
   const [escrow, setEscrow] = useState<Escrow | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,11 +122,19 @@ const EscrowDetailScreen = () => {
 
   // Handle accept escrow
   const handleAcceptEscrow = async () => {
-    if (!escrow || !user || !connection || !signAndSendTransaction) return;
+    if (!escrow || !publicKey || !connection || !signAndSendTransaction) return;
     
     setProcessing(true);
     try {
-      await acceptEscrow(connection, signAndSendTransaction, escrow.address, escrow.initiator, user.publicKey, escrow.createdAt);
+      await acceptEscrow(
+        connection,
+        signAndSendTransaction,
+        escrow.address,
+        escrow.initiator,
+        publicKey,
+        escrow.createdAt,
+        new PublicKey('11111111111111111111111111111111')
+      );
       
       // Update local state
       setEscrow({
@@ -146,11 +153,22 @@ const EscrowDetailScreen = () => {
 
   // Handle complete escrow
   const handleCompleteEscrow = async () => {
-    if (!escrow || !user || !connection || !signAndSendTransaction) return;
+    if (!escrow || !publicKey || !connection || !signAndSendTransaction) return;
     
     setProcessing(true);
     try {
-      await completeEscrow(connection, signAndSendTransaction, escrow.address, escrow.initiator, escrow.counterparty, escrow.createdAt);
+      await completeEscrow(
+        connection,
+        signAndSendTransaction,
+        escrow.address,
+        escrow.initiator,
+        escrow.counterparty,
+        escrow.createdAt,
+        new PublicKey('11111111111111111111111111111111'),
+        new PublicKey('11111111111111111111111111111111'),
+        new PublicKey('11111111111111111111111111111111'),
+        new PublicKey('11111111111111111111111111111111')
+      );
       
       // Update local state
       setEscrow({
@@ -206,14 +224,14 @@ const EscrowDetailScreen = () => {
 
   // Check if user is initiator
   const isInitiator = (): boolean => {
-    if (!escrow || !user) return false;
-    return escrow.initiator.toString() === user.publicKey.toString();
+    if (!escrow || !publicKey) return false;
+    return escrow.initiator.toString() === publicKey.toString();
   };
 
   // Check if user is counterparty
   const isCounterparty = (): boolean => {
-    if (!escrow || !user) return false;
-    return escrow.counterparty.toString() === user.publicKey.toString();
+    if (!escrow || !publicKey) return false;
+    return escrow.counterparty.toString() === publicKey.toString();
   };
 
   if (loading) {

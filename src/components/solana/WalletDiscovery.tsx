@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { getWallets } from '@solana-mobile/wallet-standard-mobile';
+import getWallets from '@solana-mobile/wallet-standard-mobile';
 import { WalletIcon } from '@wallet-standard/core';
 
 interface WalletInfo {
@@ -17,7 +17,8 @@ export const WalletDiscovery: React.FC = () => {
     const discoverWallets = async () => {
       try {
         const availableWallets = await getWallets();
-        const walletInfos = availableWallets.map(wallet => ({
+        const list: any[] = Array.isArray(availableWallets) ? (availableWallets as any[]) : [];
+        const walletInfos = list.map((wallet: any) => ({
           name: wallet.name,
           icon: wallet.icon,
           readyState: wallet.readyState,

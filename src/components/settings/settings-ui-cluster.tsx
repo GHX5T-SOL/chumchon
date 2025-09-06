@@ -1,8 +1,8 @@
 import { AppText } from '@/components/app-text'
 import { useCluster } from '@/components/cluster/cluster-provider'
-import { ClusterUiVersion } from '@/components/cluster/cluster-ui-version'
+import ClusterUiVersion from '@/components/cluster/cluster-ui-version'
 import { AppDropdown } from '@/components/app-dropdown'
-import { ClusterUiGenesisHash } from '@/components/cluster/cluster-ui-genesis-hash'
+import ClusterUiGenesisHash from '@/components/cluster/cluster-ui-genesis-hash'
 import { AppView } from '@/components/app-view'
 import { AppConfig } from '@/constants/app-config';
 

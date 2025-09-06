@@ -9,8 +9,7 @@ export type AppTextProps = TextProps & {
 }
 
 export function AppText({ style, lightColor, darkColor, type = 'default', ...rest }: AppTextProps) {
-  const getColor = useThemeColor()
-  const color = lightColor || darkColor ? (getColor('text')) : getColor('text')
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text') as string
 
   return (
     <Text

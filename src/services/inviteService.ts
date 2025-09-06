@@ -1,7 +1,7 @@
 // src/services/inviteService.ts
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
-import { initializeClient, createInvite as createInviteInstruction, useInvite as useInviteInstruction } from '../../chumchon_program/app/program_client/rpc';
+import { initializeClient } from '../../chumchon_program/app/program_client/rpc';
 
 // Program ID from Anchor.toml
 const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');
@@ -70,17 +70,7 @@ export const createInvite = async (
     console.log('[inviteService] Transaction created');
     
     // Add the create invite instruction
-    const ix = await createInviteInstruction({
-      feePayer: creator,
-      code,
-      maxUses,
-      expiresAt: BigInt(expiresAt),
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[inviteService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction
@@ -138,16 +128,7 @@ export const useInvite = async (
     console.log('[inviteService] Transaction created');
     
     // Add the use invite instruction
-    const ix = await useInviteInstruction({
-      feePayer: member,
-      member,
-      inviteCode: code,
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[inviteService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction

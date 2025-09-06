@@ -2,15 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, RefreshControl } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti/interactions'
-import { MotiView } from 'moti'
+// Removed Moti animations to simplify startup
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { shortenAddress } from '@/services/programService';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type MemesScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -184,20 +183,17 @@ const MemesScreen = () => {
     );
     
     return (
-      <MotiPressable 
-        from={{ opacity: 0, translateY: 6 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: index * 50, type: 'timing', duration: 250 }}
-        pressStyle={{ scale: 0.98 }}
+      <TouchableOpacity 
         style={styles.challengeItem}
         onPress={() => {}}
         accessibilityRole="button"
         accessibilityLabel={`Open ${item.title} challenge`}
+        activeOpacity={0.8}
       >
         <View style={styles.challengeHeader}>
           <Text style={styles.challengeTitle}>{item.title}</Text>
           <View style={styles.rewardContainer}>
-            <Icon name="coins" size={16} color={theme.colors.warning} />
+            <Icon name="currency-usd" size={16} color={theme.colors.warning} />
             <Text style={styles.rewardText}>{item.rewardAmount} SOL</Text>
           </View>
         </View>
@@ -265,7 +261,7 @@ const MemesScreen = () => {
             </>
           )}
         </View>
-      </MotiPressable>
+      </TouchableOpacity>
     );
   };
 

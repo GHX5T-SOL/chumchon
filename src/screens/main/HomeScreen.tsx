@@ -7,8 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MotiPressable } from 'moti/interactions'
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 // Mock data for the home screen
 const TUTORIALS = [
@@ -63,20 +62,13 @@ const HomeScreen = () => {
   }, [userProfile?.completedTutorials]);
 
   // Render tutorial item
-  const renderTutorialItem = ({ item, index }: { item: typeof TUTORIALS[0]; index?: number }) => (
-    <MotiPressable
-      from={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: (index || 0) * 60, type: 'timing', duration: 300 }}
-      pressStyle={{ scale: 0.98 }}
-      style={[styles.tutorialItem, item.completed && styles.completedTutorial]}
-      onPress={() => {}}
-    >
+  const renderTutorialItem = ({ item }: { item: typeof TUTORIALS[0]; index?: number }) => (
+    <TouchableOpacity style={[styles.tutorialItem, item.completed && styles.completedTutorial]} onPress={() => {}} activeOpacity={0.8}>
       <View style={styles.tutorialContent}>
         <Text style={styles.tutorialTitle}>{item.title}</Text>
         <Text style={styles.tutorialDescription}>{item.description}</Text>
         <View style={styles.tutorialReward}>
-          <Icon name="coins" size={16} color={theme.colors.warning} />
+          <Icon name="currency-usd" size={16} color={theme.colors.warning} />
           <Text style={styles.rewardText}>
             {item.reward ? `${item.reward} SOL` : '0 SOL'}
           </Text>
@@ -89,7 +81,7 @@ const HomeScreen = () => {
           <Icon name="arrow-right-circle" size={24} color={theme.colors.accent} />
         )}
       </View>
-    </MotiPressable>
+    </TouchableOpacity>
   );
 
   // Render activity item
@@ -124,22 +116,16 @@ const HomeScreen = () => {
     }
     
     return (
-      <MotiPressable
-        from={{ opacity: 0, translateY: 6 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: (index || 0) * 60, type: 'timing', duration: 300 }}
-        pressStyle={{ scale: 0.98 }}
-        style={styles.activityItem}
-      >
+      <TouchableOpacity style={styles.activityItem} activeOpacity={0.8}>
         <View style={styles.activityIcon}>
-          <Icon name={icon} size={24} color={theme.colors.accent} />
+          <Icon name={icon as any} size={24} color={theme.colors.accent} />
         </View>
         <View style={styles.activityContent}>
           <Text style={styles.activityTitle}>{title}</Text>
           <Text style={styles.activityTime}>{subtitle}</Text>
         </View>
         <Icon name="chevron-right" size={20} color={theme.colors.muted} />
-      </MotiPressable>
+      </TouchableOpacity>
     );
   };
 
@@ -217,7 +203,7 @@ const HomeScreen = () => {
                 style={styles.actionButton}
                 onPress={() => navigation.navigate('CreateMeme')}
               >
-                <Icon name="image-plus" size={24} color={theme.colors.text} />
+                <Icon name="plus" size={24} color={theme.colors.text} />
                 <Text style={styles.actionText}>Meme Challenge</Text>
               </TouchableOpacity>
             </View>

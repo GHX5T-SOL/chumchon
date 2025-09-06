@@ -64,7 +64,7 @@ export const getTopTraders = async (
     console.log('[leaderboardService] Fetching top traders from blockchain...');
     
     // Simulate blockchain query delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise<void>(resolve => setTimeout(resolve, 500));
     
     // Mock data that would come from blockchain
     const mockTraders: Trader[] = [
@@ -283,7 +283,7 @@ export const getTraderDetails = async (
     
     // In a real implementation, this would query the blockchain for specific trader data
     // For now, we'll return mock data
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise<void>(resolve => setTimeout(resolve, 300));
     
     // Mock trader details
     const mockTrader: Trader = {
@@ -324,7 +324,7 @@ export const getTrackedTraders = async (
     
     // In a real implementation, this would query the blockchain for user's tracked traders
     // For now, we'll return mock data
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise<void>(resolve => setTimeout(resolve, 200));
     
     // Mock tracked traders
     const mockTrackedTraders: Trader[] = [
@@ -387,7 +387,7 @@ export const getCopiedTraders = async (
     
     // In a real implementation, this would query the blockchain for user's copied traders
     // For now, we'll return mock data
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise<void>(resolve => setTimeout(resolve, 200));
     
     // Mock copied traders
     const mockCopiedTraders: Trader[] = [

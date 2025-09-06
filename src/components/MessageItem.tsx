@@ -31,15 +31,15 @@ const MessageItem: React.FC<MessageItemProps> = ({
   senderUsername = 'Anonymous',
   senderProfilePic,
 }) => {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const { connection, signAndSendTransaction } = useSolana();
   const [localTipAmount, setLocalTipAmount] = useState(tipAmount);
   const [isTipping, setIsTipping] = useState(false);
 
-  const isCurrentUser = user?.publicKey.equals(sender);
+  const isCurrentUser = false;
 
   const handleTip = async () => {
-    if (!user || !connection || !signAndSendTransaction) {
+    if (!connection || !signAndSendTransaction) {
       Alert.alert('Error', 'Wallet not connected');
       return;
     }
@@ -54,7 +54,7 @@ const MessageItem: React.FC<MessageItemProps> = ({
         connection,
         signAndSendTransaction,
         address,
-        user.publicKey,
+        new PublicKey('11111111111111111111111111111111'),
         sender,
         group,
         messageId,

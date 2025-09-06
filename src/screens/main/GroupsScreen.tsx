@@ -8,8 +8,7 @@ import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { getUserGroups, Group } from '@/services/groupService';
 import { useSolana } from '@/contexts/SolanaProvider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MotiPressable } from 'moti'
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type GroupsScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -22,6 +21,8 @@ const MOCK_GROUPS: Group[] = [
     creator: { toBase58: () => 'creator1' } as any,
     isChannel: false,
     isWhaleGroup: false,
+    requiredAmount: 0,
+    requiredSolBalance: 0,
     memberCount: 128,
     createdAt: Date.now() - 1000000,
     lastMessageAt: Date.now() - 10000,
@@ -35,6 +36,7 @@ const MOCK_GROUPS: Group[] = [
     isWhaleGroup: false,
     requiredNftCollection: { toBase58: () => 'collection1' } as any,
     requiredAmount: 1,
+    requiredSolBalance: 0,
     memberCount: 75,
     createdAt: Date.now() - 2000000,
     lastMessageAt: Date.now() - 50000,
@@ -46,6 +48,7 @@ const MOCK_GROUPS: Group[] = [
     creator: { toBase58: () => 'creator3' } as any,
     isChannel: false,
     isWhaleGroup: true,
+    requiredAmount: 0,
     requiredSolBalance: 1000,
     memberCount: 12,
     createdAt: Date.now() - 3000000,
@@ -58,6 +61,8 @@ const MOCK_GROUPS: Group[] = [
     creator: { toBase58: () => 'creator4' } as any,
     isChannel: false,
     isWhaleGroup: false,
+    requiredAmount: 0,
+    requiredSolBalance: 0,
     memberCount: 256,
     createdAt: Date.now() - 4000000,
     lastMessageAt: Date.now() - 5000,
@@ -69,6 +74,8 @@ const MOCK_GROUPS: Group[] = [
     creator: { toBase58: () => 'creator5' } as any,
     isChannel: true,
     isWhaleGroup: false,
+    requiredAmount: 0,
+    requiredSolBalance: 0,
     memberCount: 1024,
     createdAt: Date.now() - 5000000,
     lastMessageAt: Date.now() - 20000,
@@ -127,21 +134,18 @@ const GroupsScreen = () => {
 
   // Render group item
   const renderGroupItem = ({ item, index }: { item: Group; index: number }) => (
-    <MotiPressable 
-      from={{ opacity: 0, translateY: 8 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ delay: index * 50, type: 'timing', duration: 250 }}
-      pressStyle={{ scale: 0.98 }}
+    <TouchableOpacity 
       accessibilityRole="button"
       accessibilityLabel={`Open ${item.name} group`}
       style={styles.groupItem}
-      onPress={() => navigation.navigate('GroupChat', {
+      activeOpacity={0.8}
+      onPress={() => (navigation as any).navigate('GroupChat', {
         groupAddress: item.address.toBase58(),
         groupName: item.name,
         groupDescription: item.description,
         memberCount: item.memberCount,
         isChannel: item.isChannel,
-        creator: item.creator,
+        creator: item.creator?.toBase58 ? item.creator.toBase58() : String(item.creator),
       })}
     >
       <View style={styles.groupIconContainer}>
@@ -198,7 +202,7 @@ const GroupsScreen = () => {
       </View>
       
       <Icon name="chevron-right" size={24} color={theme.colors.muted} />
-    </MotiPressable>
+    </TouchableOpacity>
   );
 
   // Format last active time

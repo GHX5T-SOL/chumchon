@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, RefreshControl, Alert, Modal, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti/interactions'
-import { MotiView } from 'moti'
+// Removed Moti animations to simplify startup
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/AppNavigator';
@@ -11,7 +10,7 @@ import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { shortenAddress } from '@/services/programService';
 import { getTopTraders, trackTrader, copyTrader, Trader } from '@/services/leaderboardService';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type LeaderboardScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -33,6 +32,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: false,
     rank: 1,
     tags: ['DeFi', 'Yield Farming', 'Leverage'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
   {
     id: '2',
@@ -50,6 +52,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: false,
     rank: 2,
     tags: ['NFTs', 'Meme Coins', 'Arbitrage'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
   {
     id: '3',
@@ -67,6 +72,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: true,
     rank: 3,
     tags: ['Options', 'Futures', 'High Risk'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
   {
     id: '4',
@@ -84,6 +92,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: false,
     rank: 4,
     tags: ['NFTs', 'Art', 'Collectibles'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
   {
     id: '5',
@@ -101,6 +112,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: false,
     rank: 5,
     tags: ['Yield Farming', 'Staking', 'Conservative'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
   {
     id: '6',
@@ -118,6 +132,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: false,
     rank: 6,
     tags: ['Meme Coins', 'Pump & Dump', 'High Volume'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
   {
     id: '7',
@@ -135,6 +152,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: true,
     rank: 7,
     tags: ['Arbitrage', 'DEX', 'Low Risk'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
   {
     id: '8',
@@ -152,6 +172,9 @@ const MOCK_TRADERS: Trader[] = [
     isCopied: false,
     rank: 8,
     tags: ['Leverage', 'Futures', 'High Risk'],
+    lastTradeAt: Date.now(),
+    totalVolume: 100000,
+    averageTradeSize: 1000,
   },
 ];
 
@@ -298,15 +321,12 @@ const LeaderboardScreen = () => {
                 selectedTimeFrame === 'weekly' ? item.weeklyPnl : item.monthlyPnl;
     
     return (
-      <MotiPressable
-        from={{ opacity: 0, translateY: 6 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: index * 40, type: 'timing', duration: 220 }}
-        pressStyle={{ scale: 0.98 }}
+      <TouchableOpacity
         style={styles.traderCard}
         accessibilityRole="button"
         accessibilityLabel={`Open trader ${item.username}`}
         onPress={() => {}}
+        activeOpacity={0.8}
       >
         <View style={styles.rankContainer}>
           <Text style={styles.rankText}>#{item.rank}</Text>
@@ -377,7 +397,7 @@ const LeaderboardScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </MotiPressable>
+      </TouchableOpacity>
     );
   };
 

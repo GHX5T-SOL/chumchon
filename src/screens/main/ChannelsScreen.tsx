@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiView } from 'moti'
 import { cyberpunkStyles, theme } from '@/theme';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
@@ -22,7 +21,7 @@ const ChannelsScreen = () => {
           <TouchableOpacity
             key={channel.id}
             style={[styles.channelCard, cyberpunkStyles.neonBorder]}
-            onPress={() => navigation.navigate('ChannelDetail', { channelAddress: channel.id })}
+            onPress={() => (navigation as any).navigate('ChannelDetail', { channelAddress: channel.id })}
           >
             <Text style={[styles.channelName, cyberpunkStyles.neonGlow]}>{channel.name}</Text>
             <Text style={styles.channelDesc}>{channel.description}</Text>

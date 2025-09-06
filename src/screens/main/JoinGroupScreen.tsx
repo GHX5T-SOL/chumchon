@@ -19,7 +19,7 @@ import { theme, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { useInvite } from '@/services/inviteService';
 import { PublicKey } from '@solana/web3.js';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type JoinGroupScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 

@@ -21,13 +21,13 @@ const MessageInput: React.FC<MessageInputProps> = ({
   name,
   onMessageSent,
 }) => {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const { connection, signAndSendTransaction } = useSolana();
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   
   const handleSend = async () => {
-    if (!user || !message.trim() || !connection || !signAndSendTransaction) {
+    if (!message.trim() || !connection || !signAndSendTransaction) {
       return;
     }
     
@@ -39,7 +39,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         connection,
         signAndSendTransaction,
         group,
-        user.publicKey,
+        new PublicKey('11111111111111111111111111111111'),
         message.trim()
       );
       

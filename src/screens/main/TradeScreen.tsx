@@ -8,7 +8,7 @@ import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles, cyberpunkStyles } from '@/theme';
 import { useSolana } from '@/contexts/SolanaProvider';
 import { useAuth } from '@/contexts/AuthProvider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 type TradeScreenNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -141,7 +141,7 @@ const TradeScreen = () => {
     setIsLoading(true);
     try {
       // Simulate trade execution
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise<void>(resolve => setTimeout(resolve, 2000));
       
       Alert.alert(
         'Trade Successful!',

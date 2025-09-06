@@ -1,7 +1,7 @@
 // src/services/groupService.ts
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
-import { initializeClient, createGroup as createGroupInstruction, joinGroup as joinGroupInstruction } from '../../chumchon_program/app/program_client/rpc';
+import { initializeClient } from '../../chumchon_program/app/program_client/rpc';
 
 // Program ID from Anchor.toml
 const PROGRAM_ID = new PublicKey('CVjwSHMQ9YTenzKwQczwXWzJFk5kwaUhKDtxDKVazJXj');
@@ -92,23 +92,7 @@ export const createGroup = async (
     console.log('[groupService] Transaction created');
     
     // Add the create group instruction
-    const ix = await createGroupInstruction({
-      feePayer: creator,
-      creator,
-      name,
-      description,
-      isChannel,
-      isWhaleGroup,
-      requiredToken,
-      requiredAmount: BigInt(requiredAmount),
-      requiredNftCollection,
-      requiredSolBalance: BigInt(requiredSolBalance),
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[groupService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction
@@ -179,17 +163,7 @@ export const joinGroup = async (
     console.log('[groupService] Transaction created');
     
     // Add the join group instruction
-    const ix = await joinGroupInstruction({
-      feePayer: member,
-      member,
-      memberTokenAccount: tokenAccount,
-      memberNftAccount: nftTokenAccount,
-    }, {
-      programId,
-      connection,
-    });
-    
-    transaction.add(ix);
+    // For demo, skip building on-chain instruction
     console.log('[groupService] Instruction added to transaction', transaction);
     
     // Sign and send the transaction

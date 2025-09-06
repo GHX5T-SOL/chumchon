@@ -3,8 +3,7 @@ import { View, type ViewProps } from 'react-native'
 import React from 'react'
 
 export function AppView({ style, ...otherProps }: ViewProps) {
-  const getColor = useThemeColor()
-  const backgroundColor = getColor('background')
+  const backgroundColor = useThemeColor(undefined, 'background') as string
 
   return <View style={[{ backgroundColor, gap: 8 }, style]} {...otherProps} />
 }

@@ -15,19 +15,21 @@ import * as Font from 'expo-font';
 import { Orbitron_400Regular, Orbitron_500Medium, Orbitron_700Bold } from '@expo-google-fonts/orbitron';
 
 // Register wallet standard for mobile wallet adapter
-import { registerWalletStandard } from '@solana-mobile/wallet-standard-mobile';
-registerWalletStandard();
+// Defer wallet standard registration to after mount to avoid top-level side effects blocking splash
 
 export default function App() {
   const { theme } = useAppTheme();
   const [appReady, setAppReady] = useState(false);
+  const [splashSafety, setSplashSafety] = useState(false);
 
   useEffect(() => {
     async function prepare() {
       try {
         // Keep the splash screen visible while we fetch resources
         await SplashScreen.preventAutoHideAsync();
-        
+        // Safety timeout to ensure we never hang indefinitely on splash
+        const safety = setTimeout(() => setSplashSafety(true), 4000);
+
         // Load fonts
         await Font.loadAsync({
           Orbitron: Orbitron_400Regular,
@@ -49,10 +51,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (appReady) {
+    if (appReady || splashSafety) {
       SplashScreen.hideAsync().catch(() => {});
     }
-  }, [appReady]);
+  }, [appReady, splashSafety]);
+
+  // Defer wallet registration until after first render
+  useEffect(() => {
+    (async () => {
+      try {
+        const { registerWalletStandard } = await import('@solana-mobile/wallet-standard-mobile');
+        registerWalletStandard();
+      } catch (e) {
+        console.warn('Wallet standard registration failed', e);
+      }
+    })();
+  }, []);
 
   if (!appReady) {
     return null;

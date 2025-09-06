@@ -11,8 +11,8 @@ export function AccountFeatureSend({ address }: { address: PublicKey }) {
   const transferSol = useTransferSol({ address })
   const [destinationAddress, setDestinationAddress] = useState('')
   const [amount, setAmount] = useState('1')
-  const backgroundColor = useThemeColor({ light: '#f0f0f0', dark: '#333333' }, 'background')
-  const textColor = useThemeColor({ light: '#CCCCCC', dark: '#ffffff' }, 'text')
+  const backgroundColor = useThemeColor({ light: '#f0f0f0', dark: '#333333' }, 'background') as string
+  const textColor = useThemeColor({ light: '#CCCCCC', dark: '#ffffff' }, 'text') as string
 
   return (
     <AppView>

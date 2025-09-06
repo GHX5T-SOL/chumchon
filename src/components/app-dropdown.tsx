@@ -14,10 +14,10 @@ export function AppDropdown({
 }) {
   const [isOpen, setIsOpen] = useState(false)
 
-  const backgroundColor = useThemeColor({ light: '#f0f0f0', dark: '#333333' }, 'background')
-  const listBackgroundColor = useThemeColor({ light: '#ffffff', dark: '#1c1c1e' }, 'background')
-  const borderColor = useThemeColor({ light: '#cccccc', dark: '#555555' }, 'border')
-  const textColor = useThemeColor({ light: '#CCCCCC', dark: '#ffffff' }, 'text')
+  const backgroundColor = useThemeColor({ light: '#f0f0f0', dark: '#333333' }, 'background') as string
+  const listBackgroundColor = useThemeColor({ light: '#ffffff', dark: '#1c1c1e' }, 'background') as string
+  const borderColor = useThemeColor({ light: '#cccccc', dark: '#555555' }, 'border') as string
+  const textColor = useThemeColor({ light: '#CCCCCC', dark: '#ffffff' }, 'text') as string
 
   return (
     <View style={[styles.container, { backgroundColor }]}>

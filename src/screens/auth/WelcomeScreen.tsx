@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti/interactions'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '@/navigation/AppNavigator';
@@ -47,13 +46,13 @@ const WelcomeScreen = () => {
         <Text style={styles.featureListItem}>🎓  Educational Rewards: Complete tutorials to earn SOL or token rewards</Text>
       </View>
 
-      <View style={[styles.buttonContainer, { marginBottom: 64 }]}>
-        <MotiPressable from={{ opacity: 0, translateY: 6 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', duration: 300 }} pressStyle={{ scale: 0.98 }} style={[styles.button, cyberpunkStyles.neonBorder, { marginBottom: 12 }]} onPress={handleLogin} disabled={isLoading}>
+      <View style={[styles.buttonContainer, { marginBottom: 64 }]}> 
+        <TouchableOpacity activeOpacity={0.8} style={[styles.button, cyberpunkStyles.neonBorder, { marginBottom: 12 }]} onPress={handleLogin} disabled={isLoading}>
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Login</Text>
-        </MotiPressable>
-        <MotiPressable from={{ opacity: 0, translateY: 10 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 60, type: 'timing', duration: 300 }} pressStyle={{ scale: 0.98 }} style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('CreateProfile')}>
+        </TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.8} style={[styles.button, cyberpunkStyles.neonBorder]} onPress={() => navigation.navigate('CreateProfile')}>
           <Text style={[styles.buttonText, cyberpunkStyles.neonGlow]}>Create Profile</Text>
-        </MotiPressable>
+        </TouchableOpacity>
       </View>
     </AppPage>
   );
