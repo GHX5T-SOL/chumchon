@@ -6,6 +6,7 @@ import structuredClone from '@ungap/structured-clone';
 global.structuredClone = structuredClone;
 
 import React, { useCallback, useEffect, useState } from "react";
+import { View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "@/navigation/AppNavigator";
 import { AppProviders } from "@/components/app-providers";
@@ -17,6 +18,12 @@ import { Orbitron_400Regular, Orbitron_500Medium, Orbitron_700Bold } from '@expo
 // Register wallet standard for mobile wallet adapter
 // Defer wallet standard registration to after mount to avoid top-level side effects blocking splash
 
+// Keep the splash screen visible while we fetch resources.
+// Call at module scope to ensure it's applied before the first paint in production.
+// Ignore promise warning intentionally.
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
   const { theme } = useAppTheme();
   const [appReady, setAppReady] = useState(false);
@@ -25,10 +32,8 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Keep the splash screen visible while we fetch resources
-        await SplashScreen.preventAutoHideAsync();
         // Safety timeout to ensure we never hang indefinitely on splash
-        const safety = setTimeout(() => setSplashSafety(true), 4000);
+        const safety = setTimeout(() => setSplashSafety(true), 5000);
 
         // Load fonts
         await Font.loadAsync({
@@ -50,9 +55,10 @@ export default function App() {
     prepare();
   }, []);
 
-  useEffect(() => {
+  const onLayoutRootView = useCallback(() => {
     if (appReady || splashSafety) {
-      SplashScreen.hideAsync().catch(() => {});
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      SplashScreen.hideAsync();
     }
   }, [appReady, splashSafety]);
 
@@ -68,15 +74,15 @@ export default function App() {
     })();
   }, []);
 
-  if (!appReady) {
-    return null;
-  }
-
   return (
-    <NavigationContainer theme={theme}>
-      <AppProviders>
-        <AppNavigator />
-      </AppProviders>
-    </NavigationContainer>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      {appReady ? (
+        <NavigationContainer theme={theme}>
+          <AppProviders>
+            <AppNavigator />
+          </AppProviders>
+        </NavigationContainer>
+      ) : null}
+    </View>
   );
 }
