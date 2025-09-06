@@ -8,7 +8,7 @@ import { MainStackParamList } from '@/navigation/AppNavigator';
 import { theme, commonStyles } from '@/theme';
 import { useAuth } from '@/contexts/AuthProvider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MotiPressable } from 'moti'
+import { MotiPressable } from 'moti/interactions'
 
 // Mock data for the home screen
 const TUTORIALS = [

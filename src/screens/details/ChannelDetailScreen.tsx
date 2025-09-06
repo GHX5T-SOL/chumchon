@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { cyberpunkStyles, theme } from '@/theme';
 import { AppPage } from '@/components/app-page'
-import { MotiView, MotiPressable } from 'moti'
+import { MotiView } from 'moti'
+import { MotiPressable } from 'moti/interactions'
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ChannelDetailScreen = () => {

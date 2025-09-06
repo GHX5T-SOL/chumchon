@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, RefreshControl } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti'
+import { MotiPressable } from 'moti/interactions'
 import { MotiView } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

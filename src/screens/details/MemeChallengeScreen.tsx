@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, Modal, Alert, ActivityIndicator, Dimensions } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiView, MotiPressable } from 'moti'
+import { MotiView } from 'moti'
+import { MotiPressable } from 'moti/interactions'
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';

@@ -25,6 +25,7 @@ export const theme = {
     // Text colors
     text: '#FFFFFF', // Primary text
     textSecondary: '#AAAAAA', // Secondary text
+    muted: '#888888',
     disabled: '#666666', // Disabled text
     
     // Status colors

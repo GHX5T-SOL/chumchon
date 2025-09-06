@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator, Text, Alert, TouchableOpacity } from 'react-native';
 import { AppPage } from '@/components/app-page'
-import { MotiPressable } from 'moti'
+import { MotiPressable } from 'moti/interactions'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { PublicKey } from '@solana/web3.js';

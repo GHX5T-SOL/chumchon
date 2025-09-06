@@ -1,5 +1,6 @@
 // src/contexts/SolanaProvider.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Buffer } from 'buffer';
 import { Connection, PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js';
 import { transact } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {
